@@ -1,0 +1,6 @@
+name: SpigotBlankPlugin
+main: com.outlook.nater.robin.tutorialPlugin.SpigotBlankPlugin
+version: 1.0
+api-version: 1.13
+commands:
+premissions:
