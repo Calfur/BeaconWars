@@ -1,0 +1,8 @@
+name: DiamondKill
+main: com.github.calfur.minecraftserverplugins.diamondkill.Main
+version: 1.0
+api-version: 1.13
+commands:
+  collect:
+    description: Gibt dem Spieler die Gewuenschte Anzahl Items aus seinem Belohnungsguthaben
+    usage: /<command> Itemname Anzahl
