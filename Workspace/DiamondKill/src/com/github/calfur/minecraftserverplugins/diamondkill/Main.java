@@ -9,7 +9,7 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		this.getCommand("collect").setExecutor(new CommandCollect());
-		this.getCommand("registerPlayer").setExecutor(new CommandRegisterPlayer());
+		this.getCommand("player").setExecutor(new CommandPlayer());
 		getPlayerConfig().loadConfig();
 	}
 	@Override

@@ -39,7 +39,7 @@ public class PlayerConfig {
 	}
 	
 	public boolean existsPlayer(String key) {
-		if(player != null && player.get(key) != null) {
+		if(player != null && player.get(key.toLowerCase()) != null) {
 			return true;
 		}
 		return false;
@@ -55,18 +55,19 @@ public class PlayerConfig {
 	}
 	
 	public PlayerConfig addPlayer(String key, JsonPlayer value) {
-		data.getPlayer().put(key, value.serialize());
+		data.getPlayer().put(key.toLowerCase(), value.serialize());
 		gson.toJson(data, writer());
 		return this;
 	}	
 	
 	public PlayerConfig removePlayer(String key) {
-		data.getPlayer().remove(key);
+		data.getPlayer().remove(key.toLowerCase());
 		player.remove(key);
 		gson.toJson(data, writer());
 		return this;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void loadConfig() {
 		if(folder.exists()) {
 			if(file.exists()) {
@@ -106,6 +107,6 @@ public class PlayerConfig {
 	}
 		
 	public JsonPlayer getPlayer(String key) {
-		return player.get(key);
+		return player.get(key.toLowerCase());
 	}
 }

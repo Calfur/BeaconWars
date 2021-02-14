@@ -6,9 +6,9 @@ commands:
   collect:
     description: Gibt dem Spieler die Gewuenschte Anzahl Items aus seinem Belohnungsguthaben
     usage: /<command> Itemname Anzahl
-  registerPlayer:
+  player:
     description: Registriert einen neuen Spieler in der Datenbank
-    usage: /<command> Spielername Teamnummer
+    usage: /<command> [add | edit | info | delete] Teamnummer Discordname
 permissions:
   admin:
     description: Erlaubt das benutzen von DiamondKill commands

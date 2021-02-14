@@ -8,19 +8,30 @@ import org.bukkit.util.NumberConversions;
 
 public class JsonPlayer implements ConfigurationSerializable {
 	private int team;	
+	private String discordName;
 	
-	public JsonPlayer(int team) {
+	public String getDiscordName() {
+		return discordName;
+	}
+	
+	public int getTeam() {
+		return team;
+	}
+	
+	public JsonPlayer(int team, String discordName) {
 		this.team = team;
+		this.discordName = discordName;
 	}
 	
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("team", this.team);
+		data.put("discordName", this.discordName);
 		return data;
 	}
 
 	public static JsonPlayer deserialize(Map<String, Object> args) {
-		return new JsonPlayer(NumberConversions.toInt(args.get("team")));
+		return new JsonPlayer(NumberConversions.toInt(args.get("team")), (String) args.get("discordName"));
 	}
 }
