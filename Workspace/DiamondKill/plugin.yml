@@ -7,8 +7,12 @@ commands:
     description: Gibt dem Spieler die Gewuenschte Anzahl Items aus seinem Belohnungsguthaben
     usage: /<command> Itemname Anzahl
   player:
-    description: Registriert einen neuen Spieler in der Datenbank
+    description: Interagiert mit der Spielerdatenbank
     usage: /<command> [add | edit | info | delete] Teamnummer Discordname
+    permission: admin
+  team:
+    description: Interagiert mit der Teamdatenbank
+    usage: /<command> [add | edit | info]
 permissions:
   admin:
     description: Erlaubt das benutzen von DiamondKill commands
