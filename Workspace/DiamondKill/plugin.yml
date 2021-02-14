@@ -6,3 +6,10 @@ commands:
   collect:
     description: Gibt dem Spieler die Gewuenschte Anzahl Items aus seinem Belohnungsguthaben
     usage: /<command> Itemname Anzahl
+  registerPlayer:
+    description: Registriert einen neuen Spieler in der Datenbank
+    usage: /<command> Spielername Teamnummer
+permissions:
+  admin:
+    description: Erlaubt das benutzen von DiamondKill commands
+    default: op
