@@ -5,12 +5,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
 	private static Main instance;
 	private final PlayerConfig playerConfig = new PlayerConfig();
+	private static ScoreboardLoader scoreboardLoader;
 	@Override
 	public void onEnable() {
 		instance = this;
 		this.getCommand("collect").setExecutor(new CommandCollect());
 		this.getCommand("player").setExecutor(new CommandPlayer());
 		getPlayerConfig().loadConfig();
+		scoreboardLoader = new ScoreboardLoader();
+		scoreboardLoader.setTopKiller(new TopKiller("Calfur", 52));
 	}
 	@Override
 	public void onDisable() {
