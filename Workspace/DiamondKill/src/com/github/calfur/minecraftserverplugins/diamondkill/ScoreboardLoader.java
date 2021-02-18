@@ -25,7 +25,10 @@ public class ScoreboardLoader {
 	}
 	
 	private void LoadSideBarScoreboard() {
-		scoreboard.getObjective(DisplaySlot.SIDEBAR).unregister();
+		Objective deletableObjective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+		if(deletableObjective != null) {			
+			deletableObjective.unregister();
+		}
 		
 		Objective objective = scoreboard.registerNewObjective("Title", "dummy", ChatColor.BOLD + "Beacon wars");	
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);

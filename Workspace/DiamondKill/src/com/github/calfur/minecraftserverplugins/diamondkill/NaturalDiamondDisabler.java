@@ -29,7 +29,8 @@ public class NaturalDiamondDisabler implements Listener {
 			new ForbiddenItem(Material.DIAMOND_LEGGINGS, colorizeLeatherArmor(new ItemStack(Material.LEATHER_LEGGINGS), diamondColor)),
 			new ForbiddenItem(Material.DIAMOND_CHESTPLATE, colorizeLeatherArmor(new ItemStack(Material.LEATHER_CHESTPLATE), diamondColor)),
 			new ForbiddenItem(Material.DIAMOND_HELMET, colorizeLeatherArmor(new ItemStack(Material.LEATHER_HELMET), diamondColor)),
-			new ForbiddenItem(Material.DIAMOND_SWORD, new ItemStack(Material.WOODEN_SWORD))			
+			new ForbiddenItem(Material.DIAMOND_SWORD, new ItemStack(Material.WOODEN_SWORD)),
+			new ForbiddenItem(Material.IRON_SWORD, new ItemStack(Material.IRON_SWORD))
 	);
 
 	public NaturalDiamondDisabler() {	
@@ -86,8 +87,10 @@ public class NaturalDiamondDisabler implements Listener {
 			for(ForbiddenItem forbiddenItem : forbiddenLoot) {
 				if(itemStack.getType() == forbiddenItem.getItem()) {
 					ItemStack substitute = forbiddenItem.getSubstitute();
-					Map<Enchantment, Integer> enchantments = itemStack.getEnchantments();
-					substitute.addEnchantments(enchantments);
+					if(forbiddenItem.isCopyEnchantments()) {						
+						Map<Enchantment, Integer> enchantments = itemStack.getEnchantments();
+						substitute.addEnchantments(enchantments);
+					}
 					itemsToRemove.add(itemStack);
 					itemsToAdd.add(substitute);
 					break;
