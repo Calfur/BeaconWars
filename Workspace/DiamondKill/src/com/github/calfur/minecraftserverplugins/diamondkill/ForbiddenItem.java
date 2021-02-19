@@ -37,16 +37,17 @@ public class ForbiddenItem {
 		this.enchantmentLevel = enchantmentLevel;
 	}
 	public static Map<Enchantment, Integer> nerfEnchantments(Map<Enchantment, Integer> enchantments){
-		Map<Enchantment, Integer> nerfedEnchantments;
+		/*Map<Enchantment, Integer> nerfedEnchantments;
 		for(Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
-			/*switch(enchantment.getKey()) {
+			switch(enchantment.getKey()) {
 			case Enchantment.PROTECTION_ENVIRONMENTAL:
 				if(enchantment.getValue() > 2) {
 					enchantment.setValue(2);
 				}
 				break;
-			}*/
-		}
+			}
+		}*/
+		/*TODO*/
 		return enchantments;
 	}
 	

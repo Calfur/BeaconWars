@@ -97,6 +97,8 @@ public class NaturalDiamondDisabler implements Listener {
 						case nerfedEnchantments:
 							
 							break;
+						default:
+							break;
 					}
 					itemsToRemove.add(itemStack);
 					itemsToAdd.add(substitute);
