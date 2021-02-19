@@ -40,10 +40,12 @@ public class VillagerTradesDisabler implements Listener {
 	
 	private void setMaxEntchantmentLevel(Map<Enchantment,Integer> enchantments, int maxValue) {
 		Bukkit.broadcastMessage("" + maxValue);
+		Map.Entry<Enchantment,Integer> editEnchantment;
 		for (Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
 			Bukkit.broadcastMessage("Enchntmen Level:" + enchantment.getValue());
 			if (enchantment.getValue() > maxValue) {
-				enchantment.setValue(maxValue);
+				editEnchantment = enchantment;
+				editEnchantment.setValue(maxValue);
 				Bukkit.broadcastMessage("Nerfed Enchantment");
 			}
 		}
