@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
@@ -37,18 +38,30 @@ public class ForbiddenItem {
 		this.enchantmentLevel = enchantmentLevel;
 	}
 	public static Map<Enchantment, Integer> nerfEnchantments(Map<Enchantment, Integer> enchantments){
-		/*Map<Enchantment, Integer> nerfedEnchantments;
+		Map<Enchantment, Integer> nerfedEnchantments = new HashMap<Enchantment, Integer>();
 		for(Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
-			switch(enchantment.getKey()) {
-			case Enchantment.PROTECTION_ENVIRONMENTAL:
-				if(enchantment.getValue() > 2) {
-					enchantment.setValue(2);
+			//Bukkit.broadcastMessage("Unnerfed: " + enchantment.getKey().getKey().getKey() + " Value: " + enchantment.getValue());
+			switch(enchantment.getKey().getKey().getKey()) {
+			case "protection":
+				if(enchantment.getValue() > 2) {					
+					nerfedEnchantments.put(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 				}
 				break;
+			case "projectile_protection":
+				if(enchantment.getValue() > 2) {	
+					nerfedEnchantments.put(Enchantment.PROTECTION_PROJECTILE, 2);
+				}
+				break;
+			case "sharpness":
+				if(enchantment.getValue() > 3) {	
+					nerfedEnchantments.put(Enchantment.DAMAGE_ALL, 3);
+				}
+				break;
+			default:
+				nerfedEnchantments.put(enchantment.getKey(), enchantment.getValue());
 			}
-		}*/
-		/*TODO*/
-		return enchantments;
+		}
+		return nerfedEnchantments;
 	}
 	
 	enum EnchantmentLevel{

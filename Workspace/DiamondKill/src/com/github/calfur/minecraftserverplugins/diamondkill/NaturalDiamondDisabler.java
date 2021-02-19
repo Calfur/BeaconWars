@@ -32,7 +32,11 @@ public class NaturalDiamondDisabler implements Listener {
 			new ForbiddenItem(Material.DIAMOND_CHESTPLATE, colorizeLeatherArmor(new ItemStack(Material.LEATHER_CHESTPLATE), diamondColor), EnchantmentLevel.copiedEnchantments),
 			new ForbiddenItem(Material.DIAMOND_HELMET, colorizeLeatherArmor(new ItemStack(Material.LEATHER_HELMET), diamondColor), EnchantmentLevel.copiedEnchantments),
 			new ForbiddenItem(Material.DIAMOND_SWORD, new ItemStack(Material.WOODEN_SWORD), EnchantmentLevel.copiedEnchantments),
-			new ForbiddenItem(Material.IRON_SWORD, new ItemStack(Material.IRON_SWORD), EnchantmentLevel.nerfedEnchantments)
+			new ForbiddenItem(Material.IRON_SWORD, new ItemStack(Material.IRON_SWORD), EnchantmentLevel.nerfedEnchantments),
+			new ForbiddenItem(Material.IRON_BOOTS, new ItemStack(Material.IRON_BOOTS), EnchantmentLevel.nerfedEnchantments),
+			new ForbiddenItem(Material.IRON_LEGGINGS, new ItemStack(Material.IRON_LEGGINGS), EnchantmentLevel.nerfedEnchantments),
+			new ForbiddenItem(Material.IRON_CHESTPLATE, new ItemStack(Material.IRON_CHESTPLATE), EnchantmentLevel.nerfedEnchantments),
+			new ForbiddenItem(Material.IRON_HELMET, new ItemStack(Material.IRON_HELMET), EnchantmentLevel.nerfedEnchantments)
 	);
 
 	public NaturalDiamondDisabler() {	
@@ -95,7 +99,7 @@ public class NaturalDiamondDisabler implements Listener {
 							substitute.addEnchantments(enchantments);
 							break;
 						case nerfedEnchantments:
-							
+							substitute.addEnchantments(ForbiddenItem.nerfEnchantments(enchantments));
 							break;
 						default:
 							break;
