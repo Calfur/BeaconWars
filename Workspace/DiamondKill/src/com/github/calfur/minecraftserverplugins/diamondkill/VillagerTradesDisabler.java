@@ -22,12 +22,13 @@ public class VillagerTradesDisabler implements Listener {
 			case DIAMOND_PICKAXE:
 			case DIAMOND_SHOVEL:
 			case DIAMOND_SWORD:
-				event.getRecipe().getResult().setType(Material.LIGHT_BLUE_DYE);
-//				event.setCancelled(true);
+//				event.getRecipe().getResult().setType(Material.LIGHT_BLUE_DYE);
+				event.setCancelled(true);
 				Bukkit.broadcastMessage("Cancelled Trade");
 				break;
 			case IRON_SWORD:
-				setMaxEntchantmentLevel(event.getRecipe().getResult().getEnchantments(),1);
+				event.getRecipe().getResult().getEnchantments().replaceAll(null);
+//				setMaxEntchantmentLevel(,1);
 				Bukkit.broadcastMessage("IRON_SWORD");
 				break;
 			case BOW:
