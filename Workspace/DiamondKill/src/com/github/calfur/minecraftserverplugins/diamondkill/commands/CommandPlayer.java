@@ -1,6 +1,11 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
 import org.bukkit.entity.Player;
+
+import com.github.calfur.minecraftserverplugins.diamondkill.JsonPlayer;
+import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.PlayerConfig;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

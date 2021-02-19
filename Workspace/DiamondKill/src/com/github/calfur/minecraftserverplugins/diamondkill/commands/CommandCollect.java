@@ -1,4 +1,4 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
