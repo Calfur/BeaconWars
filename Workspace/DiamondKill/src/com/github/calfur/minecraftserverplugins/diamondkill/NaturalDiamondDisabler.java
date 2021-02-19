@@ -20,17 +20,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.ForbiddenItem.EnchantmentLevel;
+
 public class NaturalDiamondDisabler implements Listener {
 	
 	private Color diamondColor = Color.fromRGB(124, 255, 243); //8191987 / #7cfff3
 	private List<ForbiddenItem> forbiddenLoot = Arrays.asList(
 			new ForbiddenItem(Material.DIAMOND, new ItemStack(Material.LIGHT_BLUE_DYE)), 
-			new ForbiddenItem(Material.DIAMOND_BOOTS, colorizeLeatherArmor(new ItemStack(Material.LEATHER_BOOTS), diamondColor)),
-			new ForbiddenItem(Material.DIAMOND_LEGGINGS, colorizeLeatherArmor(new ItemStack(Material.LEATHER_LEGGINGS), diamondColor)),
-			new ForbiddenItem(Material.DIAMOND_CHESTPLATE, colorizeLeatherArmor(new ItemStack(Material.LEATHER_CHESTPLATE), diamondColor)),
-			new ForbiddenItem(Material.DIAMOND_HELMET, colorizeLeatherArmor(new ItemStack(Material.LEATHER_HELMET), diamondColor)),
-			new ForbiddenItem(Material.DIAMOND_SWORD, new ItemStack(Material.WOODEN_SWORD)),
-			new ForbiddenItem(Material.IRON_SWORD, new ItemStack(Material.IRON_SWORD))
+			new ForbiddenItem(Material.DIAMOND_BOOTS, colorizeLeatherArmor(new ItemStack(Material.LEATHER_BOOTS), diamondColor), EnchantmentLevel.copiedEnchantments),
+			new ForbiddenItem(Material.DIAMOND_LEGGINGS, colorizeLeatherArmor(new ItemStack(Material.LEATHER_LEGGINGS), diamondColor), EnchantmentLevel.copiedEnchantments),
+			new ForbiddenItem(Material.DIAMOND_CHESTPLATE, colorizeLeatherArmor(new ItemStack(Material.LEATHER_CHESTPLATE), diamondColor), EnchantmentLevel.copiedEnchantments),
+			new ForbiddenItem(Material.DIAMOND_HELMET, colorizeLeatherArmor(new ItemStack(Material.LEATHER_HELMET), diamondColor), EnchantmentLevel.copiedEnchantments),
+			new ForbiddenItem(Material.DIAMOND_SWORD, new ItemStack(Material.WOODEN_SWORD), EnchantmentLevel.copiedEnchantments),
+			new ForbiddenItem(Material.IRON_SWORD, new ItemStack(Material.IRON_SWORD), EnchantmentLevel.nerfedEnchantments)
 	);
 
 	public NaturalDiamondDisabler() {	
@@ -87,9 +89,14 @@ public class NaturalDiamondDisabler implements Listener {
 			for(ForbiddenItem forbiddenItem : forbiddenLoot) {
 				if(itemStack.getType() == forbiddenItem.getItem()) {
 					ItemStack substitute = forbiddenItem.getSubstitute();
-					if(forbiddenItem.isCopyEnchantments()) {						
-						Map<Enchantment, Integer> enchantments = itemStack.getEnchantments();
-						substitute.addEnchantments(enchantments);
+					Map<Enchantment, Integer> enchantments = itemStack.getEnchantments();
+					switch(forbiddenItem.getEnchantmentLevel()) {
+						case copiedEnchantments:
+							substitute.addEnchantments(enchantments);
+							break;
+						case nerfedEnchantments:
+							
+							break;
 					}
 					itemsToRemove.add(itemStack);
 					itemsToAdd.add(substitute);
