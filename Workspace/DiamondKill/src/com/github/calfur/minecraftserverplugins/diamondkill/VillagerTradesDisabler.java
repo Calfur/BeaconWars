@@ -22,10 +22,13 @@ public class VillagerTradesDisabler implements Listener {
 			case DIAMOND_SHOVEL:
 			case DIAMOND_SWORD:
 				event.setCancelled(true);
+				Bukkit.broadcastMessage("Cancelled Trade");
 			case IRON_SWORD:
 				setMaxEntchantmentLevel(event.getRecipe().getResult().getEnchantments(),1);
+				Bukkit.broadcastMessage("IRON_SWORD");
 			case BOW:
 				setMaxEntchantmentLevel(event.getRecipe().getResult().getEnchantments(),1);
+				Bukkit.broadcastMessage("BOW");
 		default:
 			break;
 		}
@@ -33,7 +36,9 @@ public class VillagerTradesDisabler implements Listener {
 	}
 	
 	private void setMaxEntchantmentLevel(Map<Enchantment,Integer> enchantments, int maxValue) {
+		Bukkit.broadcastMessage("1");
 		for (Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
+			Bukkit.broadcastMessage("Enchntmen Level:" + enchantment.getValue());
 			if (enchantment.getValue() > maxValue) {
 				enchantment.setValue(maxValue);
 				Bukkit.broadcastMessage("Nerfed Enchantment");
