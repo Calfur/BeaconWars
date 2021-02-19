@@ -8,6 +8,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantRecipe;
+
 
 public class VillagerTradesDisabler implements Listener {
 	@EventHandler
@@ -27,7 +30,13 @@ public class VillagerTradesDisabler implements Listener {
 				Bukkit.broadcastMessage("Cancelled Trade");
 				break;
 			case IRON_SWORD:
-				event.getRecipe().getResult().getEnchantments().replaceAll(null);
+				ItemStack itemStack = new ItemStack(Material.DIAMOND, 2);
+				MerchantRecipe merchantRecipe = new MerchantRecipe(itemStack, 10);
+				event.setRecipe(merchantRecipe);
+//				for (Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
+//					event.getRecipe().getResult().getEnchantments().put(enchantment.getKey(),1);
+//					Bukkit.broadcastMessage("Replaced");
+//				}
 //				setMaxEntchantmentLevel(,1);
 				Bukkit.broadcastMessage("IRON_SWORD");
 				break;
