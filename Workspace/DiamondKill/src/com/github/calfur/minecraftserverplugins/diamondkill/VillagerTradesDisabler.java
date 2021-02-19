@@ -3,6 +3,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +22,8 @@ public class VillagerTradesDisabler implements Listener {
 			case DIAMOND_PICKAXE:
 			case DIAMOND_SHOVEL:
 			case DIAMOND_SWORD:
-				event.setCancelled(true);
+				event.getRecipe().getResult().setType(Material.LIGHT_BLUE_DYE);
+//				event.setCancelled(true);
 				Bukkit.broadcastMessage("Cancelled Trade");
 				break;
 			case IRON_SWORD:
@@ -40,12 +42,10 @@ public class VillagerTradesDisabler implements Listener {
 	
 	private void setMaxEntchantmentLevel(Map<Enchantment,Integer> enchantments, int maxValue) {
 		Bukkit.broadcastMessage("" + maxValue);
-		Map.Entry<Enchantment,Integer> editEnchantment;
 		for (Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
 			Bukkit.broadcastMessage("Enchntmen Level:" + enchantment.getValue());
 			if (enchantment.getValue() > maxValue) {
-				editEnchantment = enchantment;
-				editEnchantment.setValue(maxValue);
+				enchantment.setValue(maxValue);
 				Bukkit.broadcastMessage("Nerfed Enchantment");
 			}
 		}
