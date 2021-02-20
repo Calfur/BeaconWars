@@ -37,8 +37,12 @@ public class PlayerJson implements ConfigurationSerializable {
 		data.put("collectableDiamonds", this.collectableDiamonds);
 		return data;
 	}
-
+	
 	public static PlayerJson deserialize(Map<String, Object> args) {
-		return new PlayerJson(NumberConversions.toInt(args.get("team")), (String) args.get("discordName"), NumberConversions.toInt(args.get("collectableDiamonds")));
+		return new PlayerJson(
+				NumberConversions.toInt(args.get("team")), 
+				(String) args.get("discordName"), 
+				NumberConversions.toInt(args.get("collectableDiamonds"))
+			);
 	}
 }

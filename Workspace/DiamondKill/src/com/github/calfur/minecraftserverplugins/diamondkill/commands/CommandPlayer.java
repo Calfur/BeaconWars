@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerConfig;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 
 public class CommandPlayer implements CommandExecutor {
 	
-	private PlayerConfig playerConfig = Main.getInstance().getPlayerConfig();
+	private PlayerDbConnection playerDbConnection = Main.getInstance().playerDbConnection();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -60,15 +60,15 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		String name = args[1];
-		if(!playerConfig.existsPlayer(name)) {
+		if(!playerDbConnection.existsPlayer(name)) {
 			executor.sendMessage(ChatColor.RED + "Dieser Spieler ist nicht registriert");
 			return false;
 		}
-		PlayerJson jsonPlayer = playerConfig.getPlayer(name);
+		PlayerJson playerJson = playerDbConnection.getPlayer(name);
 		executor.sendMessage(ChatColor.AQUA + "Name: " + name); 
-		executor.sendMessage(ChatColor.AQUA + "Team: " + jsonPlayer.getTeam());
-		executor.sendMessage(ChatColor.AQUA + "Discord Name: " + jsonPlayer.getDiscordName());
-		executor.sendMessage(ChatColor.AQUA + "Nicht eingesammelte Diamanten: " + jsonPlayer.getCollectableDiamonds());
+		executor.sendMessage(ChatColor.AQUA + "Team: " + playerJson.getTeam());
+		executor.sendMessage(ChatColor.AQUA + "Discord Name: " + playerJson.getDiscordName());
+		executor.sendMessage(ChatColor.AQUA + "Nicht eingesammelte Diamanten: " + playerJson.getCollectableDiamonds());
 		return true;
 	}
 	
@@ -78,11 +78,11 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		String name = args[1];
-		if(!playerConfig.existsPlayer(name)) {
+		if(!playerDbConnection.existsPlayer(name)) {
 			executor.sendMessage(ChatColor.RED + "Dieser Spieler ist nicht registriert");
 			return false;
 		}
-		playerConfig.removePlayer(name);
+		playerDbConnection.removePlayer(name);
 		executor.sendMessage(ChatColor.GREEN + name + " gelöscht.");
 		return true;
 	}
@@ -103,11 +103,11 @@ public class CommandPlayer implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Der Team Parameter muss dem Typ Int entsprechen");
 			return false;
 		}
-		if(!playerConfig.existsPlayer(name)) {
+		if(!playerDbConnection.existsPlayer(name)) {
 			executor.sendMessage(ChatColor.RED + "Dieser Spieler ist nicht vorhanden");
 			return false;
 		}
-		playerConfig.addPlayer(name, new PlayerJson(team, discordName, 0));
+		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
 		executor.sendMessage(ChatColor.GREEN + name + " editiert.");
 		return true;
 	}
@@ -128,11 +128,11 @@ public class CommandPlayer implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Der Team Parameter muss dem Typ Int entsprechen");
 			return false;
 		}
-		if(playerConfig.existsPlayer(name)) {
+		if(playerDbConnection.existsPlayer(name)) {
 			executor.sendMessage(ChatColor.RED + "Dieser Spieler wurde bereits registriert");	
 			return false;
 		}
-		playerConfig.addPlayer(name, new PlayerJson(team, discordName, 0));
+		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
 		executor.sendMessage(ChatColor.GREEN + name + " registriert.");
 		return true;
 	}
