@@ -2,9 +2,9 @@ package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
 import org.bukkit.entity.Player;
 
-import com.github.calfur.minecraftserverplugins.diamondkill.JsonPlayer;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
-import com.github.calfur.minecraftserverplugins.diamondkill.PlayerConfig;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerConfig;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -37,7 +37,7 @@ public class CommandPlayer implements CommandExecutor {
 							}
 							switch(subCommand) {
 								case "info":
-									JsonPlayer jsonPlayer = playerConfig.getPlayer(name);
+									PlayerJson jsonPlayer = playerConfig.getPlayer(name);
 									player.sendMessage(ChatColor.AQUA + "Name: " + name); 
 									player.sendMessage(ChatColor.AQUA + "Team: " + jsonPlayer.getTeam());
 									player.sendMessage(ChatColor.AQUA + "Discord Name: " + jsonPlayer.getDiscordName());
@@ -79,7 +79,7 @@ public class CommandPlayer implements CommandExecutor {
 									player.sendMessage(ChatColor.RED + "Unerwarteter Fehler");
 									return false;
 							}
-							playerConfig.addPlayer(name, new JsonPlayer(team, discordName));
+							playerConfig.addPlayer(name, new PlayerJson(team, discordName, 0));
 							playerConfig.saveConfig().loadConfig();
 							return true;
 						default:

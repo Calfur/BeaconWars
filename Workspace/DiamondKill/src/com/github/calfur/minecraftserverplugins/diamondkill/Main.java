@@ -2,6 +2,8 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerConfig;
+
 public class Main extends JavaPlugin {
 	private static Main instance;
 	private final PlayerConfig playerConfig = new PlayerConfig();

@@ -1,4 +1,4 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.database;
 
 import java.io.File;
 import java.io.FileReader;
@@ -14,7 +14,7 @@ public class PlayerConfig {
 	private final File folder = new File("plugins//DiamondKillDatabase");
 	private final File file = new File(folder + "//player.json");
 	
-	private HashMap<String, JsonPlayer> player = new HashMap<>();
+	private HashMap<String, PlayerJson> player = new HashMap<>();
 	
 	private PlayerData data = new PlayerData();
 	
@@ -54,14 +54,15 @@ public class PlayerConfig {
 		return this;
 	}
 	
-	public PlayerConfig addPlayer(String key, JsonPlayer value) {
+	public PlayerConfig addPlayer(String key, PlayerJson value) {
 		data.getPlayer().put(key.toLowerCase(), value.serialize());
 		gson.toJson(data, writer());
 		return this;
 	}	
 	
 	public PlayerConfig removePlayer(String key) {
-		data.getPlayer().remove(key.toLowerCase());
+		key = key.toLowerCase();
+		data.getPlayer().remove(key);
 		player.remove(key);
 		gson.toJson(data, writer());
 		return this;
@@ -73,7 +74,7 @@ public class PlayerConfig {
 			if(file.exists()) {
 				if(read() != null) {
 					read().getPlayer().entrySet().forEach(entry -> {						
-						player.put(entry.getKey(), JsonPlayer.deserialize((Map<String, Object>) entry.getValue()));
+						player.put(entry.getKey(), PlayerJson.deserialize((Map<String, Object>) entry.getValue()));
 						data.getPlayer().put(entry.getKey(), entry.getValue());
 					});
 				}
@@ -81,7 +82,7 @@ public class PlayerConfig {
 				createFile().saveConfig().loadConfig();
 			}
 		}else {
-			createFolder().saveConfig().loadConfig();
+			createFolder().loadConfig();
 		}
 	}
 	
@@ -106,7 +107,7 @@ public class PlayerConfig {
 		return reader;
 	}
 		
-	public JsonPlayer getPlayer(String key) {
+	public PlayerJson getPlayer(String key) {
 		return player.get(key.toLowerCase());
 	}
 }
