@@ -9,7 +9,6 @@ commands:
   player:
     description: Interagiert mit der Spielerdatenbank
     usage: /<command> [add | edit | info | delete] Spielername Teamnummer Discordname
-    permission: admin
   team:
     description: Interagiert mit der Teamdatenbank
     usage: /<command> [add | edit | info]

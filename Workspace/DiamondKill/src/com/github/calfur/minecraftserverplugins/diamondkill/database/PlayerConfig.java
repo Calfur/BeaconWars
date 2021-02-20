@@ -53,9 +53,11 @@ public class PlayerConfig {
 		}
 		return this;
 	}
-	
+
 	public PlayerConfig addPlayer(String key, PlayerJson value) {
-		data.getPlayer().put(key.toLowerCase(), value.serialize());
+		key = key.toLowerCase();
+		data.getPlayer().put(key, value.serialize());
+		player.put(key, value);
 		gson.toJson(data, writer());
 		return this;
 	}	
