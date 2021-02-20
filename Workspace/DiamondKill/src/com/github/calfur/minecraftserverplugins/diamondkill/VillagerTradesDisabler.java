@@ -1,6 +1,5 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
