@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Recipe;
 
 public class CraftingRecipeDisabler {
-	private static Material[] disabledRecipes = { Material.ANVIL, Material.BEACON, Material.FIREWORK_ROCKET };
+	private static Material[] disabledRecipes = { Material.ANVIL, Material.BEACON, Material.FIREWORK_ROCKET, Material.NETHERITE_BLOCK, Material.NETHERITE_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_BOOTS, Material.NETHERITE_CHESTPLATE, Material.NETHERITE_LEGGINGS, Material.NETHERITE_HELMET};
 	public static void removeDisabledCraftingRecipes() {
 		for(Material disabledRecipe : disabledRecipes){
 			removeCraftingRecipe(disabledRecipe);

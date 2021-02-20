@@ -11,5 +11,6 @@ public class FeatureDisabler {
 		plugin.getServer().getPluginManager().registerEvents(new NaturalDiamondDisabler(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new AnvilDropDisabler(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new VillagerTradesDisabler(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new ItemDropsDisabler(), plugin);
 	}
 }
