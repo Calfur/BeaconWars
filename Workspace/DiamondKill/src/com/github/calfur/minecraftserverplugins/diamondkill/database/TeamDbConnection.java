@@ -3,6 +3,8 @@ package com.github.calfur.minecraftserverplugins.diamondkill.database;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
+
 public class TeamDbConnection extends DbConnection<TeamData> {
 
 	private HashMap<String, TeamJson> teams = new HashMap<>();
@@ -19,6 +21,7 @@ public class TeamDbConnection extends DbConnection<TeamData> {
 					read().getData().entrySet().forEach(entry -> {						
 						teams.put(entry.getKey(), TeamJson.deserialize((Map<String, Object>) entry.getValue()));
 						data.getData().put(entry.getKey(), entry.getValue());
+						Bukkit.broadcastMessage("Key reloaded: " + entry.getKey());
 					});
 				}
 			}else {

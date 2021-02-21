@@ -15,8 +15,9 @@ public class Main extends JavaPlugin {
 		instance = this;
 		new FeatureDisabler(); 
 		new CommandRegistrator();
-		
-		playerDbConnection().loadConfig();
+
+		playerDbConnection.loadConfig();
+		teamDbConnection.loadConfig();
 		scoreboardLoader = new ScoreboardLoader();
 		scoreboardLoader.setTopKiller(new TopKiller("Calfur", 52));
 	}

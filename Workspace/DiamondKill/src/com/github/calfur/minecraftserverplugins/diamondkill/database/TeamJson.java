@@ -27,24 +27,24 @@ public class TeamJson implements ConfigurationSerializable {
 		this.beaconPosition = beaconPosition;
 	}
 	
-	public TeamJson(ChatColor color, Location beaconPosition) {
+	public TeamJson(ChatColor color/*, Location beaconPosition*/) {
 		super();
 		this.color = color;
-		this.beaconPosition = beaconPosition;
+		/*this.beaconPosition = beaconPosition;*/
 	}
 
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("color", this.color);
-		data.put("collectableDiamonds", this.beaconPosition);
+		//data.put("collectableDiamonds", this.beaconPosition);
 		return data;
 	}
 	
 	public static TeamJson deserialize(Map<String, Object> args) {
 		return new TeamJson(
-				(ChatColor) args.get("team"),
-				(Location) args.get("beaconPosition")
+				ChatColor.valueOf((String) args.get("color"))/*,
+				(Location) args.get("beaconPosition")*/
 			);
 	}
 }

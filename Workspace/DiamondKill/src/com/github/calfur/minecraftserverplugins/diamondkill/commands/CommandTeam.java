@@ -1,8 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -68,13 +66,13 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		if(!teamDbConnection.existsTeam(teamNumber)) {
-			executor.sendMessage(ChatColor.RED + "Dieser Spieler ist nicht registriert");
+			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
 			return false;
 		}
 		TeamJson teamJson = teamDbConnection.getTeam(teamNumber);
 		executor.sendMessage(ChatColor.AQUA + "Name: " + teamNumber); 
-		executor.sendMessage(ChatColor.AQUA + "Color: " + teamJson.getColor().toString());
-		executor.sendMessage(ChatColor.AQUA + "Discord Name: " + teamJson.getBeaconPosition().toString());
+		executor.sendMessage(ChatColor.AQUA + "Color: " + teamJson.getColor().name());
+		//executor.sendMessage(ChatColor.AQUA + "Discord Name: " + teamJson.getBeaconPosition().toString());
 		return true;
 	}
 	
@@ -91,7 +89,7 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		if(!teamDbConnection.existsTeam(teamNumber)) {
-			executor.sendMessage(ChatColor.RED + "Dieser Spieler ist nicht registriert");
+			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
 			return false;
 		}
 		teamDbConnection.removeTeam(teamNumber);
@@ -112,10 +110,10 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		if(!teamDbConnection.existsTeam(teamNumber)) {
-			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht vorhanden");
+			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
 			return false;
 		}
-		teamDbConnection.addTeam(teamNumber, new TeamJson(ChatColor.DARK_PURPLE, new Location(Bukkit.getWorld("minecraft:overworld"), 0, 100, 0)));
+		teamDbConnection.addTeam(teamNumber, new TeamJson(ChatColor.DARK_PURPLE/*, new Location(Bukkit.getWorld("minecraft:overworld"), 0, 100, 0)*/));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " editiert.");
 		return true;
 	}
@@ -136,7 +134,7 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Dieses Team wurde bereits registriert");	
 			return false;
 		}
-		teamDbConnection.addTeam(teamNumber, new TeamJson(ChatColor.DARK_PURPLE, new Location(Bukkit.getWorld("minecraft:overworld"), 0, 100, 0)));
+		teamDbConnection.addTeam(teamNumber, new TeamJson(ChatColor.DARK_PURPLE/*, new Location(Bukkit.getWorld("minecraft:overworld"), 0, 100, 0)*/));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " registriert.");
 		return true;
 	}
