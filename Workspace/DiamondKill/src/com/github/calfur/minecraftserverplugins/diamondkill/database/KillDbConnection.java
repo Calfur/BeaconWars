@@ -2,6 +2,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill.database;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class KillDbConnection extends DbConnection<KillData> {
 
@@ -62,5 +63,16 @@ public class KillDbConnection extends DbConnection<KillData> {
 	
 	public HashMap<String, KillJson> getKills() {
 		return kills;
+	}
+
+	public int getNextId() {
+		int heighestId = 0;
+		for (Entry<String, Object> kill : data.getData().entrySet()) {
+			int id = Integer.parseInt(kill.getKey());
+			if(heighestId < id) {
+				heighestId = id;
+			}
+		}
+		return heighestId + 1;
 	}
 }

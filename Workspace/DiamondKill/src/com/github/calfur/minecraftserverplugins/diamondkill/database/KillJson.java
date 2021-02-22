@@ -11,10 +11,34 @@ public class KillJson implements ConfigurationSerializable {
 	String victim;
 	LocalDateTime dateTime;
 	
+	public String getKiller() {
+		return killer;
+	}
+
+	public void setKiller(String killer) {
+		this.killer = killer.toLowerCase();
+	}
+
+	public String getVictim() {
+		return victim;
+	}
+
+	public void setVictim(String victim) {
+		this.victim = victim.toLowerCase();
+	}
+
+	public LocalDateTime getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(LocalDateTime dateTime) {
+		this.dateTime = dateTime;
+	}
+
 	public KillJson(String killer, String victim, LocalDateTime dateTime) {
 		super();
-		this.killer = killer;
-		this.victim = victim;
+		this.killer = killer.toLowerCase();
+		this.victim = victim.toLowerCase();
 		this.dateTime = dateTime;
 	}
 
@@ -23,7 +47,7 @@ public class KillJson implements ConfigurationSerializable {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("killer", this.killer);
 		data.put("victim", this.victim);
-		data.put("dateTime", this.dateTime);
+		data.put("dateTime", this.dateTime.toString());
 		return data;
 	}
 	
@@ -31,7 +55,7 @@ public class KillJson implements ConfigurationSerializable {
 		return new KillJson(
 				(String) args.get("killer"),
 				(String) args.get("victim"),
-				(LocalDateTime) args.get("dateTime")
+				LocalDateTime.parse((CharSequence) args.get("dateTime"))
 			);
 	}
 }

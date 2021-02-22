@@ -65,7 +65,7 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
-		executor.sendMessage(ChatColor.AQUA + "" + players.size() + " Teams gefunden:");
+		executor.sendMessage(ChatColor.AQUA + "" + players.size() + " Spieler gefunden:");
 		for (Entry<String, PlayerJson> player : players.entrySet()) {
 			executor.sendMessage(player.getKey() + " " + "404 k/d");
 		}

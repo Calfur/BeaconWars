@@ -11,10 +11,10 @@ commands:
     usage: /<command> [add | edit | info | delete | list] Spielername Teamnummer Discordname
   team:
     description: Interagiert mit der Teamdatenbank
-    usage: /<command> [add | edit | info | delete | list] Id Farbe Beacon_x Beacon_y Beacon_z 
-  kill:
+    usage: /<command> [add | edit | info | delete | list] Teamnummer Farbe Beacon_x Beacon_y Beacon_z 
+  playerkill:
     description: Interagiert mit der Killdatenbank
-    usage: /<command> [add | edit | info | delete | list] Id Killer Opfer
+    usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
 permissions:
   admin:
     description: Erlaubt das benutzen von DiamondKill commands
