@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.database;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,5 +57,9 @@ public class PlayerDbConnection extends DbConnection<PlayerData>{
 	
 	public PlayerJson getPlayer(String key) {
 		return players.get(key.toLowerCase());
+	}
+	
+	public Collection<PlayerJson> getPlayers() {
+		return players.values();
 	}
 }

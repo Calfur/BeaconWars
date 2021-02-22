@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.database;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,9 +58,13 @@ public class TeamDbConnection extends DbConnection<TeamData> {
 		saveConfig();
 		return this;
 	}
-	
+
 	public TeamJson getTeam(int teamNumber) {
 		String key = Integer.toString(teamNumber);
 		return teams.get(key.toLowerCase());
+	}
+	
+	public Collection<TeamJson> getTeams() {
+		return teams.values();
 	}
 }
