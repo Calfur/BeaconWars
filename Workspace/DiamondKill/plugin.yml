@@ -8,11 +8,10 @@ commands:
     usage: /<command> Itemname Anzahl
   player:
     description: Interagiert mit der Spielerdatenbank
-    usage: /<command> [add | edit | info | delete] Spielername Teamnummer Discordname
-    permission: admin
+    usage: /<command> [add | edit | info | delete | list] Spielername Teamnummer Discordname
   team:
     description: Interagiert mit der Teamdatenbank
-    usage: /<command> [add | edit | info]
+    usage: /<command> [add | edit | info | delete | list] Farbe Beacon_x Beacon_y Beacon_z 
 permissions:
   admin:
     description: Erlaubt das benutzen von DiamondKill commands
