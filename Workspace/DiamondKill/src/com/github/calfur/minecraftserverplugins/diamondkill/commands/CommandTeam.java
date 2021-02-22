@@ -1,5 +1,8 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,7 +23,7 @@ public class CommandTeam implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) {
 			Player player = (Player)sender;						
-			if(args.length > 1) {
+			if(args.length >= 1) {
 				String subCommand = args[0].toLowerCase();
 				switch(subCommand) {
 					case "info":
@@ -46,6 +49,8 @@ public class CommandTeam implements CommandExecutor {
 							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
+					case "list":
+						return sendTeamList(player, args);
 					default:
 						player.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Command");
 						return false;
@@ -53,6 +58,19 @@ public class CommandTeam implements CommandExecutor {
 			}			
 		}
 		return false;
+	}
+
+	private boolean sendTeamList(Player executor, String[] args) {
+		if(args.length != 1) {
+			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			return false;
+		}
+		Map<String, TeamJson> teams = teamDbConnection.getTeams();
+		executor.sendMessage(ChatColor.AQUA + "" + teams.size() + " Teams gefunden:");
+		for (Entry<String, TeamJson> team : teams.entrySet()) {
+			executor.sendMessage(team.getValue().getColor() + "Team " + team.getKey());
+		}
+		return true;
 	}
 
 	private boolean sendTeamInfo(Player executor, String[] args) {

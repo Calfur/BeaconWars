@@ -6,6 +6,9 @@ import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,11 +22,13 @@ public class CommandPlayer implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) {
 			Player player = (Player)sender;						
-			if(args.length > 1) {
+			if(args.length >= 1) {
 				String subCommand = args[0].toLowerCase();
 				switch(subCommand) {
 					case "info":
 						return sendPlayerInfo(player, args);
+					case "list":
+						return sendPlayerList(player, args);
 					case "delete":
 						if(player.hasPermission("admin")) {	
 							return deletePlayer(player, args);
@@ -52,6 +57,19 @@ public class CommandPlayer implements CommandExecutor {
 			}			
 		}
 		return false;
+	}
+
+	private boolean sendPlayerList(Player executor, String[] args) {
+		if(args.length != 1) {
+			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			return false;
+		}
+		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
+		executor.sendMessage(ChatColor.AQUA + "" + players.size() + " Teams gefunden:");
+		for (Entry<String, PlayerJson> player : players.entrySet()) {
+			executor.sendMessage(player.getKey() + " " + "404 k/d");
+		}
+		return true;
 	}
 
 	private boolean sendPlayerInfo(Player executor, String[] args) {
