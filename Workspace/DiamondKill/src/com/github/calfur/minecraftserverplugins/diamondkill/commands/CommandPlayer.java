@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 
 import java.util.Map;
@@ -15,8 +16,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class CommandPlayer implements CommandExecutor {
-	
-	private PlayerDbConnection playerDbConnection = Main.getInstance().playerDbConnection();
+
+	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -65,7 +67,7 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
-		executor.sendMessage(ChatColor.AQUA + "" + players.size() + " Teams gefunden:");
+		executor.sendMessage(ChatColor.AQUA + "" + players.size() + " Spieler gefunden:");
 		for (Entry<String, PlayerJson> player : players.entrySet()) {
 			executor.sendMessage(player.getKey() + " " + "404 k/d");
 		}
@@ -84,7 +86,7 @@ public class CommandPlayer implements CommandExecutor {
 		}
 		PlayerJson playerJson = playerDbConnection.getPlayer(name);
 		executor.sendMessage(ChatColor.AQUA + "Name: " + name); 
-		executor.sendMessage(ChatColor.AQUA + "Team: " + playerJson.getTeam());
+		executor.sendMessage(ChatColor.AQUA + "Team: " + playerJson.getTeamId());
 		executor.sendMessage(ChatColor.AQUA + "Discord Name: " + playerJson.getDiscordName());
 		executor.sendMessage(ChatColor.AQUA + "Nicht eingesammelte Diamanten: " + playerJson.getCollectableDiamonds());
 		return true;
@@ -148,6 +150,10 @@ public class CommandPlayer implements CommandExecutor {
 		}
 		if(playerDbConnection.existsPlayer(name)) {
 			executor.sendMessage(ChatColor.RED + "Dieser Spieler wurde bereits registriert");	
+			return false;
+		}
+		if(!teamDbConnection.existsTeam(team)) {
+			executor.sendMessage(ChatColor.RED + "Ein Team mit der Id " + team + " existiert nicht.");	
 			return false;
 		}
 		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));

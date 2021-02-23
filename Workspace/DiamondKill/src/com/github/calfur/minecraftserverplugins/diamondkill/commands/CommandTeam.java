@@ -17,7 +17,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 
 public class CommandTeam implements CommandExecutor {
 
-	private TeamDbConnection teamDbConnection = Main.getInstance().teamDbConnection();
+	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -183,7 +183,7 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Der Teamnummer Parameter muss dem Typ Int entsprechen");
 			return false;
 		}try {
-			chatColor = ChatColor.valueOf(args[2]);
+			chatColor = ChatColor.valueOf(args[2].toUpperCase());
 		}catch(IllegalArgumentException e){
 			executor.sendMessage(ChatColor.RED + args[2] + " ist keine gültige Farbe. Siehe: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html");
 			return false;
