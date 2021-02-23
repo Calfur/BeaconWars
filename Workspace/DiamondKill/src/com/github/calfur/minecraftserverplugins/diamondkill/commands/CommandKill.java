@@ -18,8 +18,8 @@ import org.bukkit.command.CommandSender;
 
 public class CommandKill implements CommandExecutor {
 
-	private KillDbConnection killDbConnection = Main.getInstance().killDbConnection();
-	private PlayerDbConnection playerDbConnection = Main.getInstance().playerDbConnection();
+	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
+	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

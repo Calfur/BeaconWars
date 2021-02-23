@@ -17,6 +17,7 @@ public class Main extends JavaPlugin {
 		instance = this;
 		new FeatureDisabler(); 
 		new CommandRegistrator();
+		new EventRegistrator();
 
 		playerDbConnection.loadConfig();
 		teamDbConnection.loadConfig();
@@ -33,15 +34,15 @@ public class Main extends JavaPlugin {
 		return instance;
 	}
 
-	public PlayerDbConnection playerDbConnection() {
+	public PlayerDbConnection getPlayerDbConnection() {
 		return playerDbConnection;
 	}
 
-	public TeamDbConnection teamDbConnection() {
+	public TeamDbConnection getTeamDbConnection() {
 		return teamDbConnection;
 	}
 	
-	public KillDbConnection killDbConnection() {
+	public KillDbConnection getKillDbConnection() {
 		return killDbConnection;
 	}
 }

@@ -15,7 +15,7 @@ public class PlayerJson implements ConfigurationSerializable {
 		return discordName;
 	}
 
-	public int getTeam() {
+	public int getTeamId() {
 		return team;
 	}
 	
