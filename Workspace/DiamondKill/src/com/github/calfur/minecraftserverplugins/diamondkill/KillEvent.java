@@ -111,15 +111,19 @@ public class KillEvent implements Listener {
 			if(secondsBetween < 60) {
 				String killer = latestHitByPlayer.getAttacker();
 				String victim = latestHitByPlayer.getDefender();
-				PlayerJson playerJson = playerDbConnection.getPlayer(killer);
-				int test = playerJson.getTeamId();
-				TeamJson test2 = teamDbConnection.getTeam(test);
-				ChatColor teamColorKiller = test2.getColor();
+				PlayerJson killerJson = playerDbConnection.getPlayer(killer);
+				
+				int bounty = killDbConnection.getBounty(victim);
+				killerJson.addCollectableDiamonds(bounty);
+				playerDbConnection.addPlayer(killer, killerJson);
+				
+				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(latestHitByPlayer.getAttacker(), latestHitByPlayer.getDefender(), LocalDateTime.now()));
+				
+				ChatColor teamColorKiller = teamDbConnection.getTeam(killerJson.getTeamId()).getColor();
 				ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
 				killer = StringEditor.FirstLetterToUpper(killer);
 				victim = StringEditor.FirstLetterToUpper(victim);
-				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(latestHitByPlayer.getAttacker(), latestHitByPlayer.getDefender(), LocalDateTime.now()));
-				Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "X Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
+				Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "" + bounty + " Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
 			}
 		}
 	}
