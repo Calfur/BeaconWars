@@ -23,7 +23,6 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
 
 public class KillEvent implements Listener {

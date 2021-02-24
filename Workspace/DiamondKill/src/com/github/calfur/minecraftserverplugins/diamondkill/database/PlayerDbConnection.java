@@ -3,10 +3,6 @@ package com.github.calfur.minecraftserverplugins.diamondkill.database;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
-
-import net.md_5.bungee.api.ChatColor;
-
 public class PlayerDbConnection extends DbConnection<PlayerData>{
 	
 	private HashMap<String, PlayerJson> players = new HashMap<>();
