@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 
 import java.util.Map;
@@ -19,6 +20,7 @@ public class CommandPlayer implements CommandExecutor {
 
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -89,6 +91,8 @@ public class CommandPlayer implements CommandExecutor {
 		executor.sendMessage(ChatColor.AQUA + "Team: " + playerJson.getTeamId());
 		executor.sendMessage(ChatColor.AQUA + "Discord Name: " + playerJson.getDiscordName());
 		executor.sendMessage(ChatColor.AQUA + "Nicht eingesammelte Diamanten: " + playerJson.getCollectableDiamonds());
+		executor.sendMessage(ChatColor.AQUA + "K/D: " + killDbConnection.getAmountOfKills(name) + "/" + killDbConnection.getAmountOfDeaths(name));
+		executor.sendMessage(ChatColor.AQUA + "Kopfgeld: " + killDbConnection.getBounty(name));
 		return true;
 	}
 	
