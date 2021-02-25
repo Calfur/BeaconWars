@@ -45,4 +45,8 @@ public class Main extends JavaPlugin {
 	public KillDbConnection getKillDbConnection() {
 		return killDbConnection;
 	}
+	
+	public ScoreboardLoader getScoreboardLoader() {
+		return scoreboardLoader;
+	}
 }
