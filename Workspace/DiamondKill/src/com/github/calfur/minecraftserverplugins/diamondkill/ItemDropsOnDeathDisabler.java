@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemDropsDisabler implements Listener{
+public class ItemDropsOnDeathDisabler implements Listener{
 	@EventHandler
 	public void onPlayerDeathEvent(PlayerDeathEvent event) {
 //		Bukkit.broadcastMessage("PlayerDeathEvent");
