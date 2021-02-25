@@ -23,7 +23,7 @@ public class Main extends JavaPlugin {
 		teamDbConnection.loadConfig();
 		killDbConnection.loadConfig();
 		scoreboardLoader = new ScoreboardLoader();
-		scoreboardLoader.setTopKiller(new TopKiller("Calfur", 52));
+		scoreboardLoader.setTopKiller(TopKiller.getCurrentTopKiller());
 	}
 	@Override
 	public void onDisable() {

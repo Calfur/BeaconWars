@@ -119,6 +119,7 @@ public class KillEvent implements Listener {
 				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
 				
 				sendDeathMessage(killer, victim, bounty);
+				Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
 			}
 		}
 	}

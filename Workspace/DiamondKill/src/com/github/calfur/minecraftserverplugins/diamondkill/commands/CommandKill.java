@@ -3,6 +3,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.TopKiller;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
@@ -190,6 +191,7 @@ public class CommandKill implements CommandExecutor {
 		playerDbConnection.addPlayer(killer, killerJson);
 		
 		killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
+		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
 
 		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + bounty + "Diamanten Kompfgeld an " + killer + "ausgezahlt;");
 		return true;

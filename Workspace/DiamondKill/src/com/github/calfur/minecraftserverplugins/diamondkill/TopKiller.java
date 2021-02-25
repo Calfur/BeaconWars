@@ -24,6 +24,10 @@ public class TopKiller {
 		this.diamondValue = diamondValue;
 	}
 
+	public boolean areMultipleTopKiller() {
+		return multipleTopKiller;
+	}
+	
 	public TopKiller(String name, int diamondValue) {
 		this.name = name;
 		this.diamondValue = diamondValue;
@@ -38,14 +42,20 @@ public class TopKiller {
 	public static TopKiller getCurrentTopKiller() {
 		Main plugin = Main.getInstance();
 		Map<String, PlayerJson> players = plugin.getPlayerDbConnection().getPlayers();
+		if(players.size() == 0) {
+			return new TopKiller(); //multiple TopKiller
+		}
 		KillDbConnection killDbConnection = plugin.getKillDbConnection();
-		float heighestKd = 0;
+		double heighestKd = 0;
 		String playerWithHeighestBounty = "";
 		boolean equalHeighKd = false;
 		for (Entry<String, PlayerJson> player : players.entrySet()) {			
 			int amountOfKills = killDbConnection.getAmountOfKills(player.getKey());
-			int amountOfDeaths = killDbConnection.getAmountOfKills(player.getKey());
-			float kd = amountOfKills / amountOfDeaths;
+			double amountOfDeaths = killDbConnection.getAmountOfDeaths(player.getKey());
+			if(amountOfDeaths == 0) {
+				amountOfDeaths = 0.5;
+			}
+			double kd = amountOfKills / amountOfDeaths;
 			if(kd > heighestKd) {
 				heighestKd = kd;
 				playerWithHeighestBounty = player.getKey();
