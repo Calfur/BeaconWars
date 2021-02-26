@@ -1,9 +1,9 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 
 import org.bukkit.Material;
 import org.bukkit.potion.PotionType;
 
-public class DisabledPotions {
+public class DisabledPotion {
 	private Material ingerdient;
 	private PotionType potionType;
 
@@ -15,7 +15,7 @@ public class DisabledPotions {
 		return ingerdient;
 	}
 
-	public DisabledPotions(Material ingerdient, PotionType potionType) {
+	public DisabledPotion(Material ingerdient, PotionType potionType) {
 		this.ingerdient = ingerdient;
 		this.potionType = potionType;
 	}

@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.disabling.FeatureDisabler;
 
 public class Main extends JavaPlugin {
 	private static Main instance;

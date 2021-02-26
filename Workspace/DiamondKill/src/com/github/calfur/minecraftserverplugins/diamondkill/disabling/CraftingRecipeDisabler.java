@@ -1,4 +1,4 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 
 import java.util.Iterator;
 

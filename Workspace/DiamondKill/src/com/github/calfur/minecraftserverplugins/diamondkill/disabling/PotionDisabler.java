@@ -1,4 +1,4 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,10 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 public class PotionDisabler implements Listener {
-	private static DisabledPotions[] disabledPotions = {
-			new DisabledPotions(Material.FERMENTED_SPIDER_EYE, PotionType.INSTANT_HEAL),
-			new DisabledPotions(Material.FERMENTED_SPIDER_EYE, PotionType.POISON),
-			new DisabledPotions(Material.GLOWSTONE_DUST, PotionType.STRENGTH)
+	private static DisabledPotion[] disabledPotions = {
+			new DisabledPotion(Material.FERMENTED_SPIDER_EYE, PotionType.INSTANT_HEAL),
+			new DisabledPotion(Material.FERMENTED_SPIDER_EYE, PotionType.POISON),
+			new DisabledPotion(Material.GLOWSTONE_DUST, PotionType.STRENGTH)
 	};
 	
 	@EventHandler
@@ -30,7 +30,7 @@ public class PotionDisabler implements Listener {
 		List<PotionType> potionTypes = getUsedPotions(inventory);
 		for (PotionType potionType : potionTypes) {
 			Bukkit.broadcastMessage("Type: " + potionType);
-			for (DisabledPotions disabledPotion : disabledPotions) {
+			for (DisabledPotion disabledPotion : disabledPotions) {
 				if(potionType == disabledPotion.getPotionType() && ingredient == disabledPotion.getIngerdient()) {
 					event.setCancelled(true);
 					//Bukkit.broadcastMessage(ChatColor.RED + "Mindestens einer der Tränke ist nicht erlaubt zu brauen. Brauvorgang abgebrochen.");

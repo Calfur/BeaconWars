@@ -1,4 +1,6 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
+
+import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 
 public class FeatureDisabler {
 	public FeatureDisabler() {

@@ -1,4 +1,4 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.ForbiddenItem;
 import com.github.calfur.minecraftserverplugins.diamondkill.ForbiddenItem.EnchantmentLevel;
 
 public class NaturalDiamondDisabler implements Listener {
@@ -38,11 +39,6 @@ public class NaturalDiamondDisabler implements Listener {
 			new ForbiddenItem(Material.IRON_CHESTPLATE, new ItemStack(Material.IRON_CHESTPLATE), EnchantmentLevel.nerfedEnchantments),
 			new ForbiddenItem(Material.IRON_HELMET, new ItemStack(Material.IRON_HELMET), EnchantmentLevel.nerfedEnchantments)
 	);
-
-	public NaturalDiamondDisabler() {	
-
-		
-	}
 	
 	private ItemStack colorizeLeatherArmor(ItemStack itemStack, Color color) {
 		ItemMeta itemMeta = itemStack.getItemMeta();

@@ -1,4 +1,4 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
