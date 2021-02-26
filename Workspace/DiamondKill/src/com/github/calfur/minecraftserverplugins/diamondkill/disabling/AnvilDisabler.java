@@ -1,4 +1,4 @@
-package com.github.calfur.minecraftserverplugins.diamondkill;
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +11,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 
-public class AnvilDropDisabler implements Listener{
+public class AnvilDisabler implements Listener{
 	private List<Material> anvilTypes = Arrays.asList(Material.ANVIL, Material.DAMAGED_ANVIL, Material.CHIPPED_ANVIL);
 	
 	@EventHandler
@@ -24,7 +26,7 @@ public class AnvilDropDisabler implements Listener{
 		}
 	}	
 	@EventHandler
-	public void onDiamondOreExplodes(BlockExplodeEvent event) {
+	public void onAnvilExplodes(BlockExplodeEvent event) {
 		List<Block> blocks = event.blockList();
 		for(Block block : blocks){
 			if(anvilTypes.contains(block.getType())) {
@@ -35,7 +37,7 @@ public class AnvilDropDisabler implements Listener{
 		}
 	}	
 	@EventHandler
-	public void onDiamondOreExplodes(EntityExplodeEvent event) {
+	public void onAnvilExplodes(EntityExplodeEvent event) {
 		List<Block> blocks = event.blockList();
 		for(Block block : blocks){
 			if(anvilTypes.contains(block.getType())) {
@@ -43,6 +45,12 @@ public class AnvilDropDisabler implements Listener{
 				event.setYield(0);
 				return;
 			}
+		}
+	}
+	@EventHandler
+	public void onAnvilInventoryOpens(InventoryOpenEvent event) {
+		if (event.getInventory().getType() == InventoryType.ANVIL) {
+			event.setCancelled(true);
 		}
 	}
 }

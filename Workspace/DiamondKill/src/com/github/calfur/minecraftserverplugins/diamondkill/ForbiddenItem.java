@@ -64,7 +64,7 @@ public class ForbiddenItem {
 		return nerfedEnchantments;
 	}
 	
-	enum EnchantmentLevel{
+	public enum EnchantmentLevel{
 		noEnchantments,
 		nerfedEnchantments,
 		copiedEnchantments

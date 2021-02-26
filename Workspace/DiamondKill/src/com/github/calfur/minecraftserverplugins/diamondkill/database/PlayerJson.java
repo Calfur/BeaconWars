@@ -18,9 +18,17 @@ public class PlayerJson implements ConfigurationSerializable {
 	public int getTeamId() {
 		return team;
 	}
-	
+
 	public int getCollectableDiamonds() {
 		return collectableDiamonds;
+	}
+	
+	public void addCollectableDiamonds(int amount) {
+		collectableDiamonds += amount;		
+	}
+	
+	public void removeCollectableDiamonds(int amount) {
+		collectableDiamonds -= amount;		
 	}
 	
 	public PlayerJson(int team, String discordName, int collectableDiamonds) {

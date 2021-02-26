@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.disabling.FeatureDisabler;
 
 public class Main extends JavaPlugin {
 	private static Main instance;
@@ -23,7 +24,7 @@ public class Main extends JavaPlugin {
 		teamDbConnection.loadConfig();
 		killDbConnection.loadConfig();
 		scoreboardLoader = new ScoreboardLoader();
-		scoreboardLoader.setTopKiller(new TopKiller("Calfur", 52));
+		scoreboardLoader.setTopKiller(TopKiller.getCurrentTopKiller());
 	}
 	@Override
 	public void onDisable() {
@@ -44,5 +45,9 @@ public class Main extends JavaPlugin {
 	
 	public KillDbConnection getKillDbConnection() {
 		return killDbConnection;
+	}
+	
+	public ScoreboardLoader getScoreboardLoader() {
+		return scoreboardLoader;
 	}
 }

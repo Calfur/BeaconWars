@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 
 import java.util.Map;
@@ -19,41 +20,42 @@ public class CommandPlayer implements CommandExecutor {
 
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) {
-			Player player = (Player)sender;						
+			Player executor = (Player)sender;						
 			if(args.length >= 1) {
 				String subCommand = args[0].toLowerCase();
 				switch(subCommand) {
 					case "info":
-						return sendPlayerInfo(player, args);
+						return sendPlayerInfo(executor, args);
 					case "list":
-						return sendPlayerList(player, args);
+						return sendPlayerList(executor, args);
 					case "delete":
-						if(player.hasPermission("admin")) {	
-							return deletePlayer(player, args);
+						if(executor.hasPermission("admin")) {	
+							return deletePlayer(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					case "add":
-						if(player.hasPermission("admin")) {	
-							return addPlayer(player, args);
+						if(executor.hasPermission("admin")) {	
+							return addPlayer(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					case "edit":
-						if(player.hasPermission("admin")) {	
-							return editPlayer(player, args);
+						if(executor.hasPermission("admin")) {	
+							return editPlayer(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					default:
-						player.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Command");
+						executor.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Command");
 						return false;
 				}
 			}			
@@ -86,9 +88,11 @@ public class CommandPlayer implements CommandExecutor {
 		}
 		PlayerJson playerJson = playerDbConnection.getPlayer(name);
 		executor.sendMessage(ChatColor.AQUA + "Name: " + name); 
-		executor.sendMessage(ChatColor.AQUA + "Team: " + playerJson.getTeamId());
+		executor.sendMessage((ChatColor.AQUA + "Team: ") + (teamDbConnection.getTeam(playerJson.getTeamId()).getColor() + "" + playerJson.getTeamId()));
 		executor.sendMessage(ChatColor.AQUA + "Discord Name: " + playerJson.getDiscordName());
 		executor.sendMessage(ChatColor.AQUA + "Nicht eingesammelte Diamanten: " + playerJson.getCollectableDiamonds());
+		executor.sendMessage(ChatColor.AQUA + "K/D: " + killDbConnection.getAmountOfKills(name) + "/" + killDbConnection.getAmountOfDeaths(name));
+		executor.sendMessage(ChatColor.AQUA + "Kopfgeld: " + killDbConnection.getBounty(name));
 		return true;
 	}
 	

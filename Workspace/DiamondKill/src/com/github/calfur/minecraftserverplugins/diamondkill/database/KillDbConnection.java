@@ -75,4 +75,41 @@ public class KillDbConnection extends DbConnection<KillData> {
 		}
 		return heighestId + 1;
 	}
+
+	public int getAmountOfKills(String killer) {
+		killer = killer.toLowerCase();
+		int result = 0;
+		for (Entry<String, KillJson> kill : kills.entrySet()) {
+			String currentKiller = kill.getValue().getKiller();
+			if(currentKiller.equals(killer)) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
+	public int getAmountOfDeaths(String victim) {
+		victim = victim.toLowerCase();
+		int result = 0;
+		for (Entry<String, KillJson> kill : kills.entrySet()) {
+			String currentVictim = kill.getValue().getVictim();
+			if(currentVictim.equals(victim)) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
+	public int getBounty(String player) {
+		int kills = getAmountOfKills(player);
+		int deaths = getAmountOfDeaths(player);
+		if(deaths < 1) {
+			deaths = 1;
+		}
+		int result = Math.round(kills/deaths);
+		if(result < 1) {
+			result = 1;
+		}
+		return result;
+	}
 }

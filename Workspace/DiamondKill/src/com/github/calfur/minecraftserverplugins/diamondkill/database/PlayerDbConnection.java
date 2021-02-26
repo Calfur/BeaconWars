@@ -61,4 +61,5 @@ public class PlayerDbConnection extends DbConnection<PlayerData>{
 	public HashMap<String, PlayerJson> getPlayers() {
 		return players;
 	}
+
 }

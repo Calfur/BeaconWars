@@ -3,9 +3,11 @@ package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.TopKiller;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -181,7 +183,17 @@ public class CommandKill implements CommandExecutor {
 		int killId = killDbConnection.getNextId();
 		
 		killDbConnection.addKill(killId, new KillJson(killer, victim, dateTime));
-		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert.");
+
+		PlayerJson killerJson = playerDbConnection.getPlayer(killer);
+		
+		int bounty = killDbConnection.getBounty(victim);
+		killerJson.addCollectableDiamonds(bounty);
+		playerDbConnection.addPlayer(killer, killerJson);
+		
+		killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
+		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
+
+		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + bounty + "Diamanten Kompfgeld an " + killer + "ausgezahlt;");
 		return true;
 	}
 }
