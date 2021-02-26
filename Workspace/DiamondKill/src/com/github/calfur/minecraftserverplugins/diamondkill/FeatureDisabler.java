@@ -12,5 +12,6 @@ public class FeatureDisabler {
 		plugin.getServer().getPluginManager().registerEvents(new AnvilDisabler(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new VillagerTradesDisabler(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new ItemDropsOnDeathDisabler(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new PotionDisabler(), plugin);
 	}
 }

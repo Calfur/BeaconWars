@@ -25,10 +25,9 @@ public class CraftingRecipeDisabler {
 	}
 	private static void removeCraftingRecipe(Material material) {
 		Iterator<Recipe> it = Bukkit.getServer().recipeIterator();
-        Recipe recipe;
         while(it.hasNext())
         {
-            recipe = it.next();
+            Recipe recipe = it.next();
             if (recipe != null && recipe.getResult().getType() == material)
             {
                 it.remove();
