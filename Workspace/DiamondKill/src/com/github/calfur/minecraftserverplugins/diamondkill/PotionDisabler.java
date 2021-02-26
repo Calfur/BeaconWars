@@ -21,7 +21,6 @@ public class PotionDisabler implements Listener {
 			new DisabledPotions(Material.GLOWSTONE_DUST, PotionType.STRENGTH)
 	};
 	
-	
 	@EventHandler
 	public void onBrewEvent(BrewEvent event) {
 		BrewerInventory inventory = event.getContents();
@@ -55,7 +54,6 @@ public class PotionDisabler implements Listener {
 				potionTypes.add(potionType);
 			}
 		}
-		
 		return potionTypes;
 	}
 	

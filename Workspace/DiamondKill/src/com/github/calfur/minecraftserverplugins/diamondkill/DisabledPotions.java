@@ -19,5 +19,4 @@ public class DisabledPotions {
 		this.ingerdient = ingerdient;
 		this.potionType = potionType;
 	}
-
 }
