@@ -29,6 +29,7 @@ public class KillEvent implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection(); 
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection(); 
+	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	private ArrayList<LatestHitByPlayer> latestHitByPlayers = new ArrayList<LatestHitByPlayer>();
 	
@@ -115,6 +116,7 @@ public class KillEvent implements Listener {
 				int bounty = killDbConnection.getBounty(victim);
 				killerJson.addCollectableDiamonds(bounty);
 				playerDbConnection.addPlayer(killer, killerJson);
+				scoreboardLoader.ReloadScoreboardForAllOnlinePlayers();
 				
 				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
 				

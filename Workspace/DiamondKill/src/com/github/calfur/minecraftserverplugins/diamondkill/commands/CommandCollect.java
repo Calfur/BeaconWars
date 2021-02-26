@@ -10,12 +10,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 
 public class CommandCollect implements CommandExecutor {
 
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -61,6 +63,7 @@ public class CommandCollect implements CommandExecutor {
 		}
 		playerJson.removeCollectableDiamonds(amount);
 		playerDbConnection.addPlayer(executor.getName(), playerJson);
+		scoreboardLoader.ReloadScoreboardFor(executor);
 		ItemStack item = new ItemStack(material, amount);
 		inventory.addItem(item);
 		return true;

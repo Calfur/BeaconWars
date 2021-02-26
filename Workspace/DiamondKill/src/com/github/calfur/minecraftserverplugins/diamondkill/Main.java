@@ -16,6 +16,8 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+		scoreboardLoader = new ScoreboardLoader();
+		
 		new FeatureDisabler(); 
 		new CommandRegistrator();
 		new EventRegistrator();
@@ -23,7 +25,7 @@ public class Main extends JavaPlugin {
 		playerDbConnection.loadConfig();
 		teamDbConnection.loadConfig();
 		killDbConnection.loadConfig();
-		scoreboardLoader = new ScoreboardLoader();
+		
 		scoreboardLoader.setTopKiller(TopKiller.getCurrentTopKiller());
 	}
 	@Override

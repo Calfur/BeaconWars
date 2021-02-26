@@ -3,8 +3,10 @@ package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 
@@ -21,6 +23,7 @@ public class CommandPlayer implements CommandExecutor {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
+	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -71,7 +74,7 @@ public class CommandPlayer implements CommandExecutor {
 		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
 		executor.sendMessage(ChatColor.AQUA + "" + players.size() + " Spieler gefunden:");
 		for (Entry<String, PlayerJson> player : players.entrySet()) {
-			executor.sendMessage(player.getKey() + " " + "404 k/d");
+			executor.sendMessage((StringEditor.FirstLetterToUpper(player.getKey()) + " " + killDbConnection.getAmountOfKills(player.getKey()) + " Kills / " + killDbConnection.getAmountOfDeaths(player.getKey()) + " Getötet") + (ChatColor.AQUA + " " + killDbConnection.getBounty(player.getKey()) + " Dias") + (ChatColor.RESET + " Kopfgeld"));
 		}
 		return true;
 	}
@@ -107,6 +110,7 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		playerDbConnection.removePlayer(name);
+		scoreboardLoader.ReloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " gelöscht.");
 		return true;
 	}
@@ -132,6 +136,7 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
+		scoreboardLoader.ReloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " editiert.");
 		return true;
 	}
@@ -161,6 +166,7 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
+		scoreboardLoader.ReloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " registriert.");
 		return true;
 	}
