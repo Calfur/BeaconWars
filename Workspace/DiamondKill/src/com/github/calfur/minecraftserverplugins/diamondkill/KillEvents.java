@@ -29,6 +29,7 @@ public class KillEvents implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection(); 
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection(); 
+	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	private ArrayList<LatestHitByPlayer> latestHitByPlayers = new ArrayList<LatestHitByPlayer>();
@@ -49,6 +50,7 @@ public class KillEvents implements Listener {
 		if(defenderTeam != attackerTeam) {			
 			latestHitByPlayers.remove(GetLatestHitByPlayer(defenderName));
 			latestHitByPlayers.add(new LatestHitByPlayer(defenderName, attackerName));
+			teamAttackManager.registrateHit(attackerTeam, defenderTeam);
 		}
 	}
 	
@@ -70,7 +72,6 @@ public class KillEvents implements Listener {
 			Entity attacker = event.getDamager();
 			switch(attacker.getType()) {
 				case PLAYER:
-					defender.sendMessage("Hit by Player");
 					AddPlayerHit(defender, (Player)attacker);		
 					break;
 				case ARROW:

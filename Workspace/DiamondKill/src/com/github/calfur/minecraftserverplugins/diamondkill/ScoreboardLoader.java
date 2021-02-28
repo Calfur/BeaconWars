@@ -16,13 +16,24 @@ import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.String
 
 
 public class ScoreboardLoader {
+	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+
 	private Scoreboard defaultScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 	private TopKiller topKiller = new TopKiller("###", 1);
 	private ArrayList<Attack> attacks = new ArrayList<Attack>();
-	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	
 	public void setTopKiller(TopKiller topKiller) {
 		this.topKiller = topKiller;
+		ReloadScoreboardForAllOnlinePlayers();
+	}
+
+	public void addAttack(Attack attack) {
+		attacks.add(attack);		
+		ReloadScoreboardForAllOnlinePlayers();
+	}
+	
+	public void removeAttack(Attack attack) {
+		attacks.remove(attack);		
 		ReloadScoreboardForAllOnlinePlayers();
 	}
 	
@@ -122,8 +133,10 @@ public class ScoreboardLoader {
 			Attack attack = attacks.get(position);
 			Team attacker = attack.getAttacker();
 			Team defender = attack.getDefender();
-			return attacker.getColor() + "Team " + attacker.getNumber() + defender.getColor() + " -> " + defender.getColor() + "Team 2";
+			return (attacker.getColor() + "Team " + attacker.getId()) + (ChatColor.RESET + " -> ") + (defender.getColor() + "Team " + defender.getId());
 		}
 		return StringEditor.RepeatString(" ", scoreNumber);
 	}
+
+
 }

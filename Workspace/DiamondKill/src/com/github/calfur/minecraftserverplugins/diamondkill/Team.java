@@ -4,10 +4,10 @@ import org.bukkit.ChatColor;
 
 public class Team {
 	private ChatColor color; 
-	private int number;
-	public Team(ChatColor color, int number) {
+	private int id;
+	public Team(int id, ChatColor color) {
 		this.color = color;
-		this.number = number;
+		this.id = id;
 	}
 	public ChatColor getColor() {
 		return color;
@@ -15,10 +15,10 @@ public class Team {
 	public void setColor(ChatColor color) {
 		this.color = color;
 	}
-	public int getNumber() {
-		return number;
+	public int getId() {
+		return id;
 	}
 	public void setNumber(int number) {
-		this.number = number;
+		this.id = number;
 	}
 }

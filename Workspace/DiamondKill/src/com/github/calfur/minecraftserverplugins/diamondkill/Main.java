@@ -12,11 +12,13 @@ public class Main extends JavaPlugin {
 	private final PlayerDbConnection playerDbConnection = new PlayerDbConnection();
 	private final TeamDbConnection teamDbConnection = new TeamDbConnection();
 	private final KillDbConnection killDbConnection = new KillDbConnection();
+	private TeamAttackManager teamAttackManager;
 	private static ScoreboardLoader scoreboardLoader;
 	@Override
 	public void onEnable() {
 		instance = this;
 		scoreboardLoader = new ScoreboardLoader();
+		teamAttackManager = new TeamAttackManager();
 		
 		new FeatureDisabler(); 
 		new CommandRegistrator();
@@ -47,6 +49,10 @@ public class Main extends JavaPlugin {
 	
 	public KillDbConnection getKillDbConnection() {
 		return killDbConnection;
+	}
+	
+	public TeamAttackManager getTeamAttackManager() {
+		return teamAttackManager;
 	}
 	
 	public ScoreboardLoader getScoreboardLoader() {
