@@ -6,6 +6,7 @@ public class EventRegistrator {
 	}
 	private void registrateEvents() {
 		Main plugin = Main.getInstance();
-		plugin.getServer().getPluginManager().registerEvents(new KillEvent(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new KillEvents(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new PlayerJoinEvents(), plugin);
 	}
 }

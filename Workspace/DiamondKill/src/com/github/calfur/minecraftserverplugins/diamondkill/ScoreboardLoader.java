@@ -41,12 +41,7 @@ public class ScoreboardLoader {
 		LoadSideBarScoreboard(player);
 	}
 	
-	private void LoadSideBarScoreboard(Player player) {
-		/*Objective deletableObjective = defaultScoreboard.getObjective(DisplaySlot.SIDEBAR);
-		if(deletableObjective != null) {			
-			deletableObjective.unregister();
-		}*/
-		
+	private void LoadSideBarScoreboard(Player player) {		
 		Scoreboard playerScoreboard = player.getScoreboard();
 		if(playerScoreboard == defaultScoreboard) {
 			playerScoreboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
