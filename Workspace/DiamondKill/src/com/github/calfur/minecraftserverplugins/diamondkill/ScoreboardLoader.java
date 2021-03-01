@@ -48,17 +48,19 @@ public class ScoreboardLoader {
 	public void reloadScoreboardForAllOnlinePlayers() {
 		Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
 		for (Player player : onlinePlayers) {
-			loadSideBarScoreboard(player);
+			reloadSideBarScoreboard(player);
 			reloadTabPlayerName(player);
+			reloadPlayerName(player);
 		}
 	}
 	
 	public void reloadScoreboardFor(Player player) {
-		loadSideBarScoreboard(player);
+		reloadSideBarScoreboard(player);
 		reloadTabPlayerName(player);
+		reloadPlayerName(player);
 	}
 	
-	private void loadSideBarScoreboard(Player player) {		
+	private void reloadSideBarScoreboard(Player player) {		
 		Scoreboard playerScoreboard = player.getScoreboard();
 		if(playerScoreboard == defaultScoreboard) {
 			playerScoreboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
@@ -134,6 +136,13 @@ public class ScoreboardLoader {
 		
 		name = teamColor + name + " " + ChatColor.AQUA + bounty + " Dias";
 		player.setPlayerListName(name);
+		
+	}
+	
+	private void reloadPlayerName(Player player) {
+		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
+		ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
+		player.setDisplayName(teamColor + player.getName() + ChatColor.RESET);
 		
 	}
 
