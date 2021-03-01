@@ -2,6 +2,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandRegistrator;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
@@ -12,6 +13,7 @@ public class Main extends JavaPlugin {
 	private final PlayerDbConnection playerDbConnection = new PlayerDbConnection();
 	private final TeamDbConnection teamDbConnection = new TeamDbConnection();
 	private final KillDbConnection killDbConnection = new KillDbConnection();
+	private PlayerModeManager buildModeManager;
 	private TeamAttackManager teamAttackManager;
 	private static ScoreboardLoader scoreboardLoader;
 	@Override
@@ -22,6 +24,7 @@ public class Main extends JavaPlugin {
 		teamDbConnection.loadConfig();
 		killDbConnection.loadConfig();
 
+		buildModeManager = new PlayerModeManager();
 		scoreboardLoader = new ScoreboardLoader();
 		teamAttackManager = new TeamAttackManager();
 		
@@ -55,8 +58,12 @@ public class Main extends JavaPlugin {
 	public TeamAttackManager getTeamAttackManager() {
 		return teamAttackManager;
 	}
-	
+
 	public ScoreboardLoader getScoreboardLoader() {
 		return scoreboardLoader;
+	}
+	
+	public PlayerModeManager getPlayerModeManager() {
+		return buildModeManager;
 	}
 }

@@ -15,7 +15,10 @@ commands:
   playerkill:
     description: Interagiert mit der Killdatenbank
     usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
+  buildmode:
+    description: Aktiviert oder Deaktiviert den Baumodus
+    usage: /<command>
 permissions:
   admin:
-    description: Erlaubt das benutzen von DiamondKill commands
+    description: Erlaubt das benutzen von allen DiamondKill commands
     default: op

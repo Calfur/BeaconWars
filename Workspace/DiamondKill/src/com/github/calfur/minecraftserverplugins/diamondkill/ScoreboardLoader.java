@@ -73,7 +73,7 @@ public class ScoreboardLoader {
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		if(playerDbConnection.existsPlayer(player.getName())){
-			Score score11 = objective.getScore("Diamantguthaben" + ChatColor.GRAY + ":");
+			Score score11 = objective.getScore("Guthaben" + ChatColor.GRAY + ":");
 			score11.setScore(11);
 			Score score10 = objective.getScore(ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
 			score10.setScore(10);

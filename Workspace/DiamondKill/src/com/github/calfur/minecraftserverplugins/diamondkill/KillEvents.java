@@ -29,21 +29,28 @@ public class KillEvents implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection(); 
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection(); 
+	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	private ArrayList<LatestHitByPlayer> latestHitByPlayers = new ArrayList<LatestHitByPlayer>();
 	
-	private void AddPlayerHit(Player defender, Player attacker) {
+	private boolean tryAddPlayerHit(Player defender, Player attacker) {
 		String defenderName = defender.getName().toLowerCase();
 		String attackerName = attacker.getName().toLowerCase();
 		if(!playerDbConnection.existsPlayer(defenderName)) {
 			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(defender));			
-			return;
+			return false;
 		}
 		if(!playerDbConnection.existsPlayer(attackerName)) {
 			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(attacker));	
-			return;
+			return false;
+		}
+		if(!playerModeManager.isPlayerAllowedToFight(defender)) {
+			return false;
+		}
+		if(!playerModeManager.isPlayerAllowedToFight(attacker)) {
+			return false;
 		}
 		int defenderTeam = playerDbConnection.getPlayer(defenderName).getTeamId();
 		int attackerTeam = playerDbConnection.getPlayer(attackerName).getTeamId();
@@ -52,6 +59,7 @@ public class KillEvents implements Listener {
 			latestHitByPlayers.add(new LatestHitByPlayer(defenderName, attackerName));
 			teamAttackManager.registrateHit(attackerTeam, defenderTeam);
 		}
+		return true;
 	}
 	
 	private LatestHitByPlayer GetLatestHitByPlayer(String player) {
@@ -70,16 +78,18 @@ public class KillEvents implements Listener {
 		if(defendingEntity.getType() == EntityType.PLAYER) {	
 			Player defender = (Player)defendingEntity;
 			Entity attacker = event.getDamager();
+			boolean isHitAllowed = true;
+			
 			switch(attacker.getType()) {
 				case PLAYER:
-					AddPlayerHit(defender, (Player)attacker);		
+					isHitAllowed = tryAddPlayerHit(defender, (Player)attacker);		
 					break;
 				case ARROW:
 					Arrow arrow = (Arrow)attacker;
 					ProjectileSource arrowShooter = arrow.getShooter();
 					if(arrowShooter instanceof Player) {
 						Player shooter = (Player)arrowShooter;
-						AddPlayerHit(defender, shooter);					
+						isHitAllowed = tryAddPlayerHit(defender, shooter);					
 					}
 					break;
 				case SPECTRAL_ARROW:
@@ -87,7 +97,7 @@ public class KillEvents implements Listener {
 					ProjectileSource spectralArrowShooter = spectralArrow.getShooter();
 					if(spectralArrowShooter instanceof Player) {
 						Player shooter = (Player)spectralArrowShooter;
-						AddPlayerHit(defender, shooter);								
+						isHitAllowed = tryAddPlayerHit(defender, shooter);								
 					}
 					break;
 				case TRIDENT:
@@ -95,11 +105,15 @@ public class KillEvents implements Listener {
 					ProjectileSource tridentShooter = trident.getShooter();
 					if(tridentShooter instanceof Player) {
 						Player shooter = (Player)tridentShooter;		
-						AddPlayerHit(defender, shooter);						
+						isHitAllowed = tryAddPlayerHit(defender, shooter);						
 					}
 					break;
 				default:
+					isHitAllowed = true;
 					break;
+			}
+			if(!isHitAllowed) {
+				event.setCancelled(true);
 			}
 		}
 	}
