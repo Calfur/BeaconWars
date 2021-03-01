@@ -117,7 +117,7 @@ public class KillEvents implements Listener {
 				int bounty = killDbConnection.getBounty(victim);
 				killerJson.addCollectableDiamonds(bounty);
 				playerDbConnection.addPlayer(killer, killerJson);
-				scoreboardLoader.ReloadScoreboardForAllOnlinePlayers();
+				scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 				
 				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
 				

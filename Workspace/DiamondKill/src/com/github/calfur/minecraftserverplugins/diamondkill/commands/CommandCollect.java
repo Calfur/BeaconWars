@@ -63,7 +63,7 @@ public class CommandCollect implements CommandExecutor {
 		}
 		playerJson.removeCollectableDiamonds(amount);
 		playerDbConnection.addPlayer(executor.getName(), playerJson);
-		scoreboardLoader.ReloadScoreboardFor(executor);
+		scoreboardLoader.reloadScoreboardFor(executor);
 		ItemStack item = new ItemStack(material, amount);
 		inventory.addItem(item);
 		return true;

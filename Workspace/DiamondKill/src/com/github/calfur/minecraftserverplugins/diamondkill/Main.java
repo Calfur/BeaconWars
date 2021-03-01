@@ -17,16 +17,17 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+		
+		playerDbConnection.loadConfig();
+		teamDbConnection.loadConfig();
+		killDbConnection.loadConfig();
+
 		scoreboardLoader = new ScoreboardLoader();
 		teamAttackManager = new TeamAttackManager();
 		
 		new FeatureDisabler(); 
 		new CommandRegistrator();
 		new EventRegistrator();
-
-		playerDbConnection.loadConfig();
-		teamDbConnection.loadConfig();
-		killDbConnection.loadConfig();
 		
 		scoreboardLoader.setTopKiller(TopKiller.getCurrentTopKiller());
 	}

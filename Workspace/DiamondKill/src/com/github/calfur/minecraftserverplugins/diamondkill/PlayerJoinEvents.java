@@ -11,7 +11,7 @@ public class PlayerJoinEvents implements Listener{
 	@EventHandler
 	public void onPlayerJoins(PlayerJoinEvent event) {
 		Player joiner = event.getPlayer();
-		scoreboardLoader.ReloadScoreboardFor(joiner);
+		scoreboardLoader.reloadScoreboardFor(joiner);
 	}
 	
 }

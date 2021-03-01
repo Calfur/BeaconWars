@@ -11,12 +11,16 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
 
 
 public class ScoreboardLoader {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
+	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 
 	private Scoreboard defaultScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 	private TopKiller topKiller = new TopKiller("###", 1);
@@ -24,35 +28,37 @@ public class ScoreboardLoader {
 	
 	public void setTopKiller(TopKiller topKiller) {
 		this.topKiller = topKiller;
-		ReloadScoreboardForAllOnlinePlayers();
+		reloadScoreboardForAllOnlinePlayers();
 	}
 
 	public void addAttack(Attack attack) {
 		attacks.add(attack);		
-		ReloadScoreboardForAllOnlinePlayers();
+		reloadScoreboardForAllOnlinePlayers();
 	}
 	
 	public void removeAttack(Attack attack) {
 		attacks.remove(attack);		
-		ReloadScoreboardForAllOnlinePlayers();
+		reloadScoreboardForAllOnlinePlayers();
 	}
 	
 	public ScoreboardLoader() {
-		ReloadScoreboardForAllOnlinePlayers();
+		reloadScoreboardForAllOnlinePlayers();
 	}
 	
-	public void ReloadScoreboardForAllOnlinePlayers() {
+	public void reloadScoreboardForAllOnlinePlayers() {
 		Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
 		for (Player player : onlinePlayers) {
-			LoadSideBarScoreboard(player);
-		}		
+			loadSideBarScoreboard(player);
+			reloadTabPlayerName(player);
+		}
 	}
 	
-	public void ReloadScoreboardFor(Player player) {
-		LoadSideBarScoreboard(player);
+	public void reloadScoreboardFor(Player player) {
+		loadSideBarScoreboard(player);
+		reloadTabPlayerName(player);
 	}
 	
-	private void LoadSideBarScoreboard(Player player) {		
+	private void loadSideBarScoreboard(Player player) {		
 		Scoreboard playerScoreboard = player.getScoreboard();
 		if(playerScoreboard == defaultScoreboard) {
 			playerScoreboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
@@ -63,7 +69,7 @@ public class ScoreboardLoader {
 			deletableObjective.unregister();
 		}
 		
-		Objective objective = playerScoreboard.registerNewObjective("Title", "dummy", ChatColor.BOLD + "Beacon wars");
+		Objective objective = playerScoreboard.registerNewObjective("Sidebar", "dummy", ChatColor.BOLD + "Beacon wars");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		if(playerDbConnection.existsPlayer(player.getName())){
@@ -118,6 +124,17 @@ public class ScoreboardLoader {
 			score0.setScore(0);	
 		}
 				
+	}
+	
+	private void reloadTabPlayerName(Player player) {
+		String name = player.getName();
+		int teamId = playerDbConnection.getPlayer(name).getTeamId();
+		ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
+		int bounty = killDbConnection.getBounty(name);		
+		
+		name = teamColor + name + " " + ChatColor.AQUA + bounty + " Dias";
+		player.setPlayerListName(name);
+		
 	}
 
 	private String topKillerScoreText() {
