@@ -47,9 +47,11 @@ public class KillEvents implements Listener {
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(defender)) {
+			attacker.sendMessage(ChatColor.RED + "Dieser Spieler kann nicht angegriffen werden, weil er im Baumodus ist");
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(attacker)) {
+			attacker.sendMessage(ChatColor.RED + "Du kannst keine Spieler angreifen, während du im Baumodus bist");
 			return false;
 		}
 		int defenderTeam = playerDbConnection.getPlayer(defenderName).getTeamId();
