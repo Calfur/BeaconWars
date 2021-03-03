@@ -96,9 +96,9 @@ public class CommandTeam implements CommandExecutor {
 		}
 		TeamJson teamJson = teamDbConnection.getTeam(teamNumber);
 		Location beaconLocation = teamJson.getBeaconPosition();
-		executor.sendMessage(ChatColor.AQUA + "Name: " + teamNumber); 
-		executor.sendMessage(ChatColor.AQUA + "Farbe: " + teamJson.getColor().name());
-		executor.sendMessage(ChatColor.AQUA + "Beacon Position: XYZ= " + beaconLocation.getX() + " / " + beaconLocation.getY() + " / " + beaconLocation.getBlockZ());
+		executor.sendMessage(ChatColor.RESET + "Name: " + ChatColor.BOLD + "Team " + teamNumber); 
+		executor.sendMessage(ChatColor.RESET + "Farbe: " + teamJson.getColor() + teamJson.getColor().name());
+		executor.sendMessage(ChatColor.RESET + "Beacon Position: XYZ= " + beaconLocation.getBlockX() + " / " + beaconLocation.getBlockY() + " / " + beaconLocation.getBlockZ());
 		return true;
 	}
 	

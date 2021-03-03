@@ -7,11 +7,14 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinEvents implements Listener{
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
+	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 
 	@EventHandler
 	public void onPlayerJoins(PlayerJoinEvent event) {
 		Player joiner = event.getPlayer();
 		scoreboardLoader.reloadScoreboardFor(joiner);
+		
+		playerModeManager.reloadPlayerMode(joiner);
 	}
 	
 }
