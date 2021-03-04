@@ -11,9 +11,23 @@ public class PlayerMode {
 	private String player;
 	private boolean buildModeActive = false;
 	private LocalDateTime deactivatedAt;
+	private final static int secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange = 15;
+	private int secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;
 	
-	private Player getPlayer() {
+	public Player getPlayer() {
 		return Bukkit.getServer().getPlayerExact(player);
+	}
+	
+	public int getSecondsUntilBuildModeGetsDeactivated() {
+		return secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange;
+	}
+	
+	public void reduceSecondsLeftUntilBuildModeGetsDeactivated(int seconds) {
+		this.secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange -= seconds;
+	}
+	
+	public void resetSecondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange() {
+		secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;		
 	}
 	
 	public PlayerMode(String player) {
@@ -22,6 +36,7 @@ public class PlayerMode {
 
 	public void deactivateBuildMode() {
 		getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+		resetSecondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange();
 		deactivatedAt = LocalDateTime.now();
 		buildModeActive = false;
 	}
