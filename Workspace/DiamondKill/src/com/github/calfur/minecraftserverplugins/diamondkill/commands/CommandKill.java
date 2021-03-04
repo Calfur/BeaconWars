@@ -70,9 +70,9 @@ public class CommandKill implements CommandExecutor {
 			return false;
 		}
 		Map<String, KillJson> kills = killDbConnection.getKills();
-		executor.sendMessage(ChatColor.AQUA + "" + kills.size() + " Kills gefunden:");
+		executor.sendMessage(ChatColor.BOLD + "" + kills.size() + " Kills gefunden:");
 		for (Entry<String, KillJson> kill : kills.entrySet()) {
-			executor.sendMessage(ChatColor.AQUA + "Id: " + kill.getKey() + " Killer: " + kill.getValue().getKiller() + " Opfer: " + kill.getValue().getVictim());
+			executor.sendMessage(ChatColor.RESET + "Id: " + kill.getKey() + " Killer: " + kill.getValue().getKiller() + " Opfer: " + kill.getValue().getVictim());
 		}
 		return true;
 	}
@@ -95,10 +95,10 @@ public class CommandKill implements CommandExecutor {
 			return false;
 		}
 		KillJson killJson = killDbConnection.getKill(killId);
-		executor.sendMessage(ChatColor.AQUA + "Id: " + killId); 
-		executor.sendMessage(ChatColor.AQUA + "Killer: " + killJson.getKiller()); 
-		executor.sendMessage(ChatColor.AQUA + "Opfer: " + killJson.getVictim());
-		executor.sendMessage(ChatColor.AQUA + "Zeitpunkt: " + killJson.getDateTime());
+		executor.sendMessage(ChatColor.BOLD + "Id: " + killId); 
+		executor.sendMessage(ChatColor.RESET + "Killer: " + killJson.getKiller()); 
+		executor.sendMessage(ChatColor.RESET + "Opfer: " + killJson.getVictim());
+		executor.sendMessage(ChatColor.RESET + "Zeitpunkt: " + killJson.getDateTime());
 		return true;
 	}
 	
@@ -193,7 +193,7 @@ public class CommandKill implements CommandExecutor {
 		killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
 		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
 
-		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + bounty + "Diamanten Kompfgeld an " + killer + "ausgezahlt;");
+		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + bounty + " Diamanten Kompfgeld an " + killer + "ausgezahlt;");
 		return true;
 	}
 }

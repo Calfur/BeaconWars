@@ -12,12 +12,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 
 public class CommandTeam implements CommandExecutor {
 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -66,9 +68,12 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		Map<String, TeamJson> teams = teamDbConnection.getTeams();
-		executor.sendMessage(ChatColor.AQUA + "" + teams.size() + " Teams gefunden:");
+		executor.sendMessage(ChatColor.BOLD + "" + teams.size() + " Teams gefunden:");
 		for (Entry<String, TeamJson> team : teams.entrySet()) {
-			executor.sendMessage(team.getValue().getColor() + "Team " + team.getKey());
+			int x = team.getValue().getBeaconPosition().getBlockX();
+			int y = team.getValue().getBeaconPosition().getBlockY();
+			int z = team.getValue().getBeaconPosition().getBlockZ();
+			executor.sendMessage(team.getValue().getColor() + "Team " + team.getKey() + ChatColor.RESET + ": Beacon Koords: (x: " + x + " y: " + y + " z: " + z + ")");
 		}
 		return true;
 	}
@@ -91,9 +96,9 @@ public class CommandTeam implements CommandExecutor {
 		}
 		TeamJson teamJson = teamDbConnection.getTeam(teamNumber);
 		Location beaconLocation = teamJson.getBeaconPosition();
-		executor.sendMessage(ChatColor.AQUA + "Name: " + teamNumber); 
-		executor.sendMessage(ChatColor.AQUA + "Farbe: " + teamJson.getColor().name());
-		executor.sendMessage(ChatColor.AQUA + "Beacon Position: XYZ= " + beaconLocation.getX() + " / " + beaconLocation.getY() + " / " + beaconLocation.getBlockZ());
+		executor.sendMessage(ChatColor.RESET + "Name: " + ChatColor.BOLD + "Team " + teamNumber); 
+		executor.sendMessage(ChatColor.RESET + "Farbe: " + teamJson.getColor() + teamJson.getColor().name());
+		executor.sendMessage(ChatColor.RESET + "Beacon Position: XYZ= " + beaconLocation.getBlockX() + " / " + beaconLocation.getBlockY() + " / " + beaconLocation.getBlockZ());
 		return true;
 	}
 	
@@ -164,6 +169,7 @@ public class CommandTeam implements CommandExecutor {
 		}
 		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, new Location(executor.getWorld(), beaconLocationX, beaconLocationY, beaconLocationZ)));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " editiert.");
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
 	

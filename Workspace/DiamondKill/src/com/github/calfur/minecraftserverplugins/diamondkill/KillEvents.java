@@ -25,30 +25,43 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
 
-public class KillEvent implements Listener {
+public class KillEvents implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection(); 
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection(); 
+	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
+	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
+	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	private ArrayList<LatestHitByPlayer> latestHitByPlayers = new ArrayList<LatestHitByPlayer>();
 	
-	private void AddPlayerHit(Player defender, Player attacker) {
+	private boolean tryAddPlayerHit(Player defender, Player attacker) {
 		String defenderName = defender.getName().toLowerCase();
 		String attackerName = attacker.getName().toLowerCase();
 		if(!playerDbConnection.existsPlayer(defenderName)) {
 			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(defender));			
-			return;
+			return false;
 		}
 		if(!playerDbConnection.existsPlayer(attackerName)) {
 			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(attacker));	
-			return;
+			return false;
+		}
+		if(!playerModeManager.isPlayerAllowedToFight(defender)) {
+			attacker.sendMessage(ChatColor.RED + "Dieser Spieler kann nicht angegriffen werden, weil er im Baumodus ist");
+			return false;
+		}
+		if(!playerModeManager.isPlayerAllowedToFight(attacker)) {
+			attacker.sendMessage(ChatColor.RED + "Du kannst keine Spieler angreifen, während du im Baumodus bist");
+			return false;
 		}
 		int defenderTeam = playerDbConnection.getPlayer(defenderName).getTeamId();
 		int attackerTeam = playerDbConnection.getPlayer(attackerName).getTeamId();
 		if(defenderTeam != attackerTeam) {			
 			latestHitByPlayers.remove(GetLatestHitByPlayer(defenderName));
 			latestHitByPlayers.add(new LatestHitByPlayer(defenderName, attackerName));
+			teamAttackManager.registrateHit(attackerTeam, defenderTeam);
 		}
+		return true;
 	}
 	
 	private LatestHitByPlayer GetLatestHitByPlayer(String player) {
@@ -67,17 +80,18 @@ public class KillEvent implements Listener {
 		if(defendingEntity.getType() == EntityType.PLAYER) {	
 			Player defender = (Player)defendingEntity;
 			Entity attacker = event.getDamager();
+			boolean isHitAllowed = true;
+			
 			switch(attacker.getType()) {
 				case PLAYER:
-					defender.sendMessage("Hit by Player");
-					AddPlayerHit(defender, (Player)attacker);		
+					isHitAllowed = tryAddPlayerHit(defender, (Player)attacker);		
 					break;
 				case ARROW:
 					Arrow arrow = (Arrow)attacker;
 					ProjectileSource arrowShooter = arrow.getShooter();
 					if(arrowShooter instanceof Player) {
 						Player shooter = (Player)arrowShooter;
-						AddPlayerHit(defender, shooter);					
+						isHitAllowed = tryAddPlayerHit(defender, shooter);					
 					}
 					break;
 				case SPECTRAL_ARROW:
@@ -85,7 +99,7 @@ public class KillEvent implements Listener {
 					ProjectileSource spectralArrowShooter = spectralArrow.getShooter();
 					if(spectralArrowShooter instanceof Player) {
 						Player shooter = (Player)spectralArrowShooter;
-						AddPlayerHit(defender, shooter);								
+						isHitAllowed = tryAddPlayerHit(defender, shooter);								
 					}
 					break;
 				case TRIDENT:
@@ -93,11 +107,15 @@ public class KillEvent implements Listener {
 					ProjectileSource tridentShooter = trident.getShooter();
 					if(tridentShooter instanceof Player) {
 						Player shooter = (Player)tridentShooter;		
-						AddPlayerHit(defender, shooter);						
+						isHitAllowed = tryAddPlayerHit(defender, shooter);						
 					}
 					break;
 				default:
+					isHitAllowed = true;
 					break;
+			}
+			if(!isHitAllowed) {
+				event.setCancelled(true);
 			}
 		}
 	}
@@ -115,6 +133,7 @@ public class KillEvent implements Listener {
 				int bounty = killDbConnection.getBounty(victim);
 				killerJson.addCollectableDiamonds(bounty);
 				playerDbConnection.addPlayer(killer, killerJson);
+				scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 				
 				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
 				

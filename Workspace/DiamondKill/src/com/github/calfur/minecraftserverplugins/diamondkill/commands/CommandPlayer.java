@@ -3,15 +3,19 @@ package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Statistic;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +25,7 @@ public class CommandPlayer implements CommandExecutor {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
+	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -69,9 +74,9 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
-		executor.sendMessage(ChatColor.AQUA + "" + players.size() + " Spieler gefunden:");
+		executor.sendMessage(ChatColor.BOLD + "" + players.size() + " Spieler gefunden:");
 		for (Entry<String, PlayerJson> player : players.entrySet()) {
-			executor.sendMessage(player.getKey() + " " + "404 k/d");
+			executor.sendMessage((teamDbConnection.getTeam(player.getValue().getTeamId()).getColor() + StringEditor.FirstLetterToUpper(player.getKey())) + (ChatColor.RESET + " " + killDbConnection.getAmountOfKills(player.getKey()) + " Kills / " + killDbConnection.getAmountOfDeaths(player.getKey()) + " Tode (durch Gegner)") + (ChatColor.AQUA + " " + killDbConnection.getBounty(player.getKey()) + " Dias") + (ChatColor.RESET + " Kopfgeld"));
 		}
 		return true;
 	}
@@ -87,12 +92,23 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		PlayerJson playerJson = playerDbConnection.getPlayer(name);
-		executor.sendMessage(ChatColor.AQUA + "Name: " + name); 
-		executor.sendMessage((ChatColor.AQUA + "Team: ") + (teamDbConnection.getTeam(playerJson.getTeamId()).getColor() + "" + playerJson.getTeamId()));
-		executor.sendMessage(ChatColor.AQUA + "Discord Name: " + playerJson.getDiscordName());
-		executor.sendMessage(ChatColor.AQUA + "Nicht eingesammelte Diamanten: " + playerJson.getCollectableDiamonds());
-		executor.sendMessage(ChatColor.AQUA + "K/D: " + killDbConnection.getAmountOfKills(name) + "/" + killDbConnection.getAmountOfDeaths(name));
-		executor.sendMessage(ChatColor.AQUA + "Kopfgeld: " + killDbConnection.getBounty(name));
+		
+		Player player = Bukkit.getPlayerExact(name);
+		String deaths = "";
+		String playtime = "";
+		if(player != null) {			
+			deaths = "" + player.getStatistic(Statistic.DEATHS);
+			playtime = "" + player.getStatistic(Statistic.PLAY_ONE_MINUTE)/20/60/60 + "h";
+		}
+		
+		executor.sendMessage((ChatColor.RESET + "Name: ") + (ChatColor.BOLD +  StringEditor.FirstLetterToUpper(name))); 
+		executor.sendMessage((ChatColor.RESET + "Team: ") + (teamDbConnection.getTeam(playerJson.getTeamId()).getColor() + "" + playerJson.getTeamId()));
+		executor.sendMessage((ChatColor.RESET + "Discord Name: ") + (ChatColor.BOLD + playerJson.getDiscordName()));
+		executor.sendMessage((ChatColor.RESET + "Guthaben: ") + ChatColor.AQUA + playerJson.getCollectableDiamonds() + " Dias");
+		executor.sendMessage((ChatColor.RESET + "K/D (durch Gegner): " + (ChatColor.BOLD + "" + killDbConnection.getAmountOfKills(name) + "/" + killDbConnection.getAmountOfDeaths(name))));
+		executor.sendMessage((ChatColor.RESET + "Tode gesammt: ") + (ChatColor.BOLD + "" + deaths));
+		executor.sendMessage((ChatColor.RESET + "Spielzeit: ") + (ChatColor.BOLD + "" + playtime));
+		executor.sendMessage((ChatColor.RESET + "Kopfgeld:") + (ChatColor.AQUA + " " + killDbConnection.getBounty(name) + " Dias"));
 		return true;
 	}
 	
@@ -107,6 +123,7 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		playerDbConnection.removePlayer(name);
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " gelöscht.");
 		return true;
 	}
@@ -132,6 +149,7 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " editiert.");
 		return true;
 	}
@@ -161,6 +179,7 @@ public class CommandPlayer implements CommandExecutor {
 			return false;
 		}
 		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " registriert.");
 		return true;
 	}
