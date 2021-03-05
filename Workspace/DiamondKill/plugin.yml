@@ -16,6 +16,8 @@ commands:
     description: Interagiert mit der Killdatenbank
     usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
   buildmode:
+    aliases: 
+    - pengin
     description: Aktiviert oder Deaktiviert den Baumodus
     usage: /<command>
 permissions:
