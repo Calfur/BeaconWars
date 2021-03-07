@@ -21,12 +21,24 @@ public class ScoreboardLoader {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 
 	private Scoreboard defaultScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-	private TopKiller topKiller = new TopKiller("###", 1);
+	private TopKiller topKiller;
 	private ArrayList<Attack> attacks = new ArrayList<Attack>();
 	
 	public void setTopKiller(TopKiller topKiller) {
+		TopKiller previousTopKiller = this.topKiller;
+		if(previousTopKiller != null) {
+			Player player = Bukkit.getPlayer(previousTopKiller.getName());
+			if(player != null) {				
+				playerModeManager.deactivatePlayerHighlight(player);
+			}
+		}
+		Player player = Bukkit.getPlayer(topKiller.getName());
+		if(player != null && topKiller.getDiamondValue() > 2) {
+			playerModeManager.activatePlayerHighlight(player);
+		}
 		this.topKiller = topKiller;
 		reloadScoreboardForAllOnlinePlayers();
 	}
@@ -42,6 +54,7 @@ public class ScoreboardLoader {
 	}
 	
 	public ScoreboardLoader() {
+		setTopKiller(TopKiller.getCurrentTopKiller());
 		reloadScoreboardForAllOnlinePlayers();
 	}
 	
@@ -54,10 +67,16 @@ public class ScoreboardLoader {
 	}
 	
 	public void reloadScoreboardFor(Player player) {
+		if(player.getName().equalsIgnoreCase(topKiller.getName()) && topKiller.getDiamondValue() > 2) {
+			playerModeManager.activatePlayerHighlight(player);
+		}else {
+			playerModeManager.deactivatePlayerHighlight(player);
+		}
 		reloadTabList(player);
 		reloadPlayerChatName(player);
+		reloadNameAbovePlayer(player);
 	}
-	
+
 	private void reloadSideBarScoreboard() { // same for all Players
 		Objective deletableObjective = defaultScoreboard.getObjective(DisplaySlot.SIDEBAR);
 		if(deletableObjective != null) {			
@@ -95,7 +114,7 @@ public class ScoreboardLoader {
 			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
 			int bounty = killDbConnection.getBounty(name);		
 			
-			listName = teamColor + name + " " + ChatColor.AQUA + bounty + " Dias";
+			listName = teamColor + name + getActiveModes(player) + " " + ChatColor.AQUA + bounty + " Dias";
 			
 			player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
 		}else {
@@ -109,12 +128,37 @@ public class ScoreboardLoader {
 		String listName;
 		if(playerDbConnection.existsPlayer(name)) {			
 			int teamId = playerDbConnection.getPlayer(name).getTeamId();
-			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
-			listName = teamColor + name + ChatColor.RESET;
+			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();			
+			listName = teamColor + name + getActiveModes(player) + ChatColor.RESET;
 		}else {
 			listName = ChatColor.DARK_RED + "UNREGISTRIERT " + name + ChatColor.RESET;
 		}
 		player.setDisplayName(listName);		
+	}
+
+	private void reloadNameAbovePlayer(Player player) {
+		String name = player.getName();
+		if(playerDbConnection.existsPlayer(name)) {				
+			String scoreboardTeamName = name + "Team";
+			org.bukkit.scoreboard.Team team = defaultScoreboard.getTeam(scoreboardTeamName);
+			if(team == null) {			
+				team = defaultScoreboard.registerNewTeam(scoreboardTeamName);
+			}
+			int teamId = playerDbConnection.getPlayer(name).getTeamId();
+			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
+			team.setColor(teamColor);
+			team.setSuffix(getActiveModes(player));
+			
+			team.addEntry(player.getName());
+		}
+	}
+	
+	private String getActiveModes(Player player) {
+		if(playerModeManager.isPlayerInBuildMode(player)) {				
+			return ChatColor.GOLD + " [Baut]";
+		}else {
+			return "";
+		}
 	}
 
 	private String topKillerScoreText() {
@@ -134,6 +178,4 @@ public class ScoreboardLoader {
 		}
 		return StringEditor.RepeatString(" ", scoreNumber);
 	}
-
-
 }

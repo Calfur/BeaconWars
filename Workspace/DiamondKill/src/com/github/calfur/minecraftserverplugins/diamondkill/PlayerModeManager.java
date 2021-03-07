@@ -72,6 +72,13 @@ public class PlayerModeManager {
 	private void deactivateBuildMode(PlayerMode playerMode) {
 		playerMode.deactivateBuildMode();
 		playerMode.getPlayer().sendMessage(ChatColor.GREEN + "Baumodus deaktiviert");
+		Main.getInstance().getScoreboardLoader().reloadScoreboardFor(playerMode.getPlayer());
+	}
+	
+	private void activateBuildMode(PlayerMode playerMode) {
+		playerMode.activateBuildMode();
+		playerMode.getPlayer().sendMessage(ChatColor.GREEN + "Baumodus aktiviert." + ChatColor.RESET + " Deaktivieren mit /buildmode");
+		Main.getInstance().getScoreboardLoader().reloadScoreboardFor(playerMode.getPlayer());		
 	}
 
 	public boolean isPlayerAllowedToFight(Player player) {
@@ -90,14 +97,12 @@ public class PlayerModeManager {
 		if(isPlayerWithinRangeOfHisBase(player)) {			
 			if(playerMode == null) {
 				playerMode = addPlayerMode(player);
-				playerMode.activateBuildMode();
-				player.sendMessage(ChatColor.GREEN + "Baumodus aktiviert." + ChatColor.RESET + " Deaktivieren mit /buildmode");
+				activateBuildMode(playerMode);
 				return true;
 			}
-			long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getDeactivatedAt(), LocalDateTime.now())/60;
+			long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
 			if(minutesSinceDeactivated > buildModeCooldownInMinutes) {
-				playerMode.activateBuildMode();
-				player.sendMessage(ChatColor.GREEN + "Baumodus aktiviert." + ChatColor.RESET + " Deaktivieren mit /buildmode");
+				activateBuildMode(playerMode);
 				return true;
 			}else {
 				player.sendMessage(ChatColor.RED + "Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden");
@@ -122,9 +127,36 @@ public class PlayerModeManager {
 	public void reloadPlayerMode(Player player) {
 		PlayerMode playerMode = getPlayerMode(player.getName());
 		if(playerMode == null) {
-			PlayerMode.reloadPotionEffects(player);
+			PlayerMode.removeModeEffects(player);
 		}else {
-			playerMode.reloadPotionEffects();
+			playerMode.reloadEffects();
+		}
+	}
+	
+	public boolean isPlayerInBuildMode(Player player) {
+		PlayerMode playerMode = getPlayerMode(player.getName());
+		if(playerMode == null) {
+			return false;
+		}else {
+			if(playerMode.isBuildModeActive()) {
+				return true;
+			}
+			return false;
+		}
+	}
+
+	public void activatePlayerHighlight(Player player) {
+		PlayerMode playerMode = getPlayerMode(player.getName());
+		if(playerMode == null) {
+			playerMode = addPlayerMode(player);		
+		}
+		playerMode.activateHighlighted();
+	}
+	
+	public void deactivatePlayerHighlight(Player player) {
+		PlayerMode playerMode = getPlayerMode(player.getName());
+		if(playerMode != null) {
+			playerMode.deactivateHighlighted();
 		}
 	}
 }

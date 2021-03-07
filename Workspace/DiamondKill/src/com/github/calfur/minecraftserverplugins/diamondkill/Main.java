@@ -13,7 +13,7 @@ public class Main extends JavaPlugin {
 	private final PlayerDbConnection playerDbConnection = new PlayerDbConnection();
 	private final TeamDbConnection teamDbConnection = new TeamDbConnection();
 	private final KillDbConnection killDbConnection = new KillDbConnection();
-	private PlayerModeManager buildModeManager;
+	private PlayerModeManager playerModeManager;
 	private TeamAttackManager teamAttackManager;
 	private static ScoreboardLoader scoreboardLoader;
 	@Override
@@ -24,15 +24,13 @@ public class Main extends JavaPlugin {
 		teamDbConnection.loadConfig();
 		killDbConnection.loadConfig();
 
-		buildModeManager = new PlayerModeManager();
+		playerModeManager = new PlayerModeManager();
 		scoreboardLoader = new ScoreboardLoader();
 		teamAttackManager = new TeamAttackManager();
 		
 		new FeatureDisabler(); 
 		new CommandRegistrator();
 		new EventRegistrator();
-		
-		scoreboardLoader.setTopKiller(TopKiller.getCurrentTopKiller());
 	}
 	@Override
 	public void onDisable() {
@@ -64,6 +62,6 @@ public class Main extends JavaPlugin {
 	}
 	
 	public PlayerModeManager getPlayerModeManager() {
-		return buildModeManager;
+		return playerModeManager;
 	}
 }

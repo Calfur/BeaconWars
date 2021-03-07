@@ -193,7 +193,7 @@ public class CommandKill implements CommandExecutor {
 		killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
 		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
 
-		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + bounty + " Diamanten Kompfgeld an " + killer + "ausgezahlt;");
+		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + ChatColor.RESET + bounty + " Diamanten Kompfgeld an " + killer + " ausgezahlt;");
 		return true;
 	}
 }
