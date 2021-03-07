@@ -31,6 +31,8 @@ public class Main extends JavaPlugin {
 		new FeatureDisabler(); 
 		new CommandRegistrator();
 		new EventRegistrator();
+
+		BeaconBreakStrengthIncreaser.increaseBreakStrength();
 	}
 	@Override
 	public void onDisable() {
