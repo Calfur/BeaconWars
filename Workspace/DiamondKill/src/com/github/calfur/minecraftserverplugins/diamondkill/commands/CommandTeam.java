@@ -3,7 +3,6 @@ package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -217,7 +216,7 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Dieses Team wurde bereits registriert");	
 			return false;
 		}
-		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, new Location(Bukkit.getWorld("world"), beaconLocationX, beaconLocationY, beaconLocationZ)));
+		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, new Location(executor.getWorld(), beaconLocationX, beaconLocationY, beaconLocationZ)));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " registriert.");
 		return true;
 	}
