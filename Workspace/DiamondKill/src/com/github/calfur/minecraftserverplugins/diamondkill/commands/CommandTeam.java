@@ -120,6 +120,8 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
 			return false;
 		}
+		TeamJson team = teamDbConnection.getTeam(teamNumber);
+		removeLevelOneBeacon(team.getBeaconPosition());
 		teamDbConnection.removeTeam(teamNumber);
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " gelöscht.");
 		return true;
