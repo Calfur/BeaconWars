@@ -10,7 +10,6 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConne
 
 public class TeamAttackManager {
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
-	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	private static final int attackDurationSeconds = 60*3;
 	
@@ -37,7 +36,7 @@ public class TeamAttackManager {
 			ChatColor attackerColor = teamDbConnection.getTeam(attacker).getColor();
 			ChatColor defenderColor = teamDbConnection.getTeam(defender).getColor();
 			attack = new Attack(new Team(attacker, attackerColor), new Team(defender, defenderColor));
-			scoreboardLoader.addAttack(attack);
+			 Main.getInstance().getScoreboardLoader().addAttack(attack);
 		}		
 		int taskId = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new TeamAttackRemover(attack, this), attackDurationSeconds*20);
 		activeAttacks.put(taskId, attack);
@@ -57,5 +56,16 @@ public class TeamAttackManager {
 			}
 		}
 		return null;
+	}
+	
+	public boolean isTeamFighting(int teamId) {
+		for (Entry<Integer, Attack> activeAttack : activeAttacks.entrySet()) {
+			int attackerId = activeAttack.getValue().getAttacker().getId();
+			int defenderId =  activeAttack.getValue().getDefender().getId();
+			if(attackerId == teamId || defenderId == teamId) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

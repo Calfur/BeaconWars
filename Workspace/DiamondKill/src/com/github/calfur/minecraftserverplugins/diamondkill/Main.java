@@ -13,8 +13,8 @@ public class Main extends JavaPlugin {
 	private final PlayerDbConnection playerDbConnection = new PlayerDbConnection();
 	private final TeamDbConnection teamDbConnection = new TeamDbConnection();
 	private final KillDbConnection killDbConnection = new KillDbConnection();
-	private PlayerModeManager playerModeManager;
 	private TeamAttackManager teamAttackManager;
+	private PlayerModeManager playerModeManager;
 	private static ScoreboardLoader scoreboardLoader;
 	@Override
 	public void onEnable() {
@@ -24,9 +24,9 @@ public class Main extends JavaPlugin {
 		teamDbConnection.loadConfig();
 		killDbConnection.loadConfig();
 
+		teamAttackManager = new TeamAttackManager();
 		playerModeManager = new PlayerModeManager();
 		scoreboardLoader = new ScoreboardLoader();
-		teamAttackManager = new TeamAttackManager();
 		
 		new FeatureDisabler(); 
 		new CommandRegistrator();

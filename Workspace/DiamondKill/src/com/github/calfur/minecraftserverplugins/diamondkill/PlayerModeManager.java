@@ -15,6 +15,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConne
 public class PlayerModeManager {
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	
 	private HashMap<String, PlayerMode> playerModes = new HashMap<String, PlayerMode>();
 	private static final int buildModeCooldownInMinutes = 30;
@@ -94,24 +95,32 @@ public class PlayerModeManager {
 	}
 	
 	private boolean activateBuildModeIfAllowed(PlayerMode playerMode, Player player) {
-		if(isPlayerWithinRangeOfHisBase(player)) {			
-			if(playerMode == null) {
-				playerMode = addPlayerMode(player);
-				activateBuildMode(playerMode);
-				return true;
-			}
-			long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
-			if(minutesSinceDeactivated > buildModeCooldownInMinutes) {
-				activateBuildMode(playerMode);
-				return true;
-			}else {
-				player.sendMessage(ChatColor.RED + "Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden");
-				return false;
-			}
-		}else {
-			player.sendMessage(ChatColor.RED + "Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden.");
+		
+		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
+		if(teamAttackManager.isTeamFighting(teamId)) {	
+			player.sendMessage(ChatColor.RED + "Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird.");
+			return false;
 		}
-		return false;
+		
+		if(!isPlayerWithinRangeOfHisBase(player)) {	
+			player.sendMessage(ChatColor.RED + "Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden.");
+			return false;
+		}
+		
+		if(playerMode == null) {
+			playerMode = addPlayerMode(player);
+			activateBuildMode(playerMode);
+			return true;
+		}
+		
+		long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
+		if(minutesSinceDeactivated < buildModeCooldownInMinutes) {
+			player.sendMessage(ChatColor.RED + "Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden");
+			return false;
+		}
+		
+		activateBuildMode(playerMode);
+		return true;
 	}
 	
 	private boolean isPlayerWithinRangeOfHisBase(Player player) {
