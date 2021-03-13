@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.DeathBanPluginInteraction;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
 
@@ -51,6 +52,7 @@ public class BeaconFight {
 		manager.activateBeaconFightEvent();
 		sendEventStartMessage();
 		deactivateBuildMode();
+		DeathBanPluginInteraction.tryChangeBanDuration(2);
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
@@ -64,11 +66,13 @@ public class BeaconFight {
 	public void cancelBeaconFightEvent() {
 		manager.deactivateBeaconFightEvent(this);
 		sendEventCancelMessage();
+		DeathBanPluginInteraction.tryChangeBanDuration(10);
 	}
 	
 	private void stopBeaconFight() {
 		manager.deactivateBeaconFightEvent(this);
 		sendEventDeactivatedMessage();
+		DeathBanPluginInteraction.tryChangeBanDuration(10);
 	}
 
 	private void sendEventStartMessage() {

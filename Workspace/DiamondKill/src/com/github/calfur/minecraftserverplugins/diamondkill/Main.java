@@ -36,6 +36,7 @@ public class Main extends JavaPlugin {
 		new CommandRegistrator();
 		new EventRegistrator();
 
+		DeathBanPluginInteraction.tryChangeBanDuration(10);
 		//BeaconBreakStrengthIncreaser.increaseBreakStrength();
 	}
 	
