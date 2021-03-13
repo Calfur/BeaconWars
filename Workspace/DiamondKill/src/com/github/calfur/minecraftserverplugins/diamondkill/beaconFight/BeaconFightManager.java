@@ -10,9 +10,9 @@ public class BeaconFightManager {
 	private List<BeaconFight> beaconFights = new ArrayList<BeaconFight>();
 	private boolean isBeaconEventActive = false;
 	
-	public boolean tryAddBeaconFight(LocalDateTime startTime) {
+	public boolean tryAddBeaconFight(LocalDateTime startTime, long durationInMinutes) {
 		// TODO: validation
-		beaconFights.add(new BeaconFight(startTime, this));
+		beaconFights.add(new BeaconFight(startTime, durationInMinutes, this));
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
@@ -21,12 +21,11 @@ public class BeaconFightManager {
 		BeaconFight beaconFight = getOngoingBeaconFight();
 		if(beaconFight != null) {
 			beaconFight.cancelBeaconFightEvent();
-			RemoveBeaconFight(beaconFight);
 			return true;
 		}else {
 			beaconFight = getNextWaitingBeaconFight();
 			if(beaconFight != null) {
-				RemoveBeaconFight(beaconFight);
+				removeBeaconFight(beaconFight);
 				return true;
 			}else {
 				return false;
@@ -34,7 +33,7 @@ public class BeaconFightManager {
 		}
 	}
 	
-	private void RemoveBeaconFight(BeaconFight beaconFight) {
+	private void removeBeaconFight(BeaconFight beaconFight) {
 		beaconFights.remove(beaconFight);
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 	}
@@ -64,7 +63,8 @@ public class BeaconFightManager {
 		isBeaconEventActive = true;
 	}
 	
-	public void deactivateBeaconFightEvent() {
+	public void deactivateBeaconFightEvent(BeaconFight beaconFight) {
+		removeBeaconFight(beaconFight);
 		isBeaconEventActive = false;
 	}
 	

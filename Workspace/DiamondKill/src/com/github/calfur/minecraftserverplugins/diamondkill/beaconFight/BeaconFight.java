@@ -11,13 +11,14 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
 
 import net.md_5.bungee.api.ChatColor;
 
 public class BeaconFight {
 	private LocalDateTime startTime;
 	private BeaconFightManager manager;
-	private static final long durationInMinutes = 90;
+	private long durationInMinutes = 1;
 
 	public LocalDateTime getStartTime() {
 		return startTime;
@@ -27,9 +28,10 @@ public class BeaconFight {
 		return startTime.plusMinutes(durationInMinutes);
 	}
 	
-	public BeaconFight(LocalDateTime startTime, BeaconFightManager manager) {
+	public BeaconFight(LocalDateTime startTime, long durationInMinutes, BeaconFightManager manager) {
 		this.startTime = startTime;
 		this.manager = manager;
+		this.durationInMinutes = durationInMinutes;
 		
 		long ticksTillStart = ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime)*20;
 		if(ticksTillStart > 0) {
@@ -48,12 +50,25 @@ public class BeaconFight {
 		teleportAllOnlinePlayersIntoOverworld();
 		manager.activateBeaconFightEvent();
 		sendEventStartMessage();
+		deactivateBuildMode();
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
+			@Override
+			public void run() {
+				stopBeaconFight();
+			}
+		}, durationInMinutes*60*20);
+	}
+
+	public void cancelBeaconFightEvent() {
+		manager.deactivateBeaconFightEvent(this);
+		sendEventCancelMessage();
 	}
 	
-	public void cancelBeaconFightEvent() {
-		manager.deactivateBeaconFightEvent();
-		sendEventCancelMessage();
+	private void stopBeaconFight() {
+		manager.deactivateBeaconFightEvent(this);
+		sendEventDeactivatedMessage();
 	}
 
 	private void sendEventStartMessage() {
@@ -73,6 +88,15 @@ public class BeaconFight {
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");		
 	}
+
+	private void sendEventDeactivatedMessage() {
+		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+		Bukkit.broadcastMessage(" ");
+		Bukkit.broadcastMessage(ChatColor.BOLD + "Der Beaconevent wurde beendet");
+		Bukkit.broadcastMessage("Ab sofort können keine Beacons mehr geklaut werden");
+		Bukkit.broadcastMessage(" ");
+		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");		
+	}
 	
 	private void teleportAllOnlinePlayersIntoOverworld() {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
@@ -87,6 +111,14 @@ public class BeaconFight {
 					player.teleport(beaconLocation);
 				}
 			}
+		}
+	}
+	
+	private void deactivateBuildMode() {
+		PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
+		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+		for (Player player : players) {
+			playerModeManager.reloadPlayerMode(player);
 		}
 	}
 

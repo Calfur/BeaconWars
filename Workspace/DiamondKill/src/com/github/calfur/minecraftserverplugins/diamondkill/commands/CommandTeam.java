@@ -196,7 +196,8 @@ public class CommandTeam implements CommandExecutor {
 		}catch(NumberFormatException e) {
 			executor.sendMessage(ChatColor.RED + "Der Teamnummer Parameter muss dem Typ Int entsprechen");
 			return false;
-		}try {
+		}
+		try {
 			chatColor = ChatColor.valueOf(args[2].toUpperCase());
 		}catch(IllegalArgumentException e){
 			executor.sendMessage(ChatColor.RED + args[2] + " ist keine gültige Farbe. Siehe: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html");
