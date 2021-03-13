@@ -39,6 +39,7 @@ public class CommandPlayer implements CommandExecutor {
 					case "list":
 						return sendPlayerList(executor, args);
 					case "delete":
+					case "remove":
 						if(executor.hasPermission("admin")) {	
 							return deletePlayer(executor, args);
 						}else {
@@ -60,7 +61,7 @@ public class CommandPlayer implements CommandExecutor {
 							return true;
 						}
 					default:
-						executor.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Command");
+						executor.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Subcommand");
 						return false;
 				}
 			}			

@@ -35,6 +35,9 @@ public class CommandCollect implements CommandExecutor {
 				switch(type) {
 					case "diamond":
 					case "diamonds":
+					case "diamant":
+					case "dia":
+					case "dias":
 						Material material = Material.DIAMOND;
 						return addItemsToInventory(executor, material, amount);
 					default:

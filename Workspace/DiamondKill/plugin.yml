@@ -15,6 +15,9 @@ commands:
   playerkill:
     description: Interagiert mit der Killdatenbank
     usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
+  beaconfight:
+    description: Interagiert mit der Killdatenbank
+    usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)]
   buildmode:
     aliases: 
     - pengin

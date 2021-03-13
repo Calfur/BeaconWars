@@ -2,6 +2,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandRegistrator;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
@@ -15,7 +16,9 @@ public class Main extends JavaPlugin {
 	private final KillDbConnection killDbConnection = new KillDbConnection();
 	private TeamAttackManager teamAttackManager;
 	private PlayerModeManager playerModeManager;
+	private BeaconFightManager beaconFightManager;
 	private static ScoreboardLoader scoreboardLoader;
+	
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -26,6 +29,7 @@ public class Main extends JavaPlugin {
 
 		teamAttackManager = new TeamAttackManager();
 		playerModeManager = new PlayerModeManager();
+		beaconFightManager = new BeaconFightManager();
 		scoreboardLoader = new ScoreboardLoader();
 		
 		new FeatureDisabler(); 
@@ -34,6 +38,7 @@ public class Main extends JavaPlugin {
 
 		BeaconBreakStrengthIncreaser.increaseBreakStrength();
 	}
+	
 	@Override
 	public void onDisable() {
 		
@@ -65,5 +70,9 @@ public class Main extends JavaPlugin {
 	
 	public PlayerModeManager getPlayerModeManager() {
 		return playerModeManager;
+	}
+
+	public BeaconFightManager getBeaconFightManager() {
+		return beaconFightManager;
 	}
 }

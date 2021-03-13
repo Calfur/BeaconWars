@@ -26,37 +26,38 @@ public class CommandKill implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) {
-			Player player = (Player)sender;						
+			Player executor = (Player)sender;						
 			if(args.length >= 1) {
 				String subCommand = args[0].toLowerCase();
 				switch(subCommand) {
 					case "info":
-						return sendKillInfo(player, args);
+						return sendKillInfo(executor, args);
 					case "list":
-						return sendKillList(player, args);
+						return sendKillList(executor, args);
 					case "delete":
-						if(player.hasPermission("admin")) {	
-							return deleteKill(player, args);
+					case "remove":
+						if(executor.hasPermission("admin")) {	
+							return deleteKill(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					case "add":
-						if(player.hasPermission("admin")) {	
-							return addKill(player, args);
+						if(executor.hasPermission("admin")) {	
+							return addKill(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					case "edit":
-						if(player.hasPermission("admin")) {	
-							return editKill(player, args);
+						if(executor.hasPermission("admin")) {	
+							return editKill(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					default:
-						player.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Command");
+						executor.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Subcommand");
 						return false;
 				}
 			}			
