@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -14,23 +15,13 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConne
 public class PlayerModeManager {
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	
 	private HashMap<String, PlayerMode> playerModes = new HashMap<String, PlayerMode>();
-	private static final int buildModeCooldownInMinutes = 30;
+	public static final int buildModeCooldownInMinutes = 30;
 	private static final int baseRange = 100;
+	private static final int buildModeRangeCheckDelayInSeconds = 1;
 	
-	public boolean toggleBuildMode(Player player) {
-		PlayerMode playerMode = getPlayerMode(player.getName());
-		if(playerMode != null) {			
-			if(playerMode.isBuildModeActive()) {
-				playerMode.deactivateBuildMode();
-				player.sendMessage(ChatColor.GREEN + "Baumodus deaktiviert");
-				return true;
-			}
-		}
-		return activateBuildModeIfAllowed(playerMode, player);
-	}
-
 	private PlayerMode getPlayerMode(String playerName) {
 		return playerModes.get(playerName.toLowerCase());
 	}
@@ -39,6 +30,56 @@ public class PlayerModeManager {
 		PlayerMode playerMode = new PlayerMode(player.getName());
 		playerModes.put(player.getName().toLowerCase(), playerMode);
 		return playerMode;
+	}
+	
+	public PlayerModeManager() {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				for (PlayerMode playerMode : playerModes.values()) {					
+					if(playerMode.isBuildModeActive()) {
+						Player player = playerMode.getPlayer();
+						if(player != null) {							
+							if(!isPlayerWithinRangeOfHisBase(player)) {
+								int secondsUntilBuildModeGetsDeactivated = playerMode.getSecondsUntilBuildModeGetsDeactivated();
+								if(secondsUntilBuildModeGetsDeactivated <= 0) {
+									deactivateBuildMode(playerMode);	
+								}else {
+									playerMode.reduceSecondsLeftUntilBuildModeGetsDeactivated(buildModeRangeCheckDelayInSeconds);
+									player.sendMessage(ChatColor.RED + "Nicht mehr im Base Bereich! Baumodus wird in " + secondsUntilBuildModeGetsDeactivated + "s automatisch deaktiviert!");
+								}
+							}else {
+								playerMode.resetSecondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange();
+							}					
+						}						
+					}
+				}				
+			}
+		}, buildModeRangeCheckDelayInSeconds*20, buildModeRangeCheckDelayInSeconds*20); //repeating all 1s
+	}
+	
+	public boolean toggleBuildMode(Player player) {
+		PlayerMode playerMode = getPlayerMode(player.getName());
+		if(playerMode != null) {			
+			if(playerMode.isBuildModeActive()) {
+				deactivateBuildMode(playerMode);
+				return true;
+			}
+		}
+		return activateBuildModeIfAllowed(playerMode, player);
+	}
+	
+	private void deactivateBuildMode(PlayerMode playerMode) {
+		playerMode.deactivateBuildMode();
+		playerMode.getPlayer().sendMessage(ChatColor.GREEN + "Baumodus deaktiviert");
+		Main.getInstance().getScoreboardLoader().reloadScoreboardFor(playerMode.getPlayer());
+	}
+	
+	private void activateBuildMode(PlayerMode playerMode) {
+		playerMode.activateBuildMode();
+		playerMode.getPlayer().sendMessage(ChatColor.GREEN + "Baumodus aktiviert." + ChatColor.RESET + " Deaktivieren mit /buildmode");
+		Main.getInstance().getScoreboardLoader().reloadScoreboardFor(playerMode.getPlayer());		
 	}
 
 	public boolean isPlayerAllowedToFight(Player player) {
@@ -54,26 +95,32 @@ public class PlayerModeManager {
 	}
 	
 	private boolean activateBuildModeIfAllowed(PlayerMode playerMode, Player player) {
-		if(isPlayerWithinRangeOfHisBase(player)) {			
-			if(playerMode == null) {
-				playerMode = addPlayerMode(player);
-				playerMode.activateBuildMode();
-				player.sendMessage(ChatColor.GREEN + "Baumodus aktiviert." + ChatColor.RESET + " Deaktivieren mit /buildmode");
-				return true;
-			}
-			long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getDeactivatedAt(), LocalDateTime.now())/60;
-			if(minutesSinceDeactivated > buildModeCooldownInMinutes) {
-				playerMode.activateBuildMode();
-				player.sendMessage(ChatColor.GREEN + "Baumodus aktiviert." + ChatColor.RESET + " Deaktivieren mit /buildmode");
-				return true;
-			}else {
-				player.sendMessage(ChatColor.RED + "Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden");
-				return false;
-			}
-		}else {
-			player.sendMessage(ChatColor.RED + "Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden.");
+		
+		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
+		if(teamAttackManager.isTeamFighting(teamId)) {	
+			player.sendMessage(ChatColor.RED + "Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird.");
+			return false;
 		}
-		return false;
+		
+		if(!isPlayerWithinRangeOfHisBase(player)) {	
+			player.sendMessage(ChatColor.RED + "Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden.");
+			return false;
+		}
+		
+		if(playerMode == null) {
+			playerMode = addPlayerMode(player);
+			activateBuildMode(playerMode);
+			return true;
+		}
+		
+		long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
+		if(minutesSinceDeactivated < buildModeCooldownInMinutes) {
+			player.sendMessage(ChatColor.RED + "Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden");
+			return false;
+		}
+		
+		activateBuildMode(playerMode);
+		return true;
 	}
 	
 	private boolean isPlayerWithinRangeOfHisBase(Player player) {
@@ -89,9 +136,36 @@ public class PlayerModeManager {
 	public void reloadPlayerMode(Player player) {
 		PlayerMode playerMode = getPlayerMode(player.getName());
 		if(playerMode == null) {
-			PlayerMode.reloadPotionEffects(player);
+			PlayerMode.removeModeEffects(player);
 		}else {
-			playerMode.reloadPotionEffects();
+			playerMode.reloadEffects();
+		}
+	}
+	
+	public boolean isPlayerInBuildMode(Player player) {
+		PlayerMode playerMode = getPlayerMode(player.getName());
+		if(playerMode == null) {
+			return false;
+		}else {
+			if(playerMode.isBuildModeActive()) {
+				return true;
+			}
+			return false;
+		}
+	}
+
+	public void activatePlayerHighlight(Player player) {
+		PlayerMode playerMode = getPlayerMode(player.getName());
+		if(playerMode == null) {
+			playerMode = addPlayerMode(player);		
+		}
+		playerMode.activateHighlighted();
+	}
+	
+	public void deactivatePlayerHighlight(Player player) {
+		PlayerMode playerMode = getPlayerMode(player.getName());
+		if(playerMode != null) {
+			playerMode.deactivateHighlighted();
 		}
 	}
 }

@@ -21,12 +21,24 @@ public class ScoreboardLoader {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 
 	private Scoreboard defaultScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-	private TopKiller topKiller = new TopKiller("###", 1);
+	private TopKiller topKiller;
 	private ArrayList<Attack> attacks = new ArrayList<Attack>();
 	
 	public void setTopKiller(TopKiller topKiller) {
+		TopKiller previousTopKiller = this.topKiller;
+		if(previousTopKiller != null) {
+			Player player = Bukkit.getPlayer(previousTopKiller.getName());
+			if(player != null) {				
+				playerModeManager.deactivatePlayerHighlight(player);
+			}
+		}
+		Player player = Bukkit.getPlayer(topKiller.getName());
+		if(player != null && topKiller.getDiamondValue() > 2) {
+			playerModeManager.activatePlayerHighlight(player);
+		}
 		this.topKiller = topKiller;
 		reloadScoreboardForAllOnlinePlayers();
 	}
@@ -42,108 +54,111 @@ public class ScoreboardLoader {
 	}
 	
 	public ScoreboardLoader() {
+		setTopKiller(TopKiller.getCurrentTopKiller());
 		reloadScoreboardForAllOnlinePlayers();
 	}
 	
 	public void reloadScoreboardForAllOnlinePlayers() {
+		reloadSideBarScoreboard();
 		Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
 		for (Player player : onlinePlayers) {
-			reloadSideBarScoreboard(player);
-			reloadTabPlayerName(player);
-			reloadPlayerName(player);
+			reloadScoreboardFor(player);
 		}
 	}
 	
 	public void reloadScoreboardFor(Player player) {
-		reloadSideBarScoreboard(player);
-		reloadTabPlayerName(player);
-		reloadPlayerName(player);
-	}
-	
-	private void reloadSideBarScoreboard(Player player) {		
-		Scoreboard playerScoreboard = player.getScoreboard();
-		if(playerScoreboard == defaultScoreboard) {
-			playerScoreboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
-			player.setScoreboard(playerScoreboard);
+		if(player.getName().equalsIgnoreCase(topKiller.getName()) && topKiller.getDiamondValue() > 2) {
+			playerModeManager.activatePlayerHighlight(player);
+		}else {
+			playerModeManager.deactivatePlayerHighlight(player);
 		}
-		Objective deletableObjective = playerScoreboard.getObjective(DisplaySlot.SIDEBAR);
+		reloadTabList(player);
+		reloadPlayerChatName(player);
+		reloadNameAbovePlayer(player);
+	}
+
+	private void reloadSideBarScoreboard() { // same for all Players
+		Objective deletableObjective = defaultScoreboard.getObjective(DisplaySlot.SIDEBAR);
 		if(deletableObjective != null) {			
 			deletableObjective.unregister();
 		}
 		
-		Objective objective = playerScoreboard.registerNewObjective("Sidebar", "dummy", ChatColor.BOLD + "Beacon wars");
+		Objective objective = defaultScoreboard.registerNewObjective("Sidebar", "dummy", ChatColor.BOLD + "Beacon wars");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		
-		if(playerDbConnection.existsPlayer(player.getName())){
-			Score score11 = objective.getScore("Guthaben" + ChatColor.GRAY + ":");
-			score11.setScore(11);
-			Score score10 = objective.getScore(ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
-			score10.setScore(10);
-			Score score9 = objective.getScore("         ");
-			score9.setScore(9);
-			Score score8 = objective.getScore("Höchste K/D" + ChatColor.GRAY + ":");
-			score8.setScore(8);
-			Score score7 = objective.getScore(topKillerScoreText());
-			score7.setScore(7);
-			Score score6 = objective.getScore("      ");
-			score6.setScore(6);
-			Score score5 = objective.getScore("Aktuelle Angriffe" + ChatColor.GRAY + ":");
-			score5.setScore(5);
-			Score score4 = objective.getScore(attackScoreText(0, 4));
-			score4.setScore(4);
-			Score score3 = objective.getScore(attackScoreText(1, 3));
-			score3.setScore(3);
-			Score score2 = objective.getScore(attackScoreText(2, 2));
-			score2.setScore(2);
-			Score score1 = objective.getScore(attackScoreText(3, 1));
-			score1.setScore(1);
-			Score score0 = objective.getScore(attackScoreText(4, 0));
-			score0.setScore(0);	
-		}else {
-			Score score11 = objective.getScore("           ");
-			score11.setScore(11);
-			Score score10 = objective.getScore("          ");
-			score10.setScore(10);
-			Score score9 = objective.getScore(ChatColor.RED + "Du bist keinem");
-			score9.setScore(9);
-			Score score8 = objective.getScore(ChatColor.RED + "Team zugewiesen.");
-			score8.setScore(8);
-			Score score7 = objective.getScore(ChatColor.RED + "Bitte melde dich");
-			score7.setScore(7);
-			Score score6 = objective.getScore(ChatColor.RED + "bei einem");
-			score6.setScore(6);
-			Score score5 = objective.getScore(ChatColor.RED + "Administrator.");
-			score5.setScore(5);
-			Score score4 = objective.getScore("    ");
-			score4.setScore(4);
-			Score score3 = objective.getScore("   ");
-			score3.setScore(3);
-			Score score2 = objective.getScore("  ");
-			score2.setScore(2);
-			Score score1 = objective.getScore(" ");
-			score1.setScore(1);
-			Score score0 = objective.getScore("");
-			score0.setScore(0);	
-		}
-				
+
+		Score score8 = objective.getScore("Höchste K/D" + ChatColor.GRAY + ":");
+		score8.setScore(8);
+		Score score7 = objective.getScore(topKillerScoreText());
+		score7.setScore(7);
+		Score score6 = objective.getScore("      ");
+		score6.setScore(6);
+		Score score5 = objective.getScore("Aktuelle Angriffe" + ChatColor.GRAY + ":");
+		score5.setScore(5);
+		Score score4 = objective.getScore(attackScoreText(0, 4));
+		score4.setScore(4);
+		Score score3 = objective.getScore(attackScoreText(1, 3));
+		score3.setScore(3);
+		Score score2 = objective.getScore(attackScoreText(2, 2));
+		score2.setScore(2);
+		Score score1 = objective.getScore(attackScoreText(3, 1));
+		score1.setScore(1);
+		Score score0 = objective.getScore(attackScoreText(4, 0));
+		score0.setScore(0);			
 	}
 	
-	private void reloadTabPlayerName(Player player) {
+	private void reloadTabList(Player player) {
 		String name = player.getName();
-		int teamId = playerDbConnection.getPlayer(name).getTeamId();
-		ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
-		int bounty = killDbConnection.getBounty(name);		
-		
-		name = teamColor + name + " " + ChatColor.AQUA + bounty + " Dias";
-		player.setPlayerListName(name);
-		
+		String listName;
+		if(playerDbConnection.existsPlayer(name)) {			
+			int teamId = playerDbConnection.getPlayer(name).getTeamId();
+			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
+			int bounty = killDbConnection.getBounty(name);		
+			
+			listName = teamColor + name + getActiveModes(player) + " " + ChatColor.AQUA + bounty + " Dias";
+			
+			player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
+		}else {
+			listName = ChatColor.DARK_RED + name + " UNREGISTRIERT";
+		}
+		player.setPlayerListName(listName);
 	}
 	
-	private void reloadPlayerName(Player player) {
-		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
-		ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
-		player.setDisplayName(teamColor + player.getName() + ChatColor.RESET);
-		
+	private void reloadPlayerChatName(Player player) {
+		String name = player.getName();
+		String listName;
+		if(playerDbConnection.existsPlayer(name)) {			
+			int teamId = playerDbConnection.getPlayer(name).getTeamId();
+			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();			
+			listName = teamColor + name + getActiveModes(player) + ChatColor.RESET;
+		}else {
+			listName = ChatColor.DARK_RED + "UNREGISTRIERT " + name + ChatColor.RESET;
+		}
+		player.setDisplayName(listName);		
+	}
+
+	private void reloadNameAbovePlayer(Player player) {
+		String name = player.getName();
+		if(playerDbConnection.existsPlayer(name)) {				
+			String scoreboardTeamName = name + "Team";
+			org.bukkit.scoreboard.Team team = defaultScoreboard.getTeam(scoreboardTeamName);
+			if(team == null) {			
+				team = defaultScoreboard.registerNewTeam(scoreboardTeamName);
+			}
+			int teamId = playerDbConnection.getPlayer(name).getTeamId();
+			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
+			team.setColor(teamColor);
+			team.setSuffix(getActiveModes(player));
+			
+			team.addEntry(player.getName());
+		}
+	}
+	
+	private String getActiveModes(Player player) {
+		if(playerModeManager.isPlayerInBuildMode(player)) {				
+			return ChatColor.GOLD + " [Baut]";
+		}else {
+			return "";
+		}
 	}
 
 	private String topKillerScoreText() {
@@ -163,6 +178,4 @@ public class ScoreboardLoader {
 		}
 		return StringEditor.RepeatString(" ", scoreNumber);
 	}
-
-
 }

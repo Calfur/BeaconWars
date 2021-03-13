@@ -3,7 +3,6 @@ package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,15 +24,15 @@ public class PotionDisabler implements Listener {
 	public void onBrewEvent(BrewEvent event) {
 		BrewerInventory inventory = event.getContents();
 		Material ingredient = inventory.getIngredient().getType();
-		Bukkit.broadcastMessage("Zutat: " + ingredient.name());
+		// Bukkit.broadcastMessage("Zutat: " + ingredient.name());
 
 		List<PotionType> potionTypes = getUsedPotions(inventory);
 		for (PotionType potionType : potionTypes) {
-			Bukkit.broadcastMessage("Type: " + potionType);
+			// Bukkit.broadcastMessage("Type: " + potionType);
 			for (DisabledPotion disabledPotion : disabledPotions) {
 				if(potionType == disabledPotion.getPotionType() && ingredient == disabledPotion.getIngerdient()) {
 					event.setCancelled(true);
-					//Bukkit.broadcastMessage(ChatColor.RED + "Mindestens einer der Tränke ist nicht erlaubt zu brauen. Brauvorgang abgebrochen.");
+					// Bukkit.broadcastMessage(ChatColor.RED + "Mindestens einer der Tränke ist nicht erlaubt zu brauen. Brauvorgang abgebrochen.");
 					return;
 				}
 			}

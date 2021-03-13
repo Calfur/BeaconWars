@@ -9,5 +9,7 @@ public class EventRegistrator {
 		plugin.getServer().getPluginManager().registerEvents(new KillEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new PlayerJoinEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new PlayerRespawnEvents(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new BlockBreakEvents(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new MilkEvents(), plugin);
 	}
 }

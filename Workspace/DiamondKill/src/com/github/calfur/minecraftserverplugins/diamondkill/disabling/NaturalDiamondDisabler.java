@@ -20,8 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import com.github.calfur.minecraftserverplugins.diamondkill.ForbiddenItem;
-import com.github.calfur.minecraftserverplugins.diamondkill.ForbiddenItem.EnchantmentLevel;
+import com.github.calfur.minecraftserverplugins.diamondkill.disabling.ForbiddenItem.EnchantmentLevel;
 
 public class NaturalDiamondDisabler implements Listener {
 	
