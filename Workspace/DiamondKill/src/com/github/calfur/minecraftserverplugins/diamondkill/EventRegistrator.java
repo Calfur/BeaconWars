@@ -1,5 +1,7 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.TeleportEvents;
+
 public class EventRegistrator {
 	public EventRegistrator() {
 		registrateEvents();
@@ -11,5 +13,6 @@ public class EventRegistrator {
 		plugin.getServer().getPluginManager().registerEvents(new PlayerRespawnEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new BlockBreakEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new MilkEvents(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new TeleportEvents(), plugin);
 	}
 }

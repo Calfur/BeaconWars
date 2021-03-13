@@ -5,14 +5,13 @@ import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
@@ -122,7 +121,7 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		TeamJson team = teamDbConnection.getTeam(teamNumber);
-		removeLevelOneBeacon(team.getBeaconPosition());
+		BeaconManager.removeLevelOneBeacon(team.getBeaconPosition());
 		teamDbConnection.removeTeam(teamNumber);
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " gelöscht.");
 		return true;
@@ -173,9 +172,9 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		TeamJson oldTeam = teamDbConnection.getTeam(teamNumber);
-		removeLevelOneBeacon(oldTeam.getBeaconPosition());
+		BeaconManager.removeLevelOneBeacon(oldTeam.getBeaconPosition());
 		Location beaconLocation = new Location(executor.getWorld(), beaconLocationX, beaconLocationY, beaconLocationZ);
-		placeLevelOneBeacon(beaconLocation);
+		BeaconManager.placeLevelOneBeacon(beaconLocation);
 		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, beaconLocation));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " editiert.");
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
@@ -228,44 +227,10 @@ public class CommandTeam implements CommandExecutor {
 		}
 		World world = executor.getWorld();
 		Location beaconLocation = new Location(world, beaconLocationX, beaconLocationY, beaconLocationZ);
-		placeLevelOneBeacon(beaconLocation);
+		BeaconManager.placeLevelOneBeacon(beaconLocation);
 		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, beaconLocation));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " registriert.");
 		return true;
 	}
 	
-	private void placeLevelOneBeacon(Location location) {
-		World world = location.getWorld();
-		int beaconX = location.getBlockX();
-		int beaconY = location.getBlockY();
-		int beaconZ = location.getBlockZ();
-		
-		replaceBlock(world, beaconX, beaconY, beaconZ, Material.BEACON);
-		
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {				
-				replaceBlock(world, beaconX + x, beaconY - 1, beaconZ + z, Material.NETHERITE_BLOCK);
-			}
-		}
-	}	
-	
-	private void removeLevelOneBeacon(Location location) {
-		World world = location.getWorld();
-		int beaconX = location.getBlockX();
-		int beaconY = location.getBlockY();
-		int beaconZ = location.getBlockZ();
-		
-		replaceBlock(world, beaconX, beaconY, beaconZ, Material.AIR);
-		
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {				
-				replaceBlock(world, beaconX + x, beaconY - 1, beaconZ + z, Material.AIR);
-			}
-		}
-	}
-	
-	private void replaceBlock(World world, int x, int y, int z, Material material) {
-		Block block = world.getBlockAt(new Location(world, x, y, z));
-		block.setType(material);
-	}
 }

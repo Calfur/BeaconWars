@@ -8,10 +8,11 @@ import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 
 public class BeaconFightManager {
 	private List<BeaconFight> beaconFights = new ArrayList<BeaconFight>();
+	private boolean isBeaconEventActive = false;
 	
 	public boolean tryAddBeaconFight(LocalDateTime startTime) {
 		// TODO: validation
-		beaconFights.add(new BeaconFight(startTime));
+		beaconFights.add(new BeaconFight(startTime, this));
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
@@ -19,6 +20,7 @@ public class BeaconFightManager {
 	public boolean tryRemoveActiveBeaconFight() {
 		BeaconFight beaconFight = getOngoingBeaconFight();
 		if(beaconFight != null) {
+			beaconFight.cancelBeaconFightEvent();
 			RemoveBeaconFight(beaconFight);
 			return true;
 		}else {
@@ -58,4 +60,15 @@ public class BeaconFightManager {
 		return nextWaitingBeaconFight;
 	}
 
+	public void activateBeaconFightEvent() {
+		isBeaconEventActive = true;
+	}
+	
+	public void deactivateBeaconFightEvent() {
+		isBeaconEventActive = false;
+	}
+	
+	public boolean isBeaconEventActive() {
+		return isBeaconEventActive;
+	}
 }
