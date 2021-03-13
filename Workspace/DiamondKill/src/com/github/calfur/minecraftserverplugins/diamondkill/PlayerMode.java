@@ -11,7 +11,7 @@ public class PlayerMode {
 	private String player;
 	private boolean highlightedActive = false;
 	private boolean buildModeActive = false;
-	private LocalDateTime buildModeDeactivatedAt;
+	private LocalDateTime buildModeDeactivatedAt = LocalDateTime.now().minusMinutes(PlayerModeManager.buildModeCooldownInMinutes);
 	private final static int secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange = 15;
 	private int secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;
 	

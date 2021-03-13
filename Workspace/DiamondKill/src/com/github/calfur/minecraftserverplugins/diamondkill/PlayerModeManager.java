@@ -18,9 +18,9 @@ public class PlayerModeManager {
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	
 	private HashMap<String, PlayerMode> playerModes = new HashMap<String, PlayerMode>();
-	private static final int buildModeCooldownInMinutes = 30;
+	public static final int buildModeCooldownInMinutes = 30;
 	private static final int baseRange = 100;
-	private static final int buildModeRangeCheckDelayInSeconds = 5;
+	private static final int buildModeRangeCheckDelayInSeconds = 1;
 	
 	private PlayerMode getPlayerMode(String playerName) {
 		return playerModes.get(playerName.toLowerCase());
@@ -56,7 +56,7 @@ public class PlayerModeManager {
 					}
 				}				
 			}
-		}, buildModeRangeCheckDelayInSeconds*20, buildModeRangeCheckDelayInSeconds*20); //repeating all 5s
+		}, buildModeRangeCheckDelayInSeconds*20, buildModeRangeCheckDelayInSeconds*20); //repeating all 1s
 	}
 	
 	public boolean toggleBuildMode(Player player) {
