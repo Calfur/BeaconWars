@@ -17,7 +17,6 @@ public class DeathBanPluginInteraction {
 		
 		try {
 			configFileConfiguration.save(configFile);
-			Bukkit.broadcastMessage("File gespeichert");
 		}catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -1,10 +1,17 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class BeaconManager {
 
@@ -45,5 +52,30 @@ public class BeaconManager {
 	public static void replaceBlock(World world, int x, int y, int z, Material material) {
 		Block block = world.getBlockAt(new Location(world, x, y, z));
 		block.setType(material);
+	}
+	
+	public static Entry<String, TeamJson> getTeamByBeaconLocation(Location beaconLocation) {
+		HashMap<String, TeamJson> teams = Main.getInstance().getTeamDbConnection().getTeams();
+		for (Entry<String, TeamJson> team : teams.entrySet()) {
+			if(team.getValue().getBeaconPosition().equals(beaconLocation)) {
+				return team;
+			}
+		}
+		return null;
+	}
+
+	public static boolean isBeaconFromAnotherTeam(Player player, Location location) {
+		int teamIdOfBeacon;
+		try {			
+			teamIdOfBeacon = Integer.parseInt(getTeamByBeaconLocation(location).getKey());
+		}catch(Exception e) {
+			player.sendMessage(ChatColor.DARK_RED + "Error, unregistered Beacon");
+			return false;
+		}
+		int teamIdOfPlayer = Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId();
+		if(teamIdOfBeacon != teamIdOfPlayer) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 
 public class BeaconFightManager {
@@ -93,5 +98,14 @@ public class BeaconFightManager {
 	
 	public boolean isBeaconEventActive() {
 		return isBeaconEventActive;
+	}
+	
+	public void addBeaconBreak(Player player, Location beaconLocation) {
+		BeaconFight ongoingBeaconFight = getOngoingBeaconFight();
+		if(ongoingBeaconFight != null) {
+			ongoingBeaconFight.addBeaconBreak(player, beaconLocation);
+		}else {
+			Bukkit.broadcastMessage("" + ChatColor.DARK_RED + ChatColor.BOLD + "ERROR: Beacon zerstört obwohl kein Beaconevent aktiv ist! Bitte Server neustarten");
+		}
 	}
 }

@@ -3,6 +3,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,10 +14,17 @@ import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.DeathBanPluginInteraction;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 
 import net.md_5.bungee.api.ChatColor;
 
 public class BeaconFight {
+	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	
 	private LocalDateTime startTime;
 	private BeaconFightManager manager;
 	private long durationInMinutes = 1;
@@ -126,4 +134,16 @@ public class BeaconFight {
 		}
 	}
 
+	public void addBeaconBreak(Player player, Location beaconLocation) {
+		PlayerJson attacker = playerDbConnection.getPlayer(player.getName());
+		int attackerTeamId = attacker.getTeamId();
+		TeamJson attackerTeamJson = teamDbConnection.getTeam(attackerTeamId);
+		
+		Entry<String, TeamJson> defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
+		String defenderTeamId = defenderTeam.getKey();
+		
+		TeamJson defenderTeamJson = defenderTeam.getValue();
+		Bukkit.broadcastMessage(player.getName() + " von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " hat den Beacon von " + defenderTeamJson.getColor() + "Team " + defenderTeamId + ChatColor.RESET + " geklaut");
+		Bukkit.broadcastMessage("Der Beacon muss innerhalb von 15min zurück zur Basis von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " gebracht werden");
+	}
 }
