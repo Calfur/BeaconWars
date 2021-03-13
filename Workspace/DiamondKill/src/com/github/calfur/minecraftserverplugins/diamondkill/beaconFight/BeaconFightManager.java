@@ -11,12 +11,34 @@ public class BeaconFightManager {
 	private boolean isBeaconEventActive = false;
 	
 	public boolean tryAddBeaconFight(LocalDateTime startTime, long durationInMinutes) {
-		// TODO: validation
+		if(startTime.isBefore(LocalDateTime.now())){
+			return false;
+		}
+		if(isTimeOverlappingWithAnotherEvent(startTime, startTime.plusMinutes(durationInMinutes))) {
+			return false;
+		}
 		beaconFights.add(new BeaconFight(startTime, durationInMinutes, this));
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
 	
+	private boolean isTimeOverlappingWithAnotherEvent(LocalDateTime startTime, LocalDateTime endTime) {
+		for (BeaconFight beaconFight : beaconFights) {
+			LocalDateTime otherStartTime = beaconFight.getStartTime();
+			LocalDateTime otherEndTime = beaconFight.getEndTime();
+			if((startTime.isAfter(otherStartTime) && startTime.isBefore(otherEndTime)) || 
+			   (endTime.isAfter(otherStartTime) && endTime.isBefore(otherEndTime)) || 
+			   (startTime.isBefore(otherStartTime) && endTime.isAfter(otherEndTime)) || 
+			   (startTime.isEqual(otherStartTime)) || 
+			   (startTime.isEqual(otherEndTime)) || 
+			   (endTime.isEqual(otherStartTime)) || 
+			   (endTime.isEqual(otherEndTime))){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean tryRemoveActiveBeaconFight() {
 		BeaconFight beaconFight = getOngoingBeaconFight();
 		if(beaconFight != null) {
@@ -40,7 +62,8 @@ public class BeaconFightManager {
 
 	public BeaconFight getOngoingBeaconFight() {
 		for (BeaconFight beaconFight : beaconFights) {
-			if(beaconFight.getStartTime().isBefore(LocalDateTime.now())) {
+			LocalDateTime startTime = beaconFight.getStartTime().minusSeconds(10);
+			if(startTime.isBefore(LocalDateTime.now())) {
 				return beaconFight;
 			}
 		}
@@ -52,7 +75,7 @@ public class BeaconFightManager {
 		for (BeaconFight beaconFight : beaconFights) {
 			if(nextWaitingBeaconFight == null) {
 				nextWaitingBeaconFight = beaconFight;
-			}else if(beaconFight.getStartTime().isAfter(nextWaitingBeaconFight.getStartTime())) {
+			}else if(beaconFight.getStartTime().isBefore(nextWaitingBeaconFight.getStartTime())) {
 				nextWaitingBeaconFight = beaconFight;
 			}
 		}

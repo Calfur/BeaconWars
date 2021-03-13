@@ -73,8 +73,13 @@ public class CommandBeaconFight implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Die Eventdauer muss mindestens 1min sein");
 			return false;
 		}
-		
-		return beaconFightManager.tryAddBeaconFight(startTime, durationInMinutes);
+		if(beaconFightManager.tryAddBeaconFight(startTime, durationInMinutes)) {
+			executor.sendMessage(ChatColor.GREEN + "Beaconevent erfolgreich hinzugefügt. Startet um " + args[1]);
+			return true;
+		}else {
+			executor.sendMessage(ChatColor.RED + "Beaconfight Event wurde nicht hinzugefügt. Möglicherweise war die Startzeit vor Jetzt, oder ein bestehender Event überschneidet die Zeit.");
+			return false;
+		}
 	}
 
 	private boolean tryRemoveBeaconFight(Player executor, String[] args) {

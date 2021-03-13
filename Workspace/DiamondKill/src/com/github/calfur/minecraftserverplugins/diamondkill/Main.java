@@ -36,7 +36,7 @@ public class Main extends JavaPlugin {
 		new CommandRegistrator();
 		new EventRegistrator();
 
-		BeaconBreakStrengthIncreaser.increaseBreakStrength();
+		//BeaconBreakStrengthIncreaser.increaseBreakStrength();
 	}
 	
 	@Override
