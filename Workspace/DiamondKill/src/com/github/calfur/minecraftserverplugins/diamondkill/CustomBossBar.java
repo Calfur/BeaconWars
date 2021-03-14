@@ -40,7 +40,7 @@ public class CustomBossBar {
 	public CustomBossBar(BossBarManager manager, String title, ChatColor chatColor, LocalDateTime countdownEnd) {
 		this.manager = manager;
 		this.title = title;
-		bossBar = Bukkit.createBossBar(title, getParsedChatColorOrWhite(chatColor), BarStyle.SOLID);
+		bossBar = Bukkit.createBossBar(title, getConvertedChatColor(chatColor), BarStyle.SOLID);
 		activateCountdown(countdownEnd);
 	}
 	
@@ -48,17 +48,32 @@ public class CustomBossBar {
 		bossBar.addPlayer(player);
 	}
 	
-	private BarColor getParsedChatColorOrWhite(ChatColor chatColor) {
+	private BarColor getConvertedChatColor(ChatColor chatColor) {
 		BarColor result;
-		try {			
-			result = BarColor.valueOf(chatColor.toString());
-		}catch(IllegalArgumentException e) {			
-			result = BarColor.WHITE;
+		try {
+			result = BarColor.valueOf(chatColor.name());
+		}catch(IllegalArgumentException e) {
+			switch(chatColor) {
+				case DARK_GREEN:
+					result = BarColor.GREEN;
+					break;
+				case DARK_BLUE:
+				case DARK_AQUA:
+					result = BarColor.BLUE;
+					break;
+				case DARK_RED:
+					result = BarColor.RED;
+					break;
+				default:
+					result = BarColor.WHITE;
+					break;
+			}
 		}
 		return result;
 	}
 	
 	private void activateCountdown(LocalDateTime countdownEnd) {
+		Bukkit.broadcastMessage(countdownEnd.toString());
 		double countDownDurationInSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), countdownEnd);
 		bossBarStepPerSecond = 1 / countDownDurationInSeconds;
 		

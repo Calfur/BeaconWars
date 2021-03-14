@@ -61,7 +61,7 @@ public class ScoreboardLoader {
 	
 	public ScoreboardLoader() {
 		setTopKiller(TopKiller.getCurrentTopKiller());
-		bossBarManager.addBossBar("Guten Tag", ChatColor.RED, LocalDateTime.now().plusMinutes(2));
+		bossBarManager.addBossBar("5 Minuten test", ChatColor.DARK_GREEN, LocalDateTime.now().plusMinutes(5));
 		reloadScoreboardForAllOnlinePlayers();
 	}
 	
@@ -94,7 +94,7 @@ public class ScoreboardLoader {
 	}
 	
 	public void removeBossBar(String name) {
-		
+		bossBarManager.removeBossBar(name);
 	}
 
 	private void reloadSideBarScoreboard() { // same for all Players
