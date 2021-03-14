@@ -145,5 +145,7 @@ public class BeaconFight {
 		TeamJson defenderTeamJson = defenderTeam.getValue();
 		Bukkit.broadcastMessage(player.getName() + " von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " hat den Beacon von " + defenderTeamJson.getColor() + "Team " + defenderTeamId + ChatColor.RESET + " geklaut");
 		Bukkit.broadcastMessage("Der Beacon muss innerhalb von 15min zurück zur Basis von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " gebracht werden");
+	
+		
 	}
 }

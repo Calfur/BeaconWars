@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +31,7 @@ public class ScoreboardLoader {
 	private Scoreboard defaultScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 	private TopKiller topKiller;
 	private ArrayList<Attack> attacks = new ArrayList<Attack>();
+	private BossBarManager bossBarManager = new BossBarManager();
 	
 	public void setTopKiller(TopKiller topKiller) {
 		TopKiller previousTopKiller = this.topKiller;
@@ -59,6 +61,7 @@ public class ScoreboardLoader {
 	
 	public ScoreboardLoader() {
 		setTopKiller(TopKiller.getCurrentTopKiller());
+		bossBarManager.addBossBar("Guten Tag", ChatColor.RED, LocalDateTime.now().plusMinutes(2));
 		reloadScoreboardForAllOnlinePlayers();
 	}
 	
@@ -79,6 +82,19 @@ public class ScoreboardLoader {
 		reloadTabList(player);
 		reloadPlayerChatName(player);
 		reloadNameAbovePlayer(player);
+		bossBarManager.displayAllBossBarsTo(player);
+	}
+
+	public void addBossBar(String name, ChatColor chatColor, LocalDateTime countdownEnd) {
+		CustomBossBar bossBar = bossBarManager.addBossBar(name, chatColor, countdownEnd);
+		Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
+		for (Player player : onlinePlayers) {
+			bossBar.addPlayer(player);
+		}
+	}
+	
+	public void removeBossBar(String name) {
+		
 	}
 
 	private void reloadSideBarScoreboard() { // same for all Players
