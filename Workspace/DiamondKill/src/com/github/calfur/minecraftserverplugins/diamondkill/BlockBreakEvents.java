@@ -30,7 +30,7 @@ public class BlockBreakEvents implements Listener {
 						Main.getInstance().getBeaconFightManager().addBeaconBreak(player, location);
 						return;
 					}else {
-						event.getPlayer().sendMessage(ChatColor.RED + "Du kannst deinen eigenen Beacon auch während einem Beaconevent nicht abbauen :(");
+						event.getPlayer().sendMessage(ChatColor.RED + "Du kannst deinen eigenen Beacon nicht abbauen");
 					}
 				}				
 			}

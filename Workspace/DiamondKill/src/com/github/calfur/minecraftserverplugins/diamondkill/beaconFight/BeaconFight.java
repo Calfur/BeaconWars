@@ -2,8 +2,9 @@ package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map.Entry;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,10 +15,10 @@ import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.DeathBanPluginInteraction;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.Team;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -27,7 +28,8 @@ public class BeaconFight {
 	
 	private LocalDateTime startTime;
 	private BeaconFightManager manager;
-	private long durationInMinutes = 1;
+	private long durationInMinutes;
+	private List<BeaconRaid> beaconRaids = new ArrayList<BeaconRaid>();
 
 	public LocalDateTime getStartTime() {
 		return startTime;
@@ -114,15 +116,19 @@ public class BeaconFight {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 		for (Player player : players) {
 			if(player.getWorld().getEnvironment() != World.Environment.NORMAL) {
-				Location bedSpawnLocation = player.getBedSpawnLocation();
-				if(bedSpawnLocation != null) {
-					player.teleport(bedSpawnLocation);
-				}else {
-					Location beaconLocation = BeaconManager.getBeaconLocationByPlayer(player);
-					beaconLocation.setY(beaconLocation.getBlockY() + 1);
-					player.teleport(beaconLocation);
-				}
+				teleportPlayerIntoOverworld(player);
 			}
+		}
+	}
+
+	private void teleportPlayerIntoOverworld(Player player) {
+		Location bedSpawnLocation = player.getBedSpawnLocation();
+		if(bedSpawnLocation != null) {
+			player.teleport(bedSpawnLocation);
+		}else {
+			Location beaconLocation = BeaconManager.getBeaconLocationByPlayer(player);
+			beaconLocation.setY(beaconLocation.getBlockY() + 1);
+			player.teleport(beaconLocation);
 		}
 	}
 	
@@ -134,21 +140,28 @@ public class BeaconFight {
 		}
 	}
 
-	public void addBeaconBreak(Player player, Location beaconLocation) {
+	public void addBeaconDestruction(Player player, Location beaconLocation) {
 		PlayerJson attacker = playerDbConnection.getPlayer(player.getName());
 		int attackerTeamId = attacker.getTeamId();
-		TeamJson attackerTeamJson = teamDbConnection.getTeam(attackerTeamId);
 		
-		Entry<String, TeamJson> defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
-		String defenderTeamId = defenderTeam.getKey();
+		Team attackerTeam = new Team(attackerTeamId, teamDbConnection.getTeam(attackerTeamId).getColor());
+		Team defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
 		
-		TeamJson defenderTeamJson = defenderTeam.getValue();
-		Bukkit.broadcastMessage(player.getName() + " von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " hat den Beacon von " + defenderTeamJson.getColor() + "Team " + defenderTeamId + ChatColor.RESET + " abgebaut");
-		Bukkit.broadcastMessage("Der Beacon muss innerhalb von 15min");
-		Bukkit.broadcastMessage("zurück zur Basis von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " gebracht werden");
-	
-		String bossBarName = attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " klaut den Beacon von " + defenderTeamJson.getColor() + "Team " + defenderTeamId;
-		LocalDateTime deadline = LocalDateTime.now().plusMinutes(15);
-		Main.getInstance().getScoreboardLoader().addBossBar(bossBarName, attackerTeamJson.getColor(), deadline);
+		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player));		
+	}
+
+	public void addBeaconPlacement(Player placer, Location placedAgainst) {
+		Team teamWhereBeaconWasPlaced = BeaconManager.getTeamByBeaconLocation(placedAgainst);
+		PlayerJson attacker = playerDbConnection.getPlayer(placer.getName());
+		
+		if(teamWhereBeaconWasPlaced == null) {
+			placer.sendMessage("Du musst den Beacon an den Beacon von deinem Team plazieren");
+			return;
+		}
+		if(teamWhereBeaconWasPlaced.getId() != attacker.getTeamId()) {
+			placer.sendMessage("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId());
+			return;
+		}
+		Bukkit.broadcastMessage(ChatColor.BOLD + "Beacon zurückgebracht!");
 	}
 }

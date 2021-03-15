@@ -103,7 +103,7 @@ public class BeaconFightManager {
 	public void addBeaconBreak(Player player, Location beaconLocation) {
 		BeaconFight ongoingBeaconFight = getOngoingBeaconFight();
 		if(ongoingBeaconFight != null) {
-			ongoingBeaconFight.addBeaconBreak(player, beaconLocation);
+			ongoingBeaconFight.addBeaconDestruction(player, beaconLocation);
 		}else {
 			Bukkit.broadcastMessage("" + ChatColor.DARK_RED + ChatColor.BOLD + "ERROR: Beacon zerstört obwohl kein Beaconevent aktiv ist! Bitte Server neustarten");
 		}

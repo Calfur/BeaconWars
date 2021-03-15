@@ -53,12 +53,17 @@ public class BeaconManager {
 		Block block = world.getBlockAt(new Location(world, x, y, z));
 		block.setType(material);
 	}
-	
-	public static Entry<String, TeamJson> getTeamByBeaconLocation(Location beaconLocation) {
+	/**
+	 * 
+	 * @param beaconLocation
+	 * @return Team with same beaconLocation, or null if there is no team which matches
+	 */
+	public static Team getTeamByBeaconLocation(Location beaconLocation) {
 		HashMap<String, TeamJson> teams = Main.getInstance().getTeamDbConnection().getTeams();
 		for (Entry<String, TeamJson> team : teams.entrySet()) {
 			if(team.getValue().getBeaconPosition().equals(beaconLocation)) {
-				return team;
+				int teamId = Integer.parseInt(team.getKey());
+				return new Team(teamId, team.getValue().getColor());
 			}
 		}
 		return null;
@@ -67,9 +72,9 @@ public class BeaconManager {
 	public static boolean isBeaconFromAnotherTeam(Player player, Location location) {
 		int teamIdOfBeacon;
 		try {			
-			teamIdOfBeacon = Integer.parseInt(getTeamByBeaconLocation(location).getKey());
+			teamIdOfBeacon = getTeamByBeaconLocation(location).getId();
 		}catch(Exception e) {
-			player.sendMessage(ChatColor.DARK_RED + "Error, unregistered Beacon");
+			player.sendMessage(ChatColor.DARK_RED + "Error, unregistrierter Beacon");
 			return false;
 		}
 		int teamIdOfPlayer = Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId();
