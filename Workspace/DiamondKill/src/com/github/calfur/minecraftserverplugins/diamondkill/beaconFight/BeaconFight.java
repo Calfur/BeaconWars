@@ -143,9 +143,12 @@ public class BeaconFight {
 		String defenderTeamId = defenderTeam.getKey();
 		
 		TeamJson defenderTeamJson = defenderTeam.getValue();
-		Bukkit.broadcastMessage(player.getName() + " von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " hat den Beacon von " + defenderTeamJson.getColor() + "Team " + defenderTeamId + ChatColor.RESET + " geklaut");
-		Bukkit.broadcastMessage("Der Beacon muss innerhalb von 15min zurück zur Basis von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " gebracht werden");
+		Bukkit.broadcastMessage(player.getName() + " von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " hat den Beacon von " + defenderTeamJson.getColor() + "Team " + defenderTeamId + ChatColor.RESET + " abgebaut");
+		Bukkit.broadcastMessage("Der Beacon muss innerhalb von 15min");
+		Bukkit.broadcastMessage("zurück zur Basis von " + attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " gebracht werden");
 	
-		
+		String bossBarName = attackerTeamJson.getColor() + "Team " + attackerTeamId + ChatColor.RESET + " klaut den Beacon von " + defenderTeamJson.getColor() + "Team " + defenderTeamId;
+		LocalDateTime deadline = LocalDateTime.now().plusMinutes(15);
+		Main.getInstance().getScoreboardLoader().addBossBar(bossBarName, attackerTeamJson.getColor(), deadline);
 	}
 }

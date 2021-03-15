@@ -3,6 +3,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
@@ -126,6 +128,8 @@ public class KillEvents implements Listener {
 		if(latestHitByPlayer != null) {
 			long secondsBetween = ChronoUnit.SECONDS.between(latestHitByPlayer.getDateTime(), LocalDateTime.now());
 			if(secondsBetween < 60) {
+				removeUndroppableItems(event.getDrops());
+				
 				String killer = latestHitByPlayer.getAttacker();
 				String victim = latestHitByPlayer.getDefender();
 				PlayerJson killerJson = playerDbConnection.getPlayer(killer);
@@ -142,11 +146,31 @@ public class KillEvents implements Listener {
 			}
 		}
 	}
+	
 	private void sendDeathMessage(String killer, String victim, int bounty) {
 		ChatColor teamColorKiller = teamDbConnection.getTeam(playerDbConnection.getPlayer(killer).getTeamId()).getColor();
 		ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
 		killer = StringEditor.FirstLetterToUpper(killer);
 		victim = StringEditor.FirstLetterToUpper(victim);
 		Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "" + bounty + " Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
+	}
+	
+	private void removeUndroppableItems(List<ItemStack> loot) {
+
+		for (ItemStack itemStack: loot) {
+			// Bukkit.broadcastMessage("oldType: " + itemStack.getType());
+			switch (itemStack.getType()) {
+			case DIAMOND_BOOTS:
+			case DIAMOND_CHESTPLATE:
+			case DIAMOND_HELMET: 
+			case DIAMOND_LEGGINGS:
+				// Bukkit.broadcastMessage("setType");
+				itemStack.setType(null);
+				break;
+			default:
+				break;
+			}
+			
+		}		
 	}
 }

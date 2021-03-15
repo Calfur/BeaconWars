@@ -73,7 +73,6 @@ public class CustomBossBar {
 	}
 	
 	private void activateCountdown(LocalDateTime countdownEnd) {
-		Bukkit.broadcastMessage(countdownEnd.toString());
 		double countDownDurationInSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), countdownEnd);
 		bossBarStepPerSecond = 1 / countDownDurationInSeconds;
 		
