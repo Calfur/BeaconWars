@@ -8,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 
@@ -50,9 +52,10 @@ public class BeaconManager {
 	}
 	
 	public static void replaceBlock(World world, int x, int y, int z, Material material) {
-		Block block = world.getBlockAt(new Location(world, x, y, z));
+		Block block = new Location(world, x, y, z).getBlock();
 		block.setType(material);
 	}
+	
 	/**
 	 * 
 	 * @param beaconLocation
@@ -82,5 +85,12 @@ public class BeaconManager {
 			return true;
 		}
 		return false;
+	}
+
+	public static void removeOneBeaconFromInventory(Player player) {
+		Inventory inventory = player.getInventory();
+		if(inventory.contains(Material.BEACON)) {			
+			inventory.removeItem(new ItemStack(Material.BEACON, 1));		
+		}
 	}
 }

@@ -38,7 +38,8 @@ public class BossBarManager {
 	
 	public void removeBossBar(String name) {
 		CustomBossBar customBossBar = getBossBar(name);
-		customBossBars.remove(customBossBar);
-		customBossBar.destroy();
+		if(customBossBar != null) {			
+			removeBossBar(customBossBar);
+		}
 	}
 }

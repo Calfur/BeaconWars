@@ -61,7 +61,6 @@ public class ScoreboardLoader {
 	
 	public ScoreboardLoader() {
 		setTopKiller(TopKiller.getCurrentTopKiller());
-		bossBarManager.addBossBar("5 Minuten test", ChatColor.DARK_GREEN, LocalDateTime.now().plusMinutes(5));
 		reloadScoreboardForAllOnlinePlayers();
 	}
 	

@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 
 public class BeaconItemEvents implements Listener{
@@ -15,7 +16,7 @@ public class BeaconItemEvents implements Listener{
 		if(event.getBlock().getType() == Material.BEACON) {
 			BeaconFight ongoingBeaconFight = beaconFightManager.getOngoingBeaconFight();
 			if(ongoingBeaconFight == null) {
-				event.getPlayer().getInventory().removeItem(event.getItemInHand());
+				BeaconManager.removeOneBeaconFromInventory(event.getPlayer());
 			}else {
 				ongoingBeaconFight.addBeaconPlacement(event.getPlayer(), event.getBlockAgainst().getLocation());
 			}

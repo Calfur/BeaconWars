@@ -147,7 +147,7 @@ public class BeaconFight {
 		Team attackerTeam = new Team(attackerTeamId, teamDbConnection.getTeam(attackerTeamId).getColor());
 		Team defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
 		
-		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player));		
+		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, this));
 	}
 
 	public void addBeaconPlacement(Player placer, Location placedAgainst) {
@@ -161,7 +161,47 @@ public class BeaconFight {
 		if(teamWhereBeaconWasPlaced.getId() != attacker.getTeamId()) {
 			placer.sendMessage("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId());
 			return;
+		}		
+		BeaconRaid beaconRaid = getBeaconRaid(placer.getName(), teamWhereBeaconWasPlaced);
+		if(beaconRaid == null) {			
+			placer.sendMessage(ChatColor.RED + "Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben");
+			return;
 		}
-		Bukkit.broadcastMessage(ChatColor.BOLD + "Beacon zurückgebracht!");
+		beaconRaid.addBeaconPlacement(attacker, placer);
 	}
+	
+	/**
+	 * 
+	 * @param attackerName
+	 * @param attackerTeam
+	 * @return the first beaconRaid which matches attackerName and attackerTeam, the first which matches the attackerTeam or null
+	 */
+	private BeaconRaid getBeaconRaid(String attackerName, Team attackerTeam) {
+		List<BeaconRaid> beaconRaidsFromTeam = getBeaconRaidsFromTeam(attackerTeam);
+		if(beaconRaidsFromTeam.size() == 0) {
+			return null;
+		}
+		for (BeaconRaid beaconRaid : beaconRaidsFromTeam) {
+			if(beaconRaid.getDestructorName().equalsIgnoreCase(attackerName)) {
+				return beaconRaid;
+			}
+		}
+		return beaconRaidsFromTeam.get(0);
+	}
+
+	private List<BeaconRaid> getBeaconRaidsFromTeam(Team attackerTeam) {
+		List<BeaconRaid> beaconRaidsFromTeam = new ArrayList<BeaconRaid>();
+		for (BeaconRaid beaconRaid : beaconRaids) {
+			if(beaconRaid.getAttacker().getId() == attackerTeam.getId()) {
+				beaconRaidsFromTeam.add(beaconRaid);
+			}
+		}
+		return beaconRaidsFromTeam;
+	}
+
+	public void removeBeaconRaid(BeaconRaid beaconRaid) {
+		beaconRaids.remove(beaconRaid);
+	}
+	
+
 }
