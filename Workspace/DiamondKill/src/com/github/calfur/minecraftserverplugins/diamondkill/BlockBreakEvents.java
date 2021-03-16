@@ -22,19 +22,23 @@ public class BlockBreakEvents implements Listener {
 	public void onBlockBreaks(BlockBreakEvent event) {
 		Block block = event.getBlock();
 		if(unbreakableBlocks.contains(block.getType())) {
+			event.setCancelled(true);
 			if(block.getType() == Material.BEACON) {
 				if(Main.getInstance().getBeaconFightManager().isBeaconEventActive()) {
 					Player player = event.getPlayer();
 					Location location = event.getBlock().getLocation();
-					if(BeaconManager.isBeaconFromAnotherTeam(player, location)) {						
-						Main.getInstance().getBeaconFightManager().addBeaconBreak(player, location);
-						return;
-					}else {
+					if(!BeaconManager.isBeaconFromAnotherTeam(player, location)) {						
 						event.getPlayer().sendMessage(ChatColor.RED + "Du kannst deinen eigenen Beacon nicht abbauen");
+						return;
+					}
+					
+					boolean allowedToBreak = Main.getInstance().getBeaconFightManager().addBeaconBreak(player, location);
+					if(allowedToBreak) {
+						event.setCancelled(false);
+						event.setDropItems(false);
 					}
 				}				
 			}
-			event.setCancelled(true);
 		}
 	}	
 	@EventHandler

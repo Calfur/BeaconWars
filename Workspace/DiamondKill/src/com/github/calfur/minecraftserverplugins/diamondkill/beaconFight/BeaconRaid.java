@@ -48,10 +48,9 @@ public class BeaconRaid {
 		this.beaconLocation = beaconLocation;
 		this.beaconFight = beaconFight;
 		this.deadline = LocalDateTime.now().plusMinutes(maxMinutesToBringBack);
-		
+				
 		Bukkit.broadcastMessage(destructorName + " von " + attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " hat den Beacon von " + defender.getColor() + "Team " + defender.getId() + ChatColor.RESET + " abgebaut");
-		Bukkit.broadcastMessage("Der Beacon muss innerhalb von " + maxMinutesToBringBack + "min");
-		Bukkit.broadcastMessage("zurück zur Basis von " + attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " gebracht werden");
+		Bukkit.broadcastMessage("Der Beacon muss innerhalb von " + maxMinutesToBringBack + "min zur Base gebracht werden");
 	
 		bossBarName = attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " klaut den Beacon von " + defender.getColor() + "Team " + defender.getId();
 		
@@ -61,7 +60,7 @@ public class BeaconRaid {
 			
 			@Override
 			public void run() {
-				timeOverActions();				
+				doTimeOverActions();				
 			}
 			
 		}, maxMinutesToBringBack*60*20);
@@ -90,7 +89,7 @@ public class BeaconRaid {
 		beaconLocation.getBlock().setType(Material.BEACON);
 	}
 	
-	private void timeOverActions() {
+	public void doTimeOverActions() {
 		Bukkit.broadcastMessage("Die Zeit von " + attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " ist abgelaufen. Angriff fehlgeschlagen.");
 		Player player = Bukkit.getPlayerExact(destructorName);
 		if(player != null) {

@@ -2,12 +2,15 @@ package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 
@@ -47,17 +50,27 @@ public class BeaconFightManager {
 	public boolean tryRemoveActiveBeaconFight() {
 		BeaconFight beaconFight = getOngoingBeaconFight();
 		if(beaconFight != null) {
-			beaconFight.cancelBeaconFightEvent();
+			beaconFight.cancelOngoingBeaconFight();
 			return true;
 		}else {
 			beaconFight = getNextWaitingBeaconFight();
 			if(beaconFight != null) {
-				removeBeaconFight(beaconFight);
+				beaconFight.cancelBeaconFightBeforeStarted();
+				removeNotStartedBeaconFight(beaconFight);
 				return true;
 			}else {
 				return false;
 			}
 		}
+	}
+	
+	public void removeOngoingBeaconFight(BeaconFight beaconFight) {
+		removeBeaconFight(beaconFight);
+		isBeaconEventActive = false;
+	}
+	
+	private void removeNotStartedBeaconFight(BeaconFight beaconFight) {
+		removeBeaconFight(beaconFight);
 	}
 	
 	private void removeBeaconFight(BeaconFight beaconFight) {
@@ -91,21 +104,26 @@ public class BeaconFightManager {
 		isBeaconEventActive = true;
 	}
 	
-	public void deactivateBeaconFightEvent(BeaconFight beaconFight) {
-		removeBeaconFight(beaconFight);
-		isBeaconEventActive = false;
-	}
-	
 	public boolean isBeaconEventActive() {
 		return isBeaconEventActive;
 	}
 	
-	public void addBeaconBreak(Player player, Location beaconLocation) {
+	public boolean addBeaconBreak(Player destructor, Location beaconLocation) {
 		BeaconFight ongoingBeaconFight = getOngoingBeaconFight();
-		if(ongoingBeaconFight != null) {
-			ongoingBeaconFight.addBeaconDestruction(player, beaconLocation);
-		}else {
-			Bukkit.broadcastMessage("" + ChatColor.DARK_RED + ChatColor.BOLD + "ERROR: Beacon zerstört obwohl kein Beaconevent aktiv ist! Bitte Server neustarten");
+		if(ongoingBeaconFight == null) {
+			Bukkit.broadcastMessage(ChatColor.DARK_RED + "ERROR: Beacon abgebaut obwohl kein Beaconevent aktiv ist! Bitte Server neustarten");
+			return false;
 		}
+		return addBeaconBreak(destructor, beaconLocation, ongoingBeaconFight);
+	}
+	
+	private boolean addBeaconBreak(Player destructor, Location beaconLocation, BeaconFight beaconFight) {
+		HashMap<Integer, ItemStack> notAddedItems = destructor.getInventory().addItem(new ItemStack(Material.BEACON, 1));
+		if(notAddedItems.size() != 0) {
+			destructor.sendMessage(ChatColor.RED + "Kein freien Platz im Inventar gefunden, Beacon konnte nicht abgebaut werden");
+			return false;
+		}
+		beaconFight.addBeaconDestruction(destructor, beaconLocation);
+		return true;
 	}
 }

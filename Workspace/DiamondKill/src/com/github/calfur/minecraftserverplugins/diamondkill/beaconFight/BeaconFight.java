@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -19,8 +23,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.Team;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
-
-import net.md_5.bungee.api.ChatColor;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 
 public class BeaconFight {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
@@ -30,6 +33,8 @@ public class BeaconFight {
 	private BeaconFightManager manager;
 	private long durationInMinutes;
 	private List<BeaconRaid> beaconRaids = new ArrayList<BeaconRaid>();
+	private HashMap<Integer, Integer> amountOfLostDefensesPerTeams = new HashMap<Integer, Integer>();
+	int totalDefenceReward = 6;
 
 	public LocalDateTime getStartTime() {
 		return startTime;
@@ -68,21 +73,42 @@ public class BeaconFight {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
 			@Override
 			public void run() {
-				stopBeaconFight();
+				stopBeaconFightNaturally();
 			}
 		}, durationInMinutes*60*20);
 	}
 
-	public void cancelBeaconFightEvent() {
-		manager.deactivateBeaconFightEvent(this);
-		sendEventCancelMessage();
-		DeathBanPluginInteraction.tryChangeBanDuration(10);
+	public void cancelBeaconFightBeforeStarted() {
+		end();
 	}
 	
-	private void stopBeaconFight() {
-		manager.deactivateBeaconFightEvent(this);
-		sendEventDeactivatedMessage();
+	public void cancelOngoingBeaconFight() {
+		sendEventCancelMessage();
+		end();
+	}
+	
+	private void stopBeaconFightNaturally() {
+		HashMap<Integer, Integer> defenseRewardPerTeams = calculateDefenseRewardPerTeams();
+		sendEventDeactivatedMessage(defenseRewardPerTeams);
+		payDefenderBounty(defenseRewardPerTeams);
+		end();
+	}
+
+	private void end() {
 		DeathBanPluginInteraction.tryChangeBanDuration(10);
+		BeaconRaid[] localBeaconRaids = beaconRaids.toArray(new BeaconRaid[beaconRaids.size()]);
+		for (BeaconRaid beaconRaid : localBeaconRaids) {
+			beaconRaid.doTimeOverActions();
+		}
+		manager.removeOngoingBeaconFight(this);
+	}
+	
+	private void payDefenderBounty(HashMap<Integer, Integer> defenseRewardPerTeams) {
+		for (Entry<Integer, Integer> defenseReward : defenseRewardPerTeams.entrySet()) {
+			int teamId = defenseReward.getKey();
+			int reward = defenseReward.getValue();
+			Bukkit.broadcastMessage("TODO: Pay " + reward + " to Team " + teamId); // TODO: pay to a member of the team
+		}
 	}
 
 	private void sendEventStartMessage() {
@@ -92,6 +118,7 @@ public class BeaconFight {
 		Bukkit.broadcastMessage("In den nächsten " + durationInMinutes + "min können eure Beacons geklaut werden");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");		
+		Bukkit.broadcastMessage(" ");
 	}
 	
 	private void sendEventCancelMessage() {
@@ -100,18 +127,71 @@ public class BeaconFight {
 		Bukkit.broadcastMessage(ChatColor.BOLD + "Der Beaconevent wurde " + ChatColor.DARK_RED + "abgebrochen");
 		Bukkit.broadcastMessage("Ab sofort können keine Beacons mehr geklaut werden");
 		Bukkit.broadcastMessage(" ");
-		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");		
+		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");	
+		Bukkit.broadcastMessage(" ");	
 	}
 
-	private void sendEventDeactivatedMessage() {
+	private void sendEventDeactivatedMessage(HashMap<Integer, Integer> rewardsPerTeam) {
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.BOLD + "Der Beaconevent wurde beendet");
 		Bukkit.broadcastMessage("Ab sofort können keine Beacons mehr geklaut werden");
 		Bukkit.broadcastMessage(" ");
-		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");		
+		Bukkit.broadcastMessage("Team | Verlorene Verteidigungen | Belohnung");
+		for (Entry<String, TeamJson> team : teamDbConnection.getTeams().entrySet()) {
+			Integer teamId = Integer.parseInt(team.getKey());
+			Integer amountOfLostDefenses = getAmountOfLostDefenses(teamId);
+			int defenseReward = rewardsPerTeam.get(teamId);
+			Bukkit.broadcastMessage(team.getValue().getColor() + "" + teamId + ChatColor.RESET + "      | " + amountOfLostDefenses + "                               | " + ChatColor.AQUA + defenseReward + " Dias");
+		}
+		Bukkit.broadcastMessage(" ");
+		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");	
+		Bukkit.broadcastMessage(" ");
 	}
 	
+	private HashMap<Integer, Integer> calculateDefenseRewardPerTeams() {
+		HashMap<Integer, Integer> rewardsPerTeams = getZeroRewardsPerTeams();
+		
+		HashMap<Integer, Integer> teamsWithLowestAmountOfLostDefenses = getTeamsWithLowestAmountOfLostDefenses(rewardsPerTeams.keySet());
+		
+		int reward = Math.round(totalDefenceReward / teamsWithLowestAmountOfLostDefenses.size());
+		
+		for (Entry<Integer, Integer> teamWithLowestAmountOfLostDefenses : teamsWithLowestAmountOfLostDefenses.entrySet()) {
+			rewardsPerTeams.put(teamWithLowestAmountOfLostDefenses.getKey(), reward);
+		}
+		
+		return rewardsPerTeams;
+	}
+
+	private HashMap<Integer, Integer> getZeroRewardsPerTeams() {
+		HashMap<Integer, Integer> result = new HashMap<Integer, Integer>();
+		for (Entry<String, TeamJson> team : teamDbConnection.getTeams().entrySet()) {
+			result.put(Integer.parseInt(team.getKey()), 0);
+		}
+		return result;
+	}
+
+	private HashMap<Integer, Integer> getTeamsWithLowestAmountOfLostDefenses(Set<Integer> teamIds) {
+		HashMap<Integer, Integer> teamsWithLowestAmountOfLostDefenses = new HashMap<>();
+		
+		for(int teamId : teamIds) {
+			int amountOfLostDefenses = getAmountOfLostDefenses(teamId);
+			
+			if(teamsWithLowestAmountOfLostDefenses.size() == 0) { // first time in the loop			
+				teamsWithLowestAmountOfLostDefenses.put(teamId, amountOfLostDefenses);
+			}else {
+				int amountOfLostDefensesOfFirstEntry = teamsWithLowestAmountOfLostDefenses.values().toArray(new Integer[teamsWithLowestAmountOfLostDefenses.size()])[0];
+				if(amountOfLostDefenses < amountOfLostDefensesOfFirstEntry) { // lower amount of defenses
+					teamsWithLowestAmountOfLostDefenses = new HashMap<Integer, Integer>();
+					teamsWithLowestAmountOfLostDefenses.put(teamId, amountOfLostDefenses);
+				}else if(amountOfLostDefensesOfFirstEntry == amountOfLostDefenses) { // same amount of defenses
+					teamsWithLowestAmountOfLostDefenses.put(teamId, amountOfLostDefenses);
+				}
+			}
+		}
+		return teamsWithLowestAmountOfLostDefenses;
+	}
+
 	private void teleportAllOnlinePlayersIntoOverworld() {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 		for (Player player : players) {
@@ -150,23 +230,25 @@ public class BeaconFight {
 		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, this));
 	}
 
-	public void addBeaconPlacement(Player placer, Location placedAgainst) {
+	public void tryAddBeaconPlacement(Player placer, Location placedAgainst) {
 		Team teamWhereBeaconWasPlaced = BeaconManager.getTeamByBeaconLocation(placedAgainst);
 		PlayerJson attacker = playerDbConnection.getPlayer(placer.getName());
 		
 		if(teamWhereBeaconWasPlaced == null) {
-			placer.sendMessage("Du musst den Beacon an den Beacon von deinem Team plazieren");
+			placer.sendMessage(ChatColor.DARK_RED + "Du musst den Beacon an den Beacon von deinem Team plazieren");
 			return;
 		}
 		if(teamWhereBeaconWasPlaced.getId() != attacker.getTeamId()) {
-			placer.sendMessage("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId());
+			placer.sendMessage(ChatColor.DARK_RED + "Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId());
 			return;
 		}		
 		BeaconRaid beaconRaid = getBeaconRaid(placer.getName(), teamWhereBeaconWasPlaced);
 		if(beaconRaid == null) {			
-			placer.sendMessage(ChatColor.RED + "Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben");
+			placer.sendMessage(ChatColor.DARK_RED + "Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben");
+			BeaconManager.removeOneBeaconFromInventory(placer);
 			return;
 		}
+		addLostDefense(beaconRaid.getDefender().getId());
 		beaconRaid.addBeaconPlacement(attacker, placer);
 	}
 	
@@ -203,5 +285,17 @@ public class BeaconFight {
 		beaconRaids.remove(beaconRaid);
 	}
 	
-
+	private Integer getAmountOfLostDefenses(Integer teamId) {
+		Integer amountOfLostDefenses = amountOfLostDefensesPerTeams.get(teamId);
+		if(amountOfLostDefenses == null) {
+			amountOfLostDefensesPerTeams.put(teamId, 0);
+			return 0;
+		}
+		return amountOfLostDefenses;
+	}
+	
+	private void addLostDefense(Integer teamId) {
+		Integer amountOfLostDefenses = getAmountOfLostDefenses(teamId);
+		amountOfLostDefensesPerTeams.put(teamId, amountOfLostDefenses + 1);
+	}
 }

@@ -18,7 +18,7 @@ public class BeaconItemEvents implements Listener{
 			if(ongoingBeaconFight == null) {
 				BeaconManager.removeOneBeaconFromInventory(event.getPlayer());
 			}else {
-				ongoingBeaconFight.addBeaconPlacement(event.getPlayer(), event.getBlockAgainst().getLocation());
+				ongoingBeaconFight.tryAddBeaconPlacement(event.getPlayer(), event.getBlockAgainst().getLocation());
 			}
 			event.setCancelled(true);
 		}
