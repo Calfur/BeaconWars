@@ -3,6 +3,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -74,7 +75,7 @@ public class CommandBeaconFight implements CommandExecutor {
 			return false;
 		}
 		if(beaconFightManager.tryAddBeaconFight(startTime, durationInMinutes)) {
-			executor.sendMessage(ChatColor.GREEN + "Beaconevent erfolgreich hinzugefügt. Startet um " + args[1]);
+			executor.sendMessage(ChatColor.GREEN + "Beaconevent erfolgreich hinzugefügt. Startet in " + ChatColor.RESET + ChronoUnit.MINUTES.between(LocalDateTime.now(), startTime) + " Minuten");
 			return true;
 		}else {
 			executor.sendMessage(ChatColor.RED + "Beaconfight Event wurde nicht hinzugefügt. Möglicherweise war die Startzeit vor Jetzt, oder ein bestehender Event überschneidet die Zeit.");
@@ -85,9 +86,10 @@ public class CommandBeaconFight implements CommandExecutor {
 	private boolean tryRemoveBeaconFight(Player executor, String[] args) {
 		boolean removed = beaconFightManager.tryRemoveActiveBeaconFight();
 		if(removed) {
+			executor.sendMessage(ChatColor.GREEN + "Beaconevent entfernt");
 			return true;
 		}else {
-			executor.sendMessage("Es konnte kein Beaconfight entfernt werden.");
+			executor.sendMessage(ChatColor.DARK_RED + "Es konnte kein Beaconfight entfernt werden");
 			return false;
 		}
 	}
