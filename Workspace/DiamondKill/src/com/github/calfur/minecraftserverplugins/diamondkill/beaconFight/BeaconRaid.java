@@ -1,12 +1,16 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
@@ -24,6 +28,10 @@ public class BeaconRaid {
 	private int taskId;
 	private int reward = 5;
 	private int maxMinutesToBringBack = 1;
+	private Collection<PotionEffect> attackerEffects = Arrays.asList(new PotionEffect[]{
+		new PotionEffect(PotionEffectType.GLOWING, maxMinutesToBringBack*60*20, 0),
+		new PotionEffect(PotionEffectType.WEAKNESS, maxMinutesToBringBack*60*20, 0)
+	});
 	
 	public Team getAttacker() {
 		return attacker;
@@ -49,6 +57,8 @@ public class BeaconRaid {
 		this.beaconFight = beaconFight;
 		this.deadline = LocalDateTime.now().plusMinutes(maxMinutesToBringBack);
 				
+		destructor.addPotionEffects(attackerEffects);
+		
 		Bukkit.broadcastMessage(destructorName + " von " + attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " hat den Beacon von " + defender.getColor() + "Team " + defender.getId() + ChatColor.RESET + " abgebaut");
 		Bukkit.broadcastMessage("Der Beacon muss innerhalb von " + maxMinutesToBringBack + "min zur Base gebracht werden");
 	
