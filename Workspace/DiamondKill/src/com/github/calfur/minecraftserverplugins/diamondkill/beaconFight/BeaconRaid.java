@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -85,7 +86,22 @@ public class BeaconRaid {
 		BeaconManager.removeOneBeaconFromInventory(player);
 		Main.getInstance().getScoreboardLoader().reloadScoreboardFor(player);
 		
+		removePotionEffects(player);
+		
+		playBeaconPlacementSound();
+		
 		destroy();
+	}
+	private void playBeaconPlacementSound() {
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+			onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.BLOCK_END_PORTAL_SPAWN, 1, 1);
+		}
+	}
+	private void removePotionEffects(Player player) {
+		for (PotionEffect potionEffect : attackerEffects) {			
+			player.removePotionEffect(potionEffect.getType());
+			Main.getInstance().getPlayerModeManager().reloadPlayerMode(player);
+		}
 	}
 	
 	private void destroy() {
