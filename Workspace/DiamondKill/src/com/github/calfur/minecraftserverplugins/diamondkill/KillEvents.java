@@ -20,6 +20,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
@@ -34,6 +35,7 @@ public class KillEvents implements Listener {
 	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
+	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 	
 	private ArrayList<LatestHitByPlayer> latestHitByPlayers = new ArrayList<LatestHitByPlayer>();
 	
@@ -121,9 +123,11 @@ public class KillEvents implements Listener {
 			}
 		}
 	}
+	
 	@EventHandler
 	public void onPlayerDies(PlayerDeathEvent event) {
 		Player player = (Player)event.getEntity();
+		removeBeaconsFromLoot(event.getDrops(), player);
 		LatestHitByPlayer latestHitByPlayer = GetLatestHitByPlayer(player.getName());
 		if(latestHitByPlayer != null) {
 			long secondsBetween = ChronoUnit.SECONDS.between(latestHitByPlayer.getDateTime(), LocalDateTime.now());
@@ -157,20 +161,35 @@ public class KillEvents implements Listener {
 	
 	private void removeUndroppableItems(List<ItemStack> loot) {
 
-		for (ItemStack itemStack: loot) {
+		for (ItemStack itemStack : loot) {
 			// Bukkit.broadcastMessage("oldType: " + itemStack.getType());
 			switch (itemStack.getType()) {
-			case DIAMOND_BOOTS:
-			case DIAMOND_CHESTPLATE:
-			case DIAMOND_HELMET: 
-			case DIAMOND_LEGGINGS:
-				// Bukkit.broadcastMessage("setType");
-				itemStack.setType(null);
-				break;
-			default:
-				break;
+				case DIAMOND_BOOTS:
+				case DIAMOND_CHESTPLATE:
+				case DIAMOND_HELMET: 
+				case DIAMOND_LEGGINGS:
+					// Bukkit.broadcastMessage("setType");
+					itemStack.setType(null);
+					break;
+				default:
+					break;
 			}
 			
 		}		
+	}
+	
+	private void removeBeaconsFromLoot(List<ItemStack> loot, Player owner) {
+		for (ItemStack itemStack: loot) {
+			switch (itemStack.getType()) {
+				case BEACON:
+					if(beaconFightManager.isBeaconEventActive()) {	
+						beaconFightManager.getOngoingBeaconFight().removeBeaconRaidsByDestructor(owner);
+					}
+					itemStack.setType(null);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 }
