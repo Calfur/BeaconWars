@@ -298,4 +298,13 @@ public class BeaconFight {
 		Integer amountOfLostDefenses = getAmountOfLostDefenses(teamId);
 		amountOfLostDefensesPerTeams.put(teamId, amountOfLostDefenses + 1);
 	}
+
+	public void removeBeaconRaidsByDestructor(Player leaver) {
+		BeaconRaid[] localBeaconRaids = beaconRaids.toArray(new BeaconRaid[beaconRaids.size()]);
+		for (BeaconRaid beaconRaid : localBeaconRaids) {
+			if(beaconRaid.getDestructorName().equalsIgnoreCase(leaver.getName())) {
+				beaconRaid.doAttackPreventedActions();
+			}
+		}
+	}
 }

@@ -37,15 +37,19 @@ public class BeaconRaid {
 	public Team getAttacker() {
 		return attacker;
 	}
+	
 	public Team getDefender() {
 		return defender;
 	}
+	
 	public LocalDateTime getDeadline() {
 		return deadline;
 	}
+	
 	public String getBossBarName() {
 		return bossBarName;
 	}
+	
 	public String getDestructorName() {
 		return destructorName;
 	}
@@ -92,11 +96,13 @@ public class BeaconRaid {
 		
 		destroy();
 	}
+	
 	private void playBeaconPlacementSound() {
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 			onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.BLOCK_END_PORTAL_SPAWN, 1, 1);
 		}
 	}
+	
 	private void removePotionEffects(Player player) {
 		for (PotionEffect potionEffect : attackerEffects) {			
 			player.removePotionEffect(potionEffect.getType());
@@ -114,13 +120,18 @@ public class BeaconRaid {
 	private void placeBeaconBack() {
 		beaconLocation.getBlock().setType(Material.BEACON);
 	}
-	
+
 	public void doTimeOverActions() {
-		Bukkit.broadcastMessage("Die Zeit von " + attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " ist abgelaufen. Angriff fehlgeschlagen.");
+		Bukkit.broadcastMessage("Die Zeit von " + attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " ist abgelaufen. Beaconraub gegen " + defender.getColor() + "Team " + defender.getId() + ChatColor.RESET + "  fehlgeschlagen.");
 		Player player = Bukkit.getPlayerExact(destructorName);
 		if(player != null) {
 			BeaconManager.removeOneBeaconFromInventory(player);
 		}
+		destroy();
+	}
+	
+	public void doAttackPreventedActions() {
+		Bukkit.broadcastMessage("Der Angriff von " + attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " gegen " + defender.getColor() + "Team " + defender.getId() + ChatColor.RESET + " wurde verhindert. Beaconraub fehlgeschlagen.");
 		destroy();
 	}
 }

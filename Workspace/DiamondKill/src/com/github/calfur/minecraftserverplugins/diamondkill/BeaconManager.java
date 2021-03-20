@@ -87,10 +87,17 @@ public class BeaconManager {
 		return false;
 	}
 
-	public static void removeOneBeaconFromInventory(Player player) {
+	/**
+	 * 
+	 * @param player
+	 * @return true if beacon was removed, false if not
+	 */
+	public static boolean removeOneBeaconFromInventory(Player player) {
 		Inventory inventory = player.getInventory();
-		if(inventory.contains(Material.BEACON)) {			
-			inventory.removeItem(new ItemStack(Material.BEACON, 1));		
+		if(!inventory.contains(Material.BEACON)) {			
+			return false;
 		}
+		inventory.removeItem(new ItemStack(Material.BEACON, 1));	
+		return true;
 	}
 }
