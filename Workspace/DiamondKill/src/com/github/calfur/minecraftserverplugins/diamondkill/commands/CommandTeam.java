@@ -99,6 +99,7 @@ public class CommandTeam implements CommandExecutor {
 		TeamJson teamJson = teamDbConnection.getTeam(teamNumber);
 		Location beaconLocation = teamJson.getBeaconPosition();
 		executor.sendMessage(ChatColor.RESET + "Name: " + ChatColor.BOLD + "Team " + teamNumber); 
+		executor.sendMessage(ChatColor.RESET + "Teamleader: " + teamJson.getTeamLeader()); 
 		executor.sendMessage(ChatColor.RESET + "Farbe: " + teamJson.getColor() + teamJson.getColor().name());
 		executor.sendMessage(ChatColor.RESET + "Beacon Position: XYZ= " + beaconLocation.getBlockX() + " / " + beaconLocation.getBlockY() + " / " + beaconLocation.getBlockZ());
 		return true;
@@ -128,7 +129,7 @@ public class CommandTeam implements CommandExecutor {
 	}
 	
 	private boolean editTeam(Player executor, String[] args) {
-		if(args.length != 6) {
+		if(args.length != 7) {
 			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
 			return false;
 		}
@@ -137,6 +138,7 @@ public class CommandTeam implements CommandExecutor {
 		int beaconLocationX;
 		int beaconLocationY;
 		int beaconLocationZ;
+		String teamLeader;
 		try {
 			teamNumber = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
@@ -166,7 +168,7 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Beacon_z Parameter muss dem Typ int entsprechen");
 			return false;
 		}
-		
+		teamLeader = args[6];
 		if(!teamDbConnection.existsTeam(teamNumber)) {
 			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
 			return false;
@@ -175,14 +177,14 @@ public class CommandTeam implements CommandExecutor {
 		BeaconManager.removeLevelOneBeacon(oldTeam.getBeaconPosition());
 		Location beaconLocation = new Location(executor.getWorld(), beaconLocationX, beaconLocationY, beaconLocationZ);
 		BeaconManager.placeLevelOneBeacon(beaconLocation);
-		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, beaconLocation));
+		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " editiert.");
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
 	
 	private boolean addTeam(Player executor, String[] args) {
-		if(args.length != 6) {
+		if(args.length != 7) {
 			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
 			return false;
 		}
@@ -191,6 +193,7 @@ public class CommandTeam implements CommandExecutor {
 		int beaconLocationX;
 		int beaconLocationY;
 		int beaconLocationZ;
+		String teamLeader;
 		try {
 			teamNumber = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
@@ -221,7 +224,7 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Beacon_z Parameter muss dem Typ int entsprechen");
 			return false;
 		}
-		
+		teamLeader = args[6];
 		if(teamDbConnection.existsTeam(teamNumber)) {
 			executor.sendMessage(ChatColor.RED + "Dieses Team wurde bereits registriert");	
 			return false;
@@ -229,7 +232,7 @@ public class CommandTeam implements CommandExecutor {
 		World world = executor.getWorld();
 		Location beaconLocation = new Location(world, beaconLocationX, beaconLocationY, beaconLocationZ);
 		BeaconManager.placeLevelOneBeacon(beaconLocation);
-		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, beaconLocation));
+		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " registriert.");
 		return true;
 	}
