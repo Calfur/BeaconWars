@@ -113,7 +113,15 @@ public class BeaconFight {
 		for (Entry<Integer, Integer> defenseReward : defenseRewardPerTeams.entrySet()) {
 			int teamId = defenseReward.getKey();
 			int reward = defenseReward.getValue();
-			Bukkit.broadcastMessage("TODO: Pay " + reward + " to Team " + teamId); // TODO: pay to a member of the team
+			TeamJson teamJson = teamDbConnection.getTeam(teamId);
+			String teamLeaderName = teamJson.getTeamLeader();
+			PlayerJson playerJson = playerDbConnection.getPlayer(teamLeaderName);
+			if(playerJson != null) {				
+				playerJson.addCollectableDiamonds(reward);
+				playerDbConnection.addPlayer(teamLeaderName, playerJson);
+			}else {
+				Bukkit.broadcastMessage(ChatColor.DARK_RED + "Der Teamleader " + teamLeaderName + " von" + teamJson.getColor() + "Team " + teamId + ChatColor.DARK_RED + " wurde noch nicht registriert");
+			}
 		}
 	}
 
@@ -142,6 +150,7 @@ public class BeaconFight {
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.BOLD + "Der Beaconevent wurde beendet");
 		Bukkit.broadcastMessage("Ab sofort können keine Beacons mehr geklaut werden");
+		Bukkit.broadcastMessage("Folgende Belohnungen werden an die Teamleader ausgezahlt:");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage("Team | Verlorene Verteidigungen | Belohnung");
 		for (Entry<String, TeamJson> team : teamDbConnection.getTeams().entrySet()) {
