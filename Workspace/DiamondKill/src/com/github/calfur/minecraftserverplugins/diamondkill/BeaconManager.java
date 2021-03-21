@@ -100,4 +100,12 @@ public class BeaconManager {
 		inventory.removeItem(new ItemStack(Material.BEACON, 1));	
 		return true;
 	}
+
+	public static boolean removeBeaconsFromInventory(Player leaver) {
+		boolean result = false;
+		while(removeOneBeaconFromInventory(leaver)){
+			result = true;
+		}
+		return result;
+	}
 }

@@ -49,14 +49,21 @@ public class CommandBeaconFight implements CommandExecutor {
 	}
 	
 	private boolean tryAddBeaconFight(Player executor, String[] args) {
-		if(args.length == 2) {
-			args = ArrayUtils.add(args, "90"); // default length of 90min
-		}else if(args.length != 3) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
-			return false;
+		switch(args.length) {
+			case 2:
+				args = ArrayUtils.add(args, "90"); // default length of 90min			
+			case 3:
+				args = ArrayUtils.add(args, "15"); // default length per attack of 15min	
+				break;
+			case 4:
+				break;
+			default:
+				executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+				return false;
 		}
 		LocalDateTime startTime;
-		Long durationInMinutes;
+		Long eventDurationInMinutes;
+		int attackDurationInMinutes;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm");
 			startTime = LocalDateTime.parse(args[1], formatter);
@@ -65,16 +72,26 @@ public class CommandBeaconFight implements CommandExecutor {
 			return false;
 		}
 		try {
-			durationInMinutes = Long.parseLong(args[2]);
+			eventDurationInMinutes = Long.parseLong(args[2]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Teamnummer Parameter muss dem Typ Long entsprechen");
+			executor.sendMessage(ChatColor.RED + "Der Eventdauer Parameter muss dem Typ Long entsprechen");
 			return false;
 		}
-		if(durationInMinutes <= 0) {
+		if(eventDurationInMinutes < 1) {
 			executor.sendMessage(ChatColor.RED + "Die Eventdauer muss mindestens 1min sein");
 			return false;
 		}
-		if(beaconFightManager.tryAddBeaconFight(startTime, durationInMinutes)) {
+		try {
+			attackDurationInMinutes = Integer.parseInt(args[3]);
+		}catch(NumberFormatException e) {
+			executor.sendMessage(ChatColor.RED + "Der Angriffsdauer Parameter muss dem Typ Long entsprechen");
+			return false;
+		}
+		if(attackDurationInMinutes < 1) {
+			executor.sendMessage(ChatColor.RED + "Die Angriffsdauer muss mindestens 1min sein");
+			return false;
+		}
+		if(beaconFightManager.tryAddBeaconFight(startTime, eventDurationInMinutes, attackDurationInMinutes)) {
 			executor.sendMessage(ChatColor.GREEN + "Beaconevent erfolgreich hinzugefügt. Startet in " + ChatColor.RESET + ChronoUnit.MINUTES.between(LocalDateTime.now(), startTime) + " Minuten");
 			return true;
 		}else {

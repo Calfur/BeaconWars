@@ -17,7 +17,7 @@ commands:
     usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
   beaconfight:
     description: Interagiert mit der Killdatenbank
-    usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Duration (Minutes)]
+    usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]
   buildmode:
     aliases: 
     - pengin

@@ -18,14 +18,14 @@ public class BeaconFightManager {
 	private List<BeaconFight> beaconFights = new ArrayList<BeaconFight>();
 	private boolean isBeaconEventActive = false;
 	
-	public boolean tryAddBeaconFight(LocalDateTime startTime, long durationInMinutes) {
+	public boolean tryAddBeaconFight(LocalDateTime startTime, long eventDurationInMinutes, int attackDurationInMinutes) {
 		if(startTime.isBefore(LocalDateTime.now())){
 			return false;
 		}
-		if(isTimeOverlappingWithAnotherEvent(startTime, startTime.plusMinutes(durationInMinutes))) {
+		if(isTimeOverlappingWithAnotherEvent(startTime, startTime.plusMinutes(eventDurationInMinutes))) {
 			return false;
 		}
-		beaconFights.add(new BeaconFight(startTime, durationInMinutes, this));
+		beaconFights.add(new BeaconFight(startTime, eventDurationInMinutes, attackDurationInMinutes, this));
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}

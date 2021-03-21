@@ -54,12 +54,13 @@ public class BeaconRaid {
 		return destructorName;
 	}
 	
-	public BeaconRaid(Team attacker, Team defender, Player destructor, Location beaconLocation, BeaconFight beaconFight) {
+	public BeaconRaid(Team attacker, Team defender, Player destructor, Location beaconLocation, int attackDurationInMinutes, BeaconFight beaconFight) {
 		this.attacker = attacker;
 		this.defender = defender;
 		this.destructorName = destructor.getName();
 		this.beaconLocation = beaconLocation;
 		this.beaconFight = beaconFight;
+		this.maxMinutesToBringBack = attackDurationInMinutes;
 		this.deadline = LocalDateTime.now().plusMinutes(maxMinutesToBringBack);
 				
 		destructor.addPotionEffects(attackerEffects);

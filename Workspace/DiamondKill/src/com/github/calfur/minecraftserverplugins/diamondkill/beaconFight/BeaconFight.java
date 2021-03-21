@@ -31,27 +31,31 @@ public class BeaconFight {
 	
 	private LocalDateTime startTime;
 	private BeaconFightManager manager;
-	private long durationInMinutes;
+	private long eventDurationInMinutes;
+	private int attackDurationInMinutes;
 	private List<BeaconRaid> beaconRaids = new ArrayList<BeaconRaid>();
 	private HashMap<Integer, Integer> amountOfLostDefensesPerTeams = new HashMap<Integer, Integer>();
 	int totalDefenceReward = 6;
+	private int naturallyEndTaskId;
+	private int startBeaconFightStartId;
 
 	public LocalDateTime getStartTime() {
 		return startTime;
 	}
 	
 	public LocalDateTime getEndTime() {
-		return startTime.plusMinutes(durationInMinutes);
+		return startTime.plusMinutes(eventDurationInMinutes);
 	}
 	
-	public BeaconFight(LocalDateTime startTime, long durationInMinutes, BeaconFightManager manager) {
+	public BeaconFight(LocalDateTime startTime, long eventDurationInMinutes, int attackDurationInMinutes, BeaconFightManager manager) {
 		this.startTime = startTime;
 		this.manager = manager;
-		this.durationInMinutes = durationInMinutes;
+		this.eventDurationInMinutes = eventDurationInMinutes;
+		this.attackDurationInMinutes = attackDurationInMinutes;
 		
 		long ticksTillStart = ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime)*20;
 		if(ticksTillStart > 0) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
+			startBeaconFightStartId = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
 				@Override
 				public void run() {
 					startBeaconFightEvent();
@@ -70,20 +74,22 @@ public class BeaconFight {
 		DeathBanPluginInteraction.tryChangeBanDuration(2);
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
+		naturallyEndTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
 			@Override
 			public void run() {
 				stopBeaconFightNaturally();
 			}
-		}, durationInMinutes*60*20);
+		}, eventDurationInMinutes*60*20);
 	}
 
 	public void cancelBeaconFightBeforeStarted() {
+		Bukkit.getScheduler().cancelTask(startBeaconFightStartId);
 		end();
 	}
 	
 	public void cancelOngoingBeaconFight() {
 		sendEventCancelMessage();
+		Bukkit.getScheduler().cancelTask(naturallyEndTaskId);
 		end();
 	}
 	
@@ -115,7 +121,7 @@ public class BeaconFight {
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.BOLD + "Der Beaconevent startet jetzt!");
-		Bukkit.broadcastMessage("In den nächsten " + durationInMinutes + "min können eure Beacons geklaut werden");
+		Bukkit.broadcastMessage("In den nächsten " + eventDurationInMinutes + "min können eure Beacons geklaut werden");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");		
 		Bukkit.broadcastMessage(" ");
@@ -227,7 +233,7 @@ public class BeaconFight {
 		Team attackerTeam = new Team(attackerTeamId, teamDbConnection.getTeam(attackerTeamId).getColor());
 		Team defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
 		
-		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, this));
+		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, attackDurationInMinutes, this));
 	}
 
 	public void tryAddBeaconPlacement(Player placer, Location placedAgainst) {
