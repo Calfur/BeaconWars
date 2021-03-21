@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 
 
-public class VillagerTradesDisabler implements Listener {
+public class VilligerTradesDisabler implements Listener {
 	@EventHandler
 	public void onVillagerAcquiresTrade(VillagerAcquireTradeEvent event) {
 		switch (event.getRecipe().getResult().getType()){
@@ -21,7 +21,7 @@ public class VillagerTradesDisabler implements Listener {
 			case IRON_SWORD:
 			case BOW:
 				event.setCancelled(true);
-//				Bukkit.broadcastMessage("Cancelled Trade");
+				// Bukkit.broadcastMessage("Cancelled Trade");
 				break;
 		default:
 			break;
