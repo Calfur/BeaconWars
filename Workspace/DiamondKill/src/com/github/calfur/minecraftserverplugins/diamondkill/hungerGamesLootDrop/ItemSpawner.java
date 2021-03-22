@@ -30,11 +30,11 @@ public class ItemSpawner implements Runnable {
 		int amountOfOnlineTeams = getCurrentAmountOfOnlineTeams();
 		if(amountOfOnlineTeams >= minimumOfRequiredTeams) {
 			Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");
-			Bukkit.broadcastMessage(ChatColor.GOLD + "Ein " + ChatColor.AQUA + "Diamant" + ChatColor.RESET + " ist in der Mitte gespawn! Kämpft um ihn!");
+			Bukkit.broadcastMessage(ChatColor.GOLD + "Ein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " ist in der Mitte gespawn! Kämpft um ihn!");
 			Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");
 			location.getWorld().dropItem(location, itemsToSpawn);
 		}else {
-			Bukkit.broadcastMessage(ChatColor.GOLD + "Kein " + ChatColor.AQUA + "Diamant" + ChatColor.RESET + " gespawnt, es sind nur " + ChatColor.RESET + amountOfOnlineTeams + ChatColor.GOLD + " von " + ChatColor.RESET + minimumOfRequiredTeams + ChatColor.GOLD + " benötigten Teams online");
+			Bukkit.broadcastMessage(ChatColor.GOLD + "Kein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " gespawnt, es sind nur " + ChatColor.RESET + amountOfOnlineTeams + ChatColor.GOLD + " von " + ChatColor.RESET + minimumOfRequiredTeams + ChatColor.GOLD + " benötigten Teams online");
 		}
 	}
 
