@@ -1,5 +1,10 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
@@ -8,6 +13,8 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConne
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.disabling.FeatureDisabler;
+import com.github.calfur.minecraftserverplugins.diamondkill.hungerGamesLootDrop.ItemSpawnAnnouncer;
+import com.github.calfur.minecraftserverplugins.diamondkill.hungerGamesLootDrop.ItemSpawner;
 
 public class Main extends JavaPlugin {
 	private static Main instance;
@@ -38,6 +45,22 @@ public class Main extends JavaPlugin {
 
 		DeathBanPluginInteraction.tryChangeBanDuration(10);
 		//BeaconBreakStrengthIncreaser.increaseBreakStrength();
+		
+		startItemSpawner();
+	}
+
+	private void startItemSpawner() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime fullHour = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0);
+		long ticksUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour) * 20;
+		if(ticksUntilFullHour-6000 > 0) {
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)), ticksUntilFullHour, 72000);
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ItemSpawnAnnouncer(), ticksUntilFullHour-6000, 72000);
+		}else {
+			ticksUntilFullHour += 72000;
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)), ticksUntilFullHour, 72000);
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ItemSpawnAnnouncer(), ticksUntilFullHour-6000, 72000);
+		}
 	}
 	
 	@Override
