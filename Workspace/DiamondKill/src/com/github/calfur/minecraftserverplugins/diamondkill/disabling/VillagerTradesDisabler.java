@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 
 
-public class VilligerTradesDisabler implements Listener {
+public class VillagerTradesDisabler implements Listener {
 	@EventHandler
 	public void onVillagerAcquiresTrade(VillagerAcquireTradeEvent event) {
 		switch (event.getRecipe().getResult().getType()){
