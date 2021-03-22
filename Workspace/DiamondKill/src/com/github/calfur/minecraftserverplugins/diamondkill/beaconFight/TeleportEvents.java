@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 
+import org.bukkit.World.Environment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -12,7 +13,7 @@ public class TeleportEvents implements Listener{
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		if(beaconFightManager.isBeaconEventActive()) {			
-			if (event.getFrom().getWorld() != event.getTo().getWorld()) {	    	
+			if (event.getTo().getWorld().getEnvironment() != Environment.NORMAL) {	    	
 				event.setCancelled(true);
 			}
 		}

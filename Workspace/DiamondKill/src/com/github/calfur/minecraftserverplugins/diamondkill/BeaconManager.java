@@ -1,8 +1,10 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -107,5 +109,18 @@ public class BeaconManager {
 			result = true;
 		}
 		return result;
+	}
+
+	public static void teleportPlayerToBeacon(Player player) {
+		Location beaconLocation = getBeaconLocationByPlayer(player);
+		beaconLocation.setY(beaconLocation.getBlockY() + 1);
+		player.teleport(beaconLocation);
+	}
+
+	public static void teleportAllOnlinePlayersToBeacon() {
+		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+		for (Player player : players) {
+			BeaconManager.teleportPlayerToBeacon(player);
+		}
 	}
 }

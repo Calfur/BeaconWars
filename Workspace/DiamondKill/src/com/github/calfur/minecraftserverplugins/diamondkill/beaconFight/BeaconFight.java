@@ -12,7 +12,6 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
@@ -67,7 +66,7 @@ public class BeaconFight {
 	}
 	
 	private void startBeaconFightEvent() {
-		teleportAllOnlinePlayersIntoOverworld();
+		BeaconManager.teleportAllOnlinePlayersToBeacon();
 		manager.activateBeaconFightEvent();
 		sendEventStartMessage();
 		deactivateBuildMode();
@@ -205,26 +204,6 @@ public class BeaconFight {
 			}
 		}
 		return teamsWithLowestAmountOfLostDefenses;
-	}
-
-	private void teleportAllOnlinePlayersIntoOverworld() {
-		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-		for (Player player : players) {
-			if(player.getWorld().getEnvironment() != World.Environment.NORMAL) {
-				teleportPlayerIntoOverworld(player);
-			}
-		}
-	}
-
-	private void teleportPlayerIntoOverworld(Player player) {
-		Location bedSpawnLocation = player.getBedSpawnLocation();
-		if(bedSpawnLocation != null) {
-			player.teleport(bedSpawnLocation);
-		}else {
-			Location beaconLocation = BeaconManager.getBeaconLocationByPlayer(player);
-			beaconLocation.setY(beaconLocation.getBlockY() + 1);
-			player.teleport(beaconLocation);
-		}
 	}
 	
 	private void deactivateBuildMode() {

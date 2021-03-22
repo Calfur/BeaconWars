@@ -28,7 +28,7 @@ public class BeaconRaid {
 	private BeaconFight beaconFight;
 	private int taskId;
 	private int reward = 5;
-	private int maxMinutesToBringBack = 1;
+	private int maxMinutesToBringBack = 15;
 	private Collection<PotionEffect> attackerEffects = Arrays.asList(new PotionEffect[]{
 		new PotionEffect(PotionEffectType.GLOWING, maxMinutesToBringBack*60*20, 0),
 		new PotionEffect(PotionEffectType.WEAKNESS, maxMinutesToBringBack*60*20, 0)

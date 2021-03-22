@@ -16,7 +16,7 @@ commands:
     description: Interagiert mit der Killdatenbank
     usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
   beaconfight:
-    description: Interagiert mit der Killdatenbank
+    description: Zum hinzufuegen oder loeschen von Becon Events
     usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]
   buildmode:
     aliases: 
