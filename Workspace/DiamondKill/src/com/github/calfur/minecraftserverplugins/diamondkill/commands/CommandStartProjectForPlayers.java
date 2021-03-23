@@ -78,5 +78,6 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 	
 	private static void startProjectForPlayer(Player player) {
 		BeaconManager.teleportPlayerToBeacon(player);
+		BeaconManager.setBeaconAsRespawnLocation(player);
 	}
 }

@@ -113,8 +113,8 @@ public class BeaconManager {
 
 	public static void teleportPlayerToBeacon(Player player) {
 		Location beaconLocation = getBeaconLocationByPlayer(player);
-		beaconLocation.setY(beaconLocation.getBlockY() + 1);
-		player.teleport(beaconLocation);
+		Location teleportLocation = new Location(beaconLocation.getWorld(), beaconLocation.getX() + 1.5, beaconLocation.getY(), beaconLocation.getZ() + 0.5);
+		player.teleport(teleportLocation);
 	}
 
 	public static void teleportAllOnlinePlayersToBeacon() {
@@ -122,5 +122,12 @@ public class BeaconManager {
 		for (Player player : players) {
 			BeaconManager.teleportPlayerToBeacon(player);
 		}
+	}
+
+	public static void setBeaconAsRespawnLocation(Player player) {
+		Location beaconLocation = getBeaconLocationByPlayer(player);
+		Location respawnLocation = new Location(beaconLocation.getWorld(), beaconLocation.getX() + 1.5, beaconLocation.getY(), beaconLocation.getZ() + 0.5);
+		player.setBedSpawnLocation(respawnLocation, true);
+		
 	}
 }
