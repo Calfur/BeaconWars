@@ -23,6 +23,12 @@ commands:
     - pengin
     description: Aktiviert oder Deaktiviert den Baumodus
     usage: /<command>
+  projectStart:
+    description: Aktiviert oder Deaktiviert den Projektstart Zustand
+    usage: /<command>
+  startProjectForPlayers:
+    description: Teleportiert Spieler zu ihrem Teambeacon und setzt sie in den Startzustand (Effekte, Hunger, Spawnpoint)
+    usage: /<command> [Spieler]
 permissions:
   admin:
     description: Erlaubt das benutzen von allen DiamondKill commands
