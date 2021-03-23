@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,10 +13,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class BeaconManager {
 
@@ -115,6 +116,7 @@ public class BeaconManager {
 		Location beaconLocation = getBeaconLocationByPlayer(player);
 		Location teleportLocation = new Location(beaconLocation.getWorld(), beaconLocation.getX() + 1.5, beaconLocation.getY(), beaconLocation.getZ() + 0.5);
 		player.teleport(teleportLocation);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
 	}
 
 	public static void teleportAllOnlinePlayersToBeacon() {

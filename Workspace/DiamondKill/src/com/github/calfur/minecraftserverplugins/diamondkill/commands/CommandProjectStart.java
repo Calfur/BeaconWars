@@ -41,21 +41,25 @@ public class CommandProjectStart implements CommandExecutor {
 	}
 
 	private boolean activateProject(Player executor) {
-		countdownTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
-			private int secondsSinceCountdownStarted = 0;
-			
-			@Override
-			public void run() {
-				Bukkit.broadcastMessage(ChatColor.GOLD + "Projektstart in " + ChatColor.RESET + (countdownLengthInSeconds - secondsSinceCountdownStarted));
-				if(secondsSinceCountdownStarted < countdownLengthInSeconds) {
-					secondsSinceCountdownStarted += 1;
-				}else {
-					stopCountdown();
-					startProject();
-				}				
-			}
-			
-		}, 0, 20);
+		if(countdownTaskId == null) {
+			countdownTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
+				private int secondsSinceCountdownStarted = 0;
+				
+				@Override
+				public void run() {
+					Bukkit.broadcastMessage(ChatColor.GOLD + "Projektstart in " + ChatColor.RESET + (countdownLengthInSeconds - secondsSinceCountdownStarted));
+					if(secondsSinceCountdownStarted < countdownLengthInSeconds) {
+						secondsSinceCountdownStarted += 1;
+					}else {
+						stopCountdown();
+						startProject();
+					}				
+				}
+				
+			}, 0, 20);
+		}else {			
+			stopCountdown();
+		}
 		return true;
 	}
 
@@ -86,9 +90,6 @@ public class CommandProjectStart implements CommandExecutor {
 
 	private boolean deactivateProject(Player executor) {
 		executor.sendMessage(ChatColor.GOLD + "Das Projekt ist nun im Startmodus. Führe den Command erneut aus, um den Countdown zu starten");
-		if(countdownTaskId != null) {
-			stopCountdown();
-		}
 		isProjectActive = false;
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "difficulty peaceful");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time set 0");
