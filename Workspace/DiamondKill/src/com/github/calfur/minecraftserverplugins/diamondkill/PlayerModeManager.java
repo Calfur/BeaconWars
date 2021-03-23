@@ -71,9 +71,11 @@ public class PlayerModeManager {
 	}
 	
 	private void deactivateBuildMode(PlayerMode playerMode) {
-		playerMode.deactivateBuildMode();
-		playerMode.getPlayer().sendMessage(ChatColor.GREEN + "Baumodus deaktiviert");
-		Main.getInstance().getScoreboardLoader().reloadScoreboardFor(playerMode.getPlayer());
+		if(playerMode.isBuildModeActive()) {			
+			playerMode.deactivateBuildMode();
+			playerMode.getPlayer().sendMessage(ChatColor.GREEN + "Baumodus deaktiviert");
+			Main.getInstance().getScoreboardLoader().reloadScoreboardFor(playerMode.getPlayer());
+		}
 	}
 	
 	private void activateBuildMode(PlayerMode playerMode) {
@@ -96,14 +98,19 @@ public class PlayerModeManager {
 	
 	private boolean activateBuildModeIfAllowed(PlayerMode playerMode, Player player) {
 		
+		if(Main.getInstance().getBeaconFightManager().isBeaconEventActive()) {
+			player.sendMessage(ChatColor.DARK_RED + "Während einem Beacon Event kann der Baumodus nicht aktiviert werden");
+			return false;
+		}
+		
 		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
 		if(teamAttackManager.isTeamFighting(teamId)) {	
-			player.sendMessage(ChatColor.RED + "Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird.");
+			player.sendMessage(ChatColor.DARK_RED + "Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird.");
 			return false;
 		}
 		
 		if(!isPlayerWithinRangeOfHisBase(player)) {	
-			player.sendMessage(ChatColor.RED + "Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden.");
+			player.sendMessage(ChatColor.DARK_RED + "Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden.");
 			return false;
 		}
 		
@@ -115,7 +122,7 @@ public class PlayerModeManager {
 		
 		long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
 		if(minutesSinceDeactivated < buildModeCooldownInMinutes) {
-			player.sendMessage(ChatColor.RED + "Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden");
+			player.sendMessage(ChatColor.DARK_RED + "Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden");
 			return false;
 		}
 		
@@ -138,6 +145,9 @@ public class PlayerModeManager {
 		if(playerMode == null) {
 			PlayerMode.removeModeEffects(player);
 		}else {
+			if(Main.getInstance().getBeaconFightManager().isBeaconEventActive()) {
+				deactivateBuildMode(playerMode);
+			}
 			playerMode.reloadEffects();
 		}
 	}

@@ -1,5 +1,7 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -11,6 +13,8 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFight;
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
@@ -22,10 +26,12 @@ public class ScoreboardLoader {
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
+	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 
 	private Scoreboard defaultScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 	private TopKiller topKiller;
 	private ArrayList<Attack> attacks = new ArrayList<Attack>();
+	private BossBarManager bossBarManager = new BossBarManager();
 	
 	public void setTopKiller(TopKiller topKiller) {
 		TopKiller previousTopKiller = this.topKiller;
@@ -75,6 +81,19 @@ public class ScoreboardLoader {
 		reloadTabList(player);
 		reloadPlayerChatName(player);
 		reloadNameAbovePlayer(player);
+		bossBarManager.displayAllBossBarsTo(player);
+	}
+
+	public void addBossBar(String name, ChatColor chatColor, LocalDateTime countdownEnd) {
+		CustomBossBar bossBar = bossBarManager.addBossBar(name, chatColor, countdownEnd);
+		Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
+		for (Player player : onlinePlayers) {
+			bossBar.addPlayer(player);
+		}
+	}
+	
+	public void removeBossBar(String name) {
+		bossBarManager.removeBossBar(name);
 	}
 
 	private void reloadSideBarScoreboard() { // same for all Players
@@ -86,6 +105,27 @@ public class ScoreboardLoader {
 		Objective objective = defaultScoreboard.registerNewObjective("Sidebar", "dummy", ChatColor.BOLD + "Beacon wars");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
+		BeaconFight ongoingBeaconFight = beaconFightManager.getOngoingBeaconFight();
+		
+		if(ongoingBeaconFight != null) {
+			Score score11 = objective.getScore("Beaconevent" + ChatColor.GRAY + ":");
+			score11.setScore(11);
+			Score score10 = objective.getScore("Ende" + ChatColor.GRAY + ": " + ChatColor.RESET + ChatColor.BOLD + ongoingBeaconFight.getEndTime().format(DateTimeFormatter.ofPattern("dd.MM HH:mm")));
+			score10.setScore(10);
+			Score score9 = objective.getScore("         ");
+			score9.setScore(9);
+		}else {
+			BeaconFight nextWaitingBeaconFight = beaconFightManager.getNextWaitingBeaconFight();
+			if(nextWaitingBeaconFight != null) {				
+				Score score11 = objective.getScore("Beaconevent" + ChatColor.GRAY + ":");
+				score11.setScore(11);
+				Score score10 = objective.getScore("Start" + ChatColor.GRAY + ": " + ChatColor.RESET + ChatColor.BOLD + nextWaitingBeaconFight.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM HH:mm")));
+				score10.setScore(10);
+				Score score9 = objective.getScore("         ");
+				score9.setScore(9);
+			}
+		}
+		
 		Score score8 = objective.getScore("Höchste K/D" + ChatColor.GRAY + ":");
 		score8.setScore(8);
 		Score score7 = objective.getScore(topKillerScoreText());

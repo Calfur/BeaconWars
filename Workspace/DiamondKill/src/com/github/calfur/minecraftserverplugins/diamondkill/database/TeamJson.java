@@ -12,6 +12,7 @@ import org.bukkit.util.NumberConversions;
 public class TeamJson implements ConfigurationSerializable {
 	private ChatColor color;
 	private Location beaconLocation;
+	private String teamLeader;
 
 	public ChatColor getColor() {
 		return color;
@@ -28,9 +29,18 @@ public class TeamJson implements ConfigurationSerializable {
 	public void setBeaconPosition(Location beaconPosition) {
 		this.beaconLocation = beaconPosition;
 	}
+
+	public String getTeamLeader() {
+		return teamLeader;
+	}
+
+	public void setTeamLeader(String teamLeader) {
+		this.teamLeader = teamLeader;
+	}
 	
-	public TeamJson(ChatColor color, Location beaconLocation) {
+	public TeamJson(ChatColor color, String teamLeader, Location beaconLocation) {
 		super();
+		this.teamLeader = teamLeader;
 		this.color = color;
 		this.beaconLocation = beaconLocation;
 	}
@@ -39,6 +49,7 @@ public class TeamJson implements ConfigurationSerializable {
 	public Map<String, Object> serialize() {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("color", this.color);
+		data.put("teamLeader", this.teamLeader);
 		data.put("beaconLocation_world", this.beaconLocation.getWorld().getName());
 		data.put("beaconLocation_x", this.beaconLocation.getX());
 		data.put("beaconLocation_y", this.beaconLocation.getY());
@@ -55,6 +66,7 @@ public class TeamJson implements ConfigurationSerializable {
 			);
 		return new TeamJson(
 				ChatColor.valueOf((String) args.get("color")),
+				(String) args.get("teamLeader"),
 				location
 			);
 	}

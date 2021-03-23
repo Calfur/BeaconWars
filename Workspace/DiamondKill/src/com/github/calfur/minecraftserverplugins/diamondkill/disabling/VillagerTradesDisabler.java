@@ -21,7 +21,7 @@ public class VillagerTradesDisabler implements Listener {
 			case IRON_SWORD:
 			case BOW:
 				event.setCancelled(true);
-//				Bukkit.broadcastMessage("Cancelled Trade");
+				// Bukkit.broadcastMessage("Cancelled Trade");
 				break;
 		default:
 			break;

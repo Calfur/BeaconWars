@@ -10,5 +10,10 @@ public class CommandRegistrator {
 		plugin.getCommand("team").setExecutor(new CommandTeam());
 		plugin.getCommand("playerkill").setExecutor(new CommandKill());
 		plugin.getCommand("buildmode").setExecutor(new CommandBuildMode());
+		plugin.getCommand("beaconfight").setExecutor(new CommandBeaconFight());
+		CommandProjectStart commandProjectStart = new CommandProjectStart();
+		plugin.setCommandProjectStart(commandProjectStart);
+		plugin.getCommand("projectStart").setExecutor(commandProjectStart);
+		plugin.getCommand("startProjectForPlayers").setExecutor(new CommandStartProjectForPlayers());
 	}
 }

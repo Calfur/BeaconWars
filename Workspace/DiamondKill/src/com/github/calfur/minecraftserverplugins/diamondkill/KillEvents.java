@@ -3,6 +3,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,8 +17,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandProjectStart;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
@@ -32,18 +36,23 @@ public class KillEvents implements Listener {
 	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
+	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
+	private CommandProjectStart commandProjectStart = Main.getInstance().getCommandProjectStart();
 	
 	private ArrayList<LatestHitByPlayer> latestHitByPlayers = new ArrayList<LatestHitByPlayer>();
 	
 	private boolean tryAddPlayerHit(Player defender, Player attacker) {
 		String defenderName = defender.getName().toLowerCase();
 		String attackerName = attacker.getName().toLowerCase();
-		if(!playerDbConnection.existsPlayer(defenderName)) {
-			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(defender));			
+		if(!commandProjectStart.isProjectActive()) {
 			return false;
 		}
 		if(!playerDbConnection.existsPlayer(attackerName)) {
 			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(attacker));	
+			return false;
+		}
+		if(!playerDbConnection.existsPlayer(defenderName)) {
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(defender));			
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(defender)) {
@@ -119,13 +128,17 @@ public class KillEvents implements Listener {
 			}
 		}
 	}
+	
 	@EventHandler
 	public void onPlayerDies(PlayerDeathEvent event) {
 		Player player = (Player)event.getEntity();
+		removeBeaconsFromLoot(event.getDrops(), player);
 		LatestHitByPlayer latestHitByPlayer = GetLatestHitByPlayer(player.getName());
 		if(latestHitByPlayer != null) {
 			long secondsBetween = ChronoUnit.SECONDS.between(latestHitByPlayer.getDateTime(), LocalDateTime.now());
 			if(secondsBetween < 60) {
+				removeUndroppableItems(event.getDrops());
+				
 				String killer = latestHitByPlayer.getAttacker();
 				String victim = latestHitByPlayer.getDefender();
 				PlayerJson killerJson = playerDbConnection.getPlayer(killer);
@@ -142,11 +155,46 @@ public class KillEvents implements Listener {
 			}
 		}
 	}
+	
 	private void sendDeathMessage(String killer, String victim, int bounty) {
 		ChatColor teamColorKiller = teamDbConnection.getTeam(playerDbConnection.getPlayer(killer).getTeamId()).getColor();
 		ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
 		killer = StringEditor.FirstLetterToUpper(killer);
 		victim = StringEditor.FirstLetterToUpper(victim);
 		Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "" + bounty + " Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
+	}
+	
+	private void removeUndroppableItems(List<ItemStack> loot) {
+
+		for (ItemStack itemStack : loot) {
+			// Bukkit.broadcastMessage("oldType: " + itemStack.getType());
+			switch (itemStack.getType()) {
+				case DIAMOND_BOOTS:
+				case DIAMOND_CHESTPLATE:
+				case DIAMOND_HELMET: 
+				case DIAMOND_LEGGINGS:
+					// Bukkit.broadcastMessage("setType");
+					itemStack.setType(null);
+					break;
+				default:
+					break;
+			}
+			
+		}		
+	}
+	
+	private void removeBeaconsFromLoot(List<ItemStack> loot, Player owner) {
+		for (ItemStack itemStack: loot) {
+			switch (itemStack.getType()) {
+				case BEACON:
+					if(beaconFightManager.isBeaconEventActive()) {	
+						beaconFightManager.getOngoingBeaconFight().removeBeaconRaidsByDestructor(owner);
+					}
+					itemStack.setType(null);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 }

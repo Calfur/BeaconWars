@@ -5,14 +5,13 @@ import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
@@ -26,37 +25,38 @@ public class CommandTeam implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) {
-			Player player = (Player)sender;						
+			Player executor = (Player)sender;						
 			if(args.length >= 1) {
 				String subCommand = args[0].toLowerCase();
 				switch(subCommand) {
 					case "info":
-						return sendTeamInfo(player, args);
+						return sendTeamInfo(executor, args);
 					case "delete":
-						if(player.hasPermission("admin")) {	
-							return deleteTeam(player, args);
+					case "remove":
+						if(executor.hasPermission("admin")) {	
+							return deleteTeam(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					case "add":
-						if(player.hasPermission("admin")) {	
-							return addTeam(player, args);
+						if(executor.hasPermission("admin")) {	
+							return addTeam(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					case "edit":
-						if(player.hasPermission("admin")) {	
-							return editTeam(player, args);
+						if(executor.hasPermission("admin")) {	
+							return editTeam(executor, args);
 						}else {
-							player.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
 							return true;
 						}
 					case "list":
-						return sendTeamList(player, args);
+						return sendTeamList(executor, args);
 					default:
-						player.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Command");
+						executor.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Subcommand");
 						return false;
 				}
 			}			
@@ -99,6 +99,7 @@ public class CommandTeam implements CommandExecutor {
 		TeamJson teamJson = teamDbConnection.getTeam(teamNumber);
 		Location beaconLocation = teamJson.getBeaconPosition();
 		executor.sendMessage(ChatColor.RESET + "Name: " + ChatColor.BOLD + "Team " + teamNumber); 
+		executor.sendMessage(ChatColor.RESET + "Teamleader: " + teamJson.getTeamLeader()); 
 		executor.sendMessage(ChatColor.RESET + "Farbe: " + teamJson.getColor() + teamJson.getColor().name());
 		executor.sendMessage(ChatColor.RESET + "Beacon Position: XYZ= " + beaconLocation.getBlockX() + " / " + beaconLocation.getBlockY() + " / " + beaconLocation.getBlockZ());
 		return true;
@@ -121,14 +122,14 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		TeamJson team = teamDbConnection.getTeam(teamNumber);
-		removeLevelOneBeacon(team.getBeaconPosition());
+		BeaconManager.removeLevelOneBeacon(team.getBeaconPosition());
 		teamDbConnection.removeTeam(teamNumber);
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " gelöscht.");
 		return true;
 	}
 	
 	private boolean editTeam(Player executor, String[] args) {
-		if(args.length != 6) {
+		if(args.length != 7) {
 			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
 			return false;
 		}
@@ -137,6 +138,7 @@ public class CommandTeam implements CommandExecutor {
 		int beaconLocationX;
 		int beaconLocationY;
 		int beaconLocationZ;
+		String teamLeader;
 		try {
 			teamNumber = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
@@ -166,23 +168,23 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Beacon_z Parameter muss dem Typ int entsprechen");
 			return false;
 		}
-		
+		teamLeader = args[6];
 		if(!teamDbConnection.existsTeam(teamNumber)) {
 			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
 			return false;
 		}
 		TeamJson oldTeam = teamDbConnection.getTeam(teamNumber);
-		removeLevelOneBeacon(oldTeam.getBeaconPosition());
+		BeaconManager.removeLevelOneBeacon(oldTeam.getBeaconPosition());
 		Location beaconLocation = new Location(executor.getWorld(), beaconLocationX, beaconLocationY, beaconLocationZ);
-		placeLevelOneBeacon(beaconLocation);
-		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, beaconLocation));
+		BeaconManager.placeLevelOneBeacon(beaconLocation);
+		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " editiert.");
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
 	
 	private boolean addTeam(Player executor, String[] args) {
-		if(args.length != 6) {
+		if(args.length != 7) {
 			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
 			return false;
 		}
@@ -191,12 +193,14 @@ public class CommandTeam implements CommandExecutor {
 		int beaconLocationX;
 		int beaconLocationY;
 		int beaconLocationZ;
+		String teamLeader;
 		try {
 			teamNumber = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
 			executor.sendMessage(ChatColor.RED + "Der Teamnummer Parameter muss dem Typ Int entsprechen");
 			return false;
-		}try {
+		}
+		try {
 			chatColor = ChatColor.valueOf(args[2].toUpperCase());
 		}catch(IllegalArgumentException e){
 			executor.sendMessage(ChatColor.RED + args[2] + " ist keine gültige Farbe. Siehe: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html");
@@ -220,51 +224,17 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(ChatColor.RED + "Beacon_z Parameter muss dem Typ int entsprechen");
 			return false;
 		}
-		
+		teamLeader = args[6];
 		if(teamDbConnection.existsTeam(teamNumber)) {
 			executor.sendMessage(ChatColor.RED + "Dieses Team wurde bereits registriert");	
 			return false;
 		}
 		World world = executor.getWorld();
 		Location beaconLocation = new Location(world, beaconLocationX, beaconLocationY, beaconLocationZ);
-		placeLevelOneBeacon(beaconLocation);
-		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, beaconLocation));
+		BeaconManager.placeLevelOneBeacon(beaconLocation);
+		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " registriert.");
 		return true;
 	}
 	
-	private void placeLevelOneBeacon(Location location) {
-		World world = location.getWorld();
-		int beaconX = location.getBlockX();
-		int beaconY = location.getBlockY();
-		int beaconZ = location.getBlockZ();
-		
-		replaceBlock(world, beaconX, beaconY, beaconZ, Material.BEACON);
-		
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {				
-				replaceBlock(world, beaconX + x, beaconY - 1, beaconZ + z, Material.NETHERITE_BLOCK);
-			}
-		}
-	}	
-	
-	private void removeLevelOneBeacon(Location location) {
-		World world = location.getWorld();
-		int beaconX = location.getBlockX();
-		int beaconY = location.getBlockY();
-		int beaconZ = location.getBlockZ();
-		
-		replaceBlock(world, beaconX, beaconY, beaconZ, Material.AIR);
-		
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {				
-				replaceBlock(world, beaconX + x, beaconY - 1, beaconZ + z, Material.AIR);
-			}
-		}
-	}
-	
-	private void replaceBlock(World world, int x, int y, int z, Material material) {
-		Block block = world.getBlockAt(new Location(world, x, y, z));
-		block.setType(material);
-	}
 }

@@ -11,15 +11,24 @@ commands:
     usage: /<command> [add | edit | info | delete | list] Spielername Teamnummer Discordname
   team:
     description: Interagiert mit der Teamdatenbank
-    usage: /<command> [add | edit | info | delete | list] Teamnummer Farbe Beacon_x Beacon_y Beacon_z 
+    usage: /<command> [add | edit | info | delete | list] Teamnummer Farbe Beacon_x Beacon_y Beacon_z TeamLeader
   playerkill:
     description: Interagiert mit der Killdatenbank
     usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
+  beaconfight:
+    description: Zum hinzufuegen oder loeschen von Becon Events
+    usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]
   buildmode:
     aliases: 
     - pengin
     description: Aktiviert oder Deaktiviert den Baumodus
     usage: /<command>
+  projectStart:
+    description: Aktiviert oder Deaktiviert den Projektstart Zustand
+    usage: /<command>
+  startProjectForPlayers:
+    description: Teleportiert Spieler zu ihrem Teambeacon und setzt sie in den Startzustand (Effekte, Hunger, Spawnpoint)
+    usage: /<command> [Spieler]
 permissions:
   admin:
     description: Erlaubt das benutzen von allen DiamondKill commands
