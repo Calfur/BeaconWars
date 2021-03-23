@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -79,5 +80,6 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 	private static void startProjectForPlayer(Player player) {
 		BeaconManager.teleportPlayerToBeacon(player);
 		BeaconManager.setBeaconAsRespawnLocation(player);
+		player.setGameMode(GameMode.SURVIVAL);
 	}
 }

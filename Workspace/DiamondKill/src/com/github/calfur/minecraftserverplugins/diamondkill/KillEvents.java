@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandProjectStart;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
@@ -36,18 +37,22 @@ public class KillEvents implements Listener {
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
+	private CommandProjectStart commandProjectStart = Main.getInstance().getCommandProjectStart();
 	
 	private ArrayList<LatestHitByPlayer> latestHitByPlayers = new ArrayList<LatestHitByPlayer>();
 	
 	private boolean tryAddPlayerHit(Player defender, Player attacker) {
 		String defenderName = defender.getName().toLowerCase();
 		String attackerName = attacker.getName().toLowerCase();
-		if(!playerDbConnection.existsPlayer(defenderName)) {
-			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(defender));			
+		if(!commandProjectStart.isProjectActive()) {
 			return false;
 		}
 		if(!playerDbConnection.existsPlayer(attackerName)) {
 			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(attacker));	
+			return false;
+		}
+		if(!playerDbConnection.existsPlayer(defenderName)) {
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(defender));			
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(defender)) {

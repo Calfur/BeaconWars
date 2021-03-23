@@ -14,6 +14,10 @@ public class CommandProjectStart implements CommandExecutor {
 	private Integer countdownTaskId;
 	private int countdownLengthInSeconds = 10;
 	
+	public boolean isProjectActive() {
+		return isProjectActive;
+	}
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) {
@@ -61,8 +65,22 @@ public class CommandProjectStart implements CommandExecutor {
 	}
 
 	private void startProject() {
-		isProjectActive = true;
-		Bukkit.broadcastMessage("Lets Go!");
+		isProjectActive = true;		
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule keepInventory false");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "difficulty normal");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule announceAdvancements false");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time set 0");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle true");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doMobSpawning true");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doWeatherCycle true");
+		
+		Bukkit.broadcastMessage(" ");
+		Bukkit.broadcastMessage(ChatColor.GOLD + (ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxx"));
+		Bukkit.broadcastMessage(" ");
+		Bukkit.broadcastMessage(ChatColor.AQUA + "Möge die Macht mit dir sein!");
+		Bukkit.broadcastMessage(" ");
+		Bukkit.broadcastMessage(ChatColor.GOLD + (ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxx"));
+		Bukkit.broadcastMessage(" ");
 		CommandStartProjectForPlayers.startProjectForAllOnlinePlayers();
 	}
 
@@ -72,6 +90,12 @@ public class CommandProjectStart implements CommandExecutor {
 			stopCountdown();
 		}
 		isProjectActive = false;
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "difficulty peaceful");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time set 0");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle false");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doMobSpawning false");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doWeatherCycle false");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "weather clear");
 		return true;
 	}
 

@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandProjectStart;
 import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandRegistrator;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
@@ -25,6 +26,7 @@ public class Main extends JavaPlugin {
 	private PlayerModeManager playerModeManager;
 	private BeaconFightManager beaconFightManager;
 	private static ScoreboardLoader scoreboardLoader;
+	private CommandProjectStart commandProjectStart;
 	
 	@Override
 	public void onEnable() {
@@ -98,5 +100,13 @@ public class Main extends JavaPlugin {
 
 	public BeaconFightManager getBeaconFightManager() {
 		return beaconFightManager;
+	}
+
+	public void setCommandProjectStart(CommandProjectStart commandProjectStart) {
+		this.commandProjectStart = commandProjectStart;		
+	}
+	
+	public CommandProjectStart getCommandProjectStart() {
+		return commandProjectStart;		
 	}
 }
