@@ -1,1 +1,1 @@
-# MinecraftServerPlugins
+# Beacon Wars
