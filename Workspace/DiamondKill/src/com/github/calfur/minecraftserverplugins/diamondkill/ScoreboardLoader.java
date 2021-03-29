@@ -179,7 +179,11 @@ public class ScoreboardLoader {
 	private void reloadNameAbovePlayer(Player player) {
 		String name = player.getName();
 		if(playerDbConnection.existsPlayer(name)) {				
-			String scoreboardTeamName = name + "Team";
+			int amountOfLetters = name.length();
+			if(amountOfLetters > 12) {
+				amountOfLetters = 12;
+			}
+			String scoreboardTeamName = name.substring(0, amountOfLetters) + "TM";
 			org.bukkit.scoreboard.Team team = defaultScoreboard.getTeam(scoreboardTeamName);
 			if(team == null) {			
 				team = defaultScoreboard.registerNewTeam(scoreboardTeamName);
