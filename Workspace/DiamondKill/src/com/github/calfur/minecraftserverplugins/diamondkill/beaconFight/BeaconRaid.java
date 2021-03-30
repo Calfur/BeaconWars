@@ -79,7 +79,14 @@ public class BeaconRaid {
 			
 			@Override
 			public void run() {
-				doTimeOverActions();				
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+					
+					@Override
+					public void run() {
+						doTimeOverActions();				
+					}
+
+				});
 			}
 			
 		}.runTaskLaterAsynchronously(Main.getInstance(), maxMinutesToBringBack*60*20);

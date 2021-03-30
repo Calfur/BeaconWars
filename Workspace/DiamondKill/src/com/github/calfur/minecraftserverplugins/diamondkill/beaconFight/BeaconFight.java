@@ -59,7 +59,14 @@ public class BeaconFight {
 			eventStartTask = new BukkitRunnable() {					
 				@Override
 				public void run() {
-					startBeaconFightEvent();
+					Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+						
+						@Override
+						public void run() {
+							startBeaconFightEvent();
+						}
+						
+					});
 				}					
 			}.runTaskLaterAsynchronously(Main.getInstance(), ticksTillStart);
 		}else {
@@ -81,7 +88,13 @@ public class BeaconFight {
 		naturallyEventEndTask = new BukkitRunnable() {					
 			@Override
 			public void run() {
-				stopBeaconFightNaturally();
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+					
+					@Override
+					public void run() {
+						stopBeaconFightNaturally();
+					}
+				});
 			}
 		}.runTaskLaterAsynchronously(Main.getInstance(), eventDurationInMinutes*60*20);
 	}
@@ -105,6 +118,7 @@ public class BeaconFight {
 	}
 
 	private void end() {
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle true");
 		DeathBanPluginInteraction.tryChangeBanDuration(10);
 		BeaconRaid[] localBeaconRaids = beaconRaids.toArray(new BeaconRaid[beaconRaids.size()]);
 		for (BeaconRaid beaconRaid : localBeaconRaids) {

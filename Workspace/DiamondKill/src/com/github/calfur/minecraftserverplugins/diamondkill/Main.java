@@ -49,8 +49,14 @@ public class Main extends JavaPlugin {
 		//BeaconBreakStrengthIncreaser.increaseBreakStrength();
 		
 		startItemSpawner();
-		
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle true");
+		Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
+			
+			@Override
+			public void run() {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle true");
+			}
+			
+		});
 	}
 
 	private void startItemSpawner() {
