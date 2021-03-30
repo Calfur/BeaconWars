@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.DeathBanPluginInteraction;
@@ -36,8 +37,8 @@ public class BeaconFight {
 	private List<BeaconRaid> beaconRaids = new ArrayList<BeaconRaid>();
 	private HashMap<Integer, Integer> amountOfLostDefensesPerTeams = new HashMap<Integer, Integer>();
 	int totalDefenceReward = 6;
-	private int naturallyEndTaskId;
-	private int startBeaconFightStartId;
+	private BukkitTask naturallyEndTask;
+	private BukkitTask eventStartTask;
 
 	public LocalDateTime getStartTime() {
 		return startTime;
@@ -55,7 +56,7 @@ public class BeaconFight {
 		
 		long ticksTillStart = ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime)*20;
 		if(ticksTillStart > 0) {
-			new BukkitRunnable() {					
+			eventStartTask = new BukkitRunnable() {					
 				@Override
 				public void run() {
 					startBeaconFightEvent();
@@ -74,22 +75,22 @@ public class BeaconFight {
 		DeathBanPluginInteraction.tryChangeBanDuration(2);
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		
-		naturallyEndTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
+		naturallyEndTask = new BukkitRunnable() {					
 			@Override
 			public void run() {
 				stopBeaconFightNaturally();
 			}
-		}, eventDurationInMinutes*60*20);
+		}.runTaskLater(Main.getInstance(), eventDurationInMinutes*60*20);
 	}
 
 	public void cancelBeaconFightBeforeStarted() {
-		Bukkit.getScheduler().cancelTask(startBeaconFightStartId);
+		eventStartTask.cancel();
 		end();
 	}
 	
 	public void cancelOngoingBeaconFight() {
 		sendEventCancelMessage();
-		Bukkit.getScheduler().cancelTask(naturallyEndTaskId);
+		naturallyEndTask.cancel();
 		end();
 	}
 	
