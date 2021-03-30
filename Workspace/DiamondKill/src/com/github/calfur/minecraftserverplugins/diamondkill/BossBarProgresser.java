@@ -1,8 +1,10 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class BossBarProgresser implements Runnable{
+public class BossBarProgresser extends BukkitRunnable{
+	private BossBarProgresser instance = this;
 	
 	private CustomBossBar customBossBar;
 	
@@ -12,13 +14,20 @@ public class BossBarProgresser implements Runnable{
 	
 	@Override
 	public void run() {
-		double newProgress = customBossBar.getBossBar().getProgress() - customBossBar.getBossBarStepPerSecond();
-		if(newProgress >= 0) {					
-			customBossBar.getBossBar().setProgress(newProgress);
-		}else {
-			Bukkit.getScheduler().cancelTask(customBossBar.getTaskId());
-			customBossBar.getManager().removeBossBar(customBossBar);
-		}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				double newProgress = customBossBar.getBossBar().getProgress() - customBossBar.getBossBarStepPerSecond();
+				if(newProgress >= 0) {					
+					customBossBar.getBossBar().setProgress(newProgress);
+				}else {
+					instance.cancel();
+					customBossBar.getManager().removeBossBar(customBossBar);
+				}
+			}
+			
+		});
 	}
 	
 }
