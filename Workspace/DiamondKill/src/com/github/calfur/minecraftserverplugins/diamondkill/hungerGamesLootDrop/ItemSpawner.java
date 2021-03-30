@@ -9,12 +9,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 
-public class ItemSpawner implements Runnable {
+public class ItemSpawner extends BukkitRunnable {
 	
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private Location location;

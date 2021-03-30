@@ -2,8 +2,9 @@ package com.github.calfur.minecraftserverplugins.diamondkill.hungerGamesLootDrop
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class ItemSpawnAnnouncer implements Runnable{
+public class ItemSpawnAnnouncer extends BukkitRunnable{
 
 	@Override
 	public void run() {

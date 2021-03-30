@@ -55,14 +55,11 @@ public class Main extends JavaPlugin {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime fullHour = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0);
 		long ticksUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour) * 20;
-		if(ticksUntilFullHour-6000 > 0) {
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)), ticksUntilFullHour, 72000);
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ItemSpawnAnnouncer(), ticksUntilFullHour-6000, 72000);
-		}else {
+		if(ticksUntilFullHour-6000 < 0) {
 			ticksUntilFullHour += 72000;
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)), ticksUntilFullHour, 72000);
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new ItemSpawnAnnouncer(), ticksUntilFullHour-6000, 72000);
 		}
+		new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)).runTaskTimer(this, ticksUntilFullHour, 72000);
+		new ItemSpawnAnnouncer().runTaskTimer(this, ticksUntilFullHour-6000, 72000);
 	}
 	
 	@Override
