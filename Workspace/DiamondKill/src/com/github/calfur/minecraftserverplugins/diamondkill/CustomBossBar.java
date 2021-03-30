@@ -14,7 +14,6 @@ public class CustomBossBar {
 	private BossBarManager manager;
 	private BossBar bossBar;
 	private String title;
-	private int taskId;
 	private double bossBarStepPerSecond;
 
 	public BossBarManager getManager() {
@@ -23,10 +22,6 @@ public class CustomBossBar {
 	
 	public BossBar getBossBar() {
 		return bossBar;
-	}
-
-	public int getTaskId() {
-		return taskId;
 	}
 	
 	public String getTitle() {
@@ -76,7 +71,7 @@ public class CustomBossBar {
 		double countDownDurationInSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), countdownEnd);
 		bossBarStepPerSecond = 1 / countDownDurationInSeconds;
 		
-		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new BossBarProgresser(this), 20, 20);
+		new BossBarProgresser(this).runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
 	}
 
 	public void destroy() {
