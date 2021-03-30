@@ -75,6 +75,9 @@ public class BeaconFight {
 		DeathBanPluginInteraction.tryChangeBanDuration(2);
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle false");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time set 0");
+		
 		naturallyEventEndTask = new BukkitRunnable() {					
 			@Override
 			public void run() {
