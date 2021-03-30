@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.DeathBanPluginInteraction;
@@ -54,12 +55,12 @@ public class BeaconFight {
 		
 		long ticksTillStart = ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime)*20;
 		if(ticksTillStart > 0) {
-			startBeaconFightStartId = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {					
+			new BukkitRunnable() {					
 				@Override
 				public void run() {
 					startBeaconFightEvent();
 				}					
-			}, ticksTillStart);
+			}.runTaskLater(Main.getInstance(), ticksTillStart);
 		}else {
 			startBeaconFightEvent();
 		}
