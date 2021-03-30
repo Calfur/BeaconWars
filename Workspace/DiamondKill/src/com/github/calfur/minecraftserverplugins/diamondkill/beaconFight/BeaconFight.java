@@ -37,7 +37,7 @@ public class BeaconFight {
 	private List<BeaconRaid> beaconRaids = new ArrayList<BeaconRaid>();
 	private HashMap<Integer, Integer> amountOfLostDefensesPerTeams = new HashMap<Integer, Integer>();
 	int totalDefenceReward = 6;
-	private BukkitTask naturallyEndTask;
+	private BukkitTask naturallyEventEndTask;
 	private BukkitTask eventStartTask;
 
 	public LocalDateTime getStartTime() {
@@ -61,7 +61,7 @@ public class BeaconFight {
 				public void run() {
 					startBeaconFightEvent();
 				}					
-			}.runTaskLater(Main.getInstance(), ticksTillStart);
+			}.runTaskLaterAsynchronously(Main.getInstance(), ticksTillStart);
 		}else {
 			startBeaconFightEvent();
 		}
@@ -75,12 +75,12 @@ public class BeaconFight {
 		DeathBanPluginInteraction.tryChangeBanDuration(2);
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		
-		naturallyEndTask = new BukkitRunnable() {					
+		naturallyEventEndTask = new BukkitRunnable() {					
 			@Override
 			public void run() {
 				stopBeaconFightNaturally();
 			}
-		}.runTaskLater(Main.getInstance(), eventDurationInMinutes*60*20);
+		}.runTaskLaterAsynchronously(Main.getInstance(), eventDurationInMinutes*60*20);
 	}
 
 	public void cancelBeaconFightBeforeStarted() {
@@ -90,7 +90,7 @@ public class BeaconFight {
 	
 	public void cancelOngoingBeaconFight() {
 		sendEventCancelMessage();
-		naturallyEndTask.cancel();
+		naturallyEventEndTask.cancel();
 		end();
 	}
 	

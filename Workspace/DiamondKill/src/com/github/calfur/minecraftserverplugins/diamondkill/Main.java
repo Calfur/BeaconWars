@@ -58,8 +58,8 @@ public class Main extends JavaPlugin {
 		if(ticksUntilFullHour-6000 < 0) {
 			ticksUntilFullHour += 72000;
 		}
-		new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)).runTaskTimer(this, ticksUntilFullHour, 72000);
-		new ItemSpawnAnnouncer().runTaskTimer(this, ticksUntilFullHour-6000, 72000);
+		new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)).runTaskTimerAsynchronously(this, ticksUntilFullHour, 72000);
+		new ItemSpawnAnnouncer().runTaskTimerAsynchronously(this, ticksUntilFullHour-6000, 72000);
 	}
 	
 	@Override

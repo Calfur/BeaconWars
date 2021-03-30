@@ -12,6 +12,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
@@ -26,13 +28,10 @@ public class BeaconRaid {
 	private String destructorName;
 	private Location beaconLocation;
 	private BeaconFight beaconFight;
-	private int taskId;
+	private BukkitTask overtimeTask;
 	private int reward = 5;
-	private int maxMinutesToBringBack = 15;
-	private Collection<PotionEffect> attackerEffects = Arrays.asList(new PotionEffect[]{
-		new PotionEffect(PotionEffectType.GLOWING, maxMinutesToBringBack*60*20, 0),
-		new PotionEffect(PotionEffectType.WEAKNESS, maxMinutesToBringBack*60*20, 0)
-	});
+	private int maxMinutesToBringBack;
+	private Collection<PotionEffect> attackerEffects;
 	
 	public Team getAttacker() {
 		return attacker;
@@ -62,7 +61,11 @@ public class BeaconRaid {
 		this.beaconFight = beaconFight;
 		this.maxMinutesToBringBack = attackDurationInMinutes;
 		this.deadline = LocalDateTime.now().plusMinutes(maxMinutesToBringBack);
-				
+		this.attackerEffects = Arrays.asList(new PotionEffect[]{
+			new PotionEffect(PotionEffectType.GLOWING, maxMinutesToBringBack*60*20, 0),
+			new PotionEffect(PotionEffectType.WEAKNESS, maxMinutesToBringBack*60*20, 0)
+		});
+		
 		destructor.addPotionEffects(attackerEffects);
 		
 		Bukkit.broadcastMessage(destructorName + " von " + attacker.getColor() + "Team " + attacker.getId() + ChatColor.RESET + " hat den Beacon von " + defender.getColor() + "Team " + defender.getId() + ChatColor.RESET + " abgebaut");
@@ -72,14 +75,14 @@ public class BeaconRaid {
 		
 		Main.getInstance().getScoreboardLoader().addBossBar(bossBarName, attacker.getColor(), deadline);
 	
-		taskId = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+		overtimeTask = new BukkitRunnable() {
 			
 			@Override
 			public void run() {
 				doTimeOverActions();				
 			}
 			
-		}, maxMinutesToBringBack*60*20);
+		}.runTaskLaterAsynchronously(Main.getInstance(), maxMinutesToBringBack*60*20);
 	}
 	
 	public void addBeaconPlacement(PlayerJson placer, Player player) {
@@ -112,7 +115,7 @@ public class BeaconRaid {
 	}
 	
 	private void destroy() {
-		Bukkit.getScheduler().cancelTask(taskId);
+		overtimeTask.cancel();
 		Main.getInstance().getScoreboardLoader().removeBossBar(bossBarName);
 		placeBeaconBack();
 		beaconFight.removeBeaconRaid(this);
