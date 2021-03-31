@@ -36,7 +36,7 @@ public class BeaconFight {
 	private int attackDurationInMinutes;
 	private List<BeaconRaid> beaconRaids = new ArrayList<BeaconRaid>();
 	private HashMap<Integer, Integer> amountOfLostDefensesPerTeams = new HashMap<Integer, Integer>();
-	int totalDefenceReward = 6;
+	int totalDefenceReward = 3;
 	private BukkitTask naturallyEventEndTask;
 	private BukkitTask eventStartTask;
 
