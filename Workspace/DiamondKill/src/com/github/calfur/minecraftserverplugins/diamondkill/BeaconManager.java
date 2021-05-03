@@ -115,6 +115,8 @@ public class BeaconManager {
 	public static void teleportPlayerToBeacon(Player player) {
 		Location beaconLocation = getBeaconLocationByPlayer(player);
 		Location teleportLocation = new Location(beaconLocation.getWorld(), beaconLocation.getX() + 1.5, beaconLocation.getY(), beaconLocation.getZ() + 0.5);	
+		replaceBlock(beaconLocation.getWorld(), beaconLocation.getBlockX() + 1, beaconLocation.getBlockY(), beaconLocation.getBlockZ(), Material.AIR);
+		replaceBlock(beaconLocation.getWorld(), beaconLocation.getBlockX() + 1, beaconLocation.getBlockY() + 1, beaconLocation.getBlockZ(), Material.AIR);
 		player.teleport(teleportLocation);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
 	}
