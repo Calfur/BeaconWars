@@ -57,6 +57,8 @@ public class Main extends JavaPlugin {
 			}
 			
 		});
+		
+		playerModeManager.reloadPlayerModeForAllOnlinePlayers();
 	}
 
 	private void startItemSpawner() {
@@ -72,7 +74,6 @@ public class Main extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		
 	}
 	
 	public static Main getInstance() {

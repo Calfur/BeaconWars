@@ -3,7 +3,6 @@ package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -227,10 +226,7 @@ public class BeaconFight {
 	
 	private void deactivateBuildMode() {
 		PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
-		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-		for (Player player : players) {
-			playerModeManager.reloadPlayerMode(player);
-		}
+		playerModeManager.reloadPlayerModeForAllOnlinePlayers();
 	}
 
 	public void addBeaconDestruction(Player player, Location beaconLocation) {

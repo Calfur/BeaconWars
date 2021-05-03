@@ -2,6 +2,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -149,6 +150,13 @@ public class PlayerModeManager {
 				deactivateBuildMode(playerMode);
 			}
 			playerMode.reloadEffects();
+		}
+	}
+	
+	public void reloadPlayerModeForAllOnlinePlayers() {
+		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+		for (Player player : players) {
+			reloadPlayerMode(player);
 		}
 	}
 	
