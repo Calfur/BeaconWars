@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,8 +14,6 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class CommandBeaconFight implements CommandExecutor {
 	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();

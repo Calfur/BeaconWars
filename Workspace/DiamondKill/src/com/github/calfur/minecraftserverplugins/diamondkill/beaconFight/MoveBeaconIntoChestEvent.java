@@ -3,6 +3,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,8 +12,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent ;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class MoveBeaconIntoChestEvent implements Listener {
 	private List<InventoryType> exceptedInventoryTypes = Arrays.asList(InventoryType.PLAYER, InventoryType.CREATIVE, InventoryType.CRAFTING);

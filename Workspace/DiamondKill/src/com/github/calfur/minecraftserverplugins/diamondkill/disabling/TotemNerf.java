@@ -1,20 +1,33 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityResurrectEvent;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
+
 public class TotemNerf implements Listener {
-	private List<TotemCooldown> totemCooldowns = new ArrayList<TotemCooldown>();
+	private static List<TotemCooldown> totemCooldowns = new ArrayList<TotemCooldown>();
+	
+	public static long getRemainingCooldownSeconds(UUID uuid) {
+		TotemCooldown totemCooldown = getTotemcooldown(uuid);
+		if(totemCooldown != null) {			
+			long cooldownSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), totemCooldown.getExpirationTime());
+			if(cooldownSeconds > 0) {
+				return cooldownSeconds;
+			}
+		}
+		return 0;
+	}
 	
 	@EventHandler
 	public void onEntityDie(EntityResurrectEvent event) {
@@ -31,13 +44,13 @@ public class TotemNerf implements Listener {
 					totemCooldowns.remove(totemCooldown);
 				}
 				totemCooldowns.add(new TotemCooldown(uuid));
-				Bukkit.broadcastMessage(player.getName() + " hat ein Totem verwendet. " + ChatColor.BOLD + TotemCooldown.cooldownLength + "min" + ChatColor.RESET + " Totem-Cooldown aktiviert.");
-				player.sendMessage("Benutze " + ChatColor.BOLD + "/totemcooldown" + ChatColor.RESET + " um die verbleibende Zeit anzuzeigen");
+				Bukkit.broadcastMessage(player.getDisplayName() + " hat ein Totem verwendet. " + StringEditor.Bold(TotemCooldown.cooldownLength + "min") + " Totem-Cooldown aktiviert.");
+				player.sendMessage("Benutze " + StringEditor.Bold("/totemcooldown") + " um die verbleibende Zeit anzuzeigen");
 			}
 		}
 	}
 
-	private TotemCooldown getTotemcooldown(UUID uuid) {
+	private static TotemCooldown getTotemcooldown(UUID uuid) {
 		for (TotemCooldown totemCooldown : totemCooldowns) {
 			if(totemCooldown.getPlayerId() == uuid) {
 				return totemCooldown;
