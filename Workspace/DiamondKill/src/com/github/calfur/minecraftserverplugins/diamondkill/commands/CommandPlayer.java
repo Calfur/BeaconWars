@@ -6,7 +6,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 
@@ -77,7 +77,7 @@ public class CommandPlayer implements CommandExecutor {
 		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
 		executor.sendMessage(ChatColor.BOLD + "" + players.size() + " Spieler gefunden:");
 		for (Entry<String, PlayerJson> player : players.entrySet()) {
-			executor.sendMessage((teamDbConnection.getTeam(player.getValue().getTeamId()).getColor() + StringEditor.FirstLetterToUpper(player.getKey())) + (ChatColor.RESET + " " + killDbConnection.getAmountOfKills(player.getKey()) + " Kills / " + killDbConnection.getAmountOfDeaths(player.getKey()) + " Tode (durch Gegner)") + (ChatColor.AQUA + " " + killDbConnection.getBounty(player.getKey()) + " Dias") + (ChatColor.RESET + " Kopfgeld"));
+			executor.sendMessage((teamDbConnection.getTeam(player.getValue().getTeamId()).getColor() + StringFormatter.FirstLetterToUpper(player.getKey())) + (ChatColor.RESET + " " + killDbConnection.getAmountOfKills(player.getKey()) + " Kills / " + killDbConnection.getAmountOfDeaths(player.getKey()) + " Tode (durch Gegner)") + (ChatColor.AQUA + " " + killDbConnection.getBounty(player.getKey()) + " Dias") + (ChatColor.RESET + " Kopfgeld"));
 		}
 		return true;
 	}
@@ -102,7 +102,7 @@ public class CommandPlayer implements CommandExecutor {
 			playtime = "" + player.getStatistic(Statistic.PLAY_ONE_MINUTE)/20/60/60 + "h";
 		}
 		
-		executor.sendMessage((ChatColor.RESET + "Name: ") + (ChatColor.BOLD +  StringEditor.FirstLetterToUpper(name))); 
+		executor.sendMessage((ChatColor.RESET + "Name: ") + (ChatColor.BOLD +  StringFormatter.FirstLetterToUpper(name))); 
 		executor.sendMessage((ChatColor.RESET + "Team: ") + (teamDbConnection.getTeam(playerJson.getTeamId()).getColor() + "" + playerJson.getTeamId()));
 		executor.sendMessage((ChatColor.RESET + "Discord Name: ") + (ChatColor.BOLD + playerJson.getDiscordName()));
 		executor.sendMessage((ChatColor.RESET + "Guthaben: ") + ChatColor.AQUA + playerJson.getCollectableDiamonds() + " Dias");

@@ -13,7 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityResurrectEvent;
 
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class TotemNerf implements Listener {
 	private static List<TotemCooldown> totemCooldowns = new ArrayList<TotemCooldown>();
@@ -44,8 +44,8 @@ public class TotemNerf implements Listener {
 					totemCooldowns.remove(totemCooldown);
 				}
 				totemCooldowns.add(new TotemCooldown(uuid));
-				Bukkit.broadcastMessage(player.getDisplayName() + " hat ein Totem verwendet. " + StringEditor.Bold(TotemCooldown.cooldownLength + "min") + " Totem-Cooldown aktiviert.");
-				player.sendMessage("Benutze " + StringEditor.Bold("/totemcooldown") + " um die verbleibende Zeit anzuzeigen");
+				Bukkit.broadcastMessage(player.getDisplayName() + " hat ein Totem verwendet. " + StringFormatter.Bold(TotemCooldown.cooldownLength + "min") + " Totem-Cooldown aktiviert.");
+				player.sendMessage("Benutze " + StringFormatter.Bold("/totemcooldown") + " um die verbleibende Zeit anzuzeigen");
 			}
 		}
 	}

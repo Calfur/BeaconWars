@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.disabling.TotemNerf;
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandTotemCooldown implements CommandExecutor {
 	@Override
@@ -40,7 +40,7 @@ public class CommandTotemCooldown implements CommandExecutor {
 		if(cooldownSeconds == 0) {
 			executor.sendMessage("Du hast keinen aktiven Totem-Cooldown");					
 		}else {
-			executor.sendMessage("Dein Totem-Cooldown dauert noch " + StringEditor.DisplaySecondsAsTime(cooldownSeconds));	
+			executor.sendMessage("Dein Totem-Cooldown dauert noch " + StringFormatter.DisplaySecondsAsTime(cooldownSeconds));	
 		}
 	}
 	
@@ -49,7 +49,7 @@ public class CommandTotemCooldown implements CommandExecutor {
 		if(cooldownSeconds == 0) {
 			messageReceiver.sendMessage(playerWhoseCooldownIsRequested.getDisplayName() + " hat keinen aktiven Totem-Cooldown");					
 		}else {
-			messageReceiver.sendMessage("Der Totem-Cooldown von " + playerWhoseCooldownIsRequested.getDisplayName() + " dauert noch " + StringEditor.DisplaySecondsAsTime(cooldownSeconds));	
+			messageReceiver.sendMessage("Der Totem-Cooldown von " + playerWhoseCooldownIsRequested.getDisplayName() + " dauert noch " + StringFormatter.DisplaySecondsAsTime(cooldownSeconds));	
 		}
 	}
 }

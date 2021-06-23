@@ -27,7 +27,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class KillEvents implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
@@ -159,8 +159,8 @@ public class KillEvents implements Listener {
 	private void sendDeathMessage(String killer, String victim, int bounty) {
 		ChatColor teamColorKiller = teamDbConnection.getTeam(playerDbConnection.getPlayer(killer).getTeamId()).getColor();
 		ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
-		killer = StringEditor.FirstLetterToUpper(killer);
-		victim = StringEditor.FirstLetterToUpper(victim);
+		killer = StringFormatter.FirstLetterToUpper(killer);
+		victim = StringFormatter.FirstLetterToUpper(victim);
 		Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "" + bounty + " Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
 	}
 	

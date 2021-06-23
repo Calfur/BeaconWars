@@ -18,7 +18,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFi
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 
 public class ScoreboardLoader {
@@ -207,7 +207,7 @@ public class ScoreboardLoader {
 
 	private String topKillerScoreText() {
 		if(!topKiller.areMultipleTopKiller()) {			
-			return StringEditor.FirstLetterToUpper(topKiller.getName()) + " " + ChatColor.AQUA + topKiller.getDiamondValue() + " Dias";
+			return StringFormatter.FirstLetterToUpper(topKiller.getName()) + " " + ChatColor.AQUA + topKiller.getDiamondValue() + " Dias";
 		}else {
 			return "-";
 		}
@@ -220,6 +220,6 @@ public class ScoreboardLoader {
 			Team defender = attack.getDefender();
 			return (attacker.getColor() + "Team " + attacker.getId()) + (ChatColor.RESET + " -> ") + (defender.getColor() + "Team " + defender.getId());
 		}
-		return StringEditor.RepeatString(" ", scoreNumber);
+		return StringFormatter.RepeatString(" ", scoreNumber);
 	}
 }

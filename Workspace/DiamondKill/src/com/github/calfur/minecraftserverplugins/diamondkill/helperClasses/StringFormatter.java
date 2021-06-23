@@ -2,7 +2,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill.helperClasses;
 
 import org.bukkit.ChatColor;
 
-public class StringEditor {
+public class StringFormatter {
 	public static String FirstLetterToUpper(String string) {
 		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
 	}
