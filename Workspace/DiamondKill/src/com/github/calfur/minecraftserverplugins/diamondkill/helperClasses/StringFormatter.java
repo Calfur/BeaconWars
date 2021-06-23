@@ -47,4 +47,8 @@ public class StringFormatter {
 	public static String Bold(String text) {
 		return ChatColor.BOLD + text + ChatColor.RESET;
 	}
+	
+	public static String Error(String text) {
+		return ChatColor.YELLOW + text + ChatColor.RESET;
+	}
 }

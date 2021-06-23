@@ -158,7 +158,7 @@ public class ScoreboardLoader {
 			
 			player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
 		}else {
-			listName = ChatColor.DARK_RED + name + " UNREGISTRIERT";
+			listName = StringFormatter.Error(name + " UNREGISTRIERT");
 		}
 		player.setPlayerListName(listName);
 	}
@@ -171,7 +171,7 @@ public class ScoreboardLoader {
 			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();			
 			listName = teamColor + name + getActiveModes(player) + ChatColor.RESET;
 		}else {
-			listName = ChatColor.DARK_RED + "UNREGISTRIERT " + name + ChatColor.RESET;
+			listName = StringFormatter.Error("UNREGISTRIERT " + name);
 		}
 		player.setDisplayName(listName);		
 	}

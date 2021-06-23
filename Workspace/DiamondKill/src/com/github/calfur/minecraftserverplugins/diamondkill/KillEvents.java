@@ -56,11 +56,11 @@ public class KillEvents implements Listener {
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(defender)) {
-			attacker.sendMessage(ChatColor.RED + "Dieser Spieler kann nicht angegriffen werden, weil er im Baumodus ist");
+			attacker.sendMessage(StringFormatter.Error("Dieser Spieler kann nicht angegriffen werden, weil er im Baumodus ist"));
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(attacker)) {
-			attacker.sendMessage(ChatColor.RED + "Du kannst keine Spieler angreifen, während du im Baumodus bist");
+			attacker.sendMessage(StringFormatter.Error("Du kannst keine Spieler angreifen, während du im Baumodus bist"));
 			return false;
 		}
 		int defenderTeam = playerDbConnection.getPlayer(defenderName).getTeamId();
@@ -167,13 +167,11 @@ public class KillEvents implements Listener {
 	private void removeUndroppableItems(List<ItemStack> loot) {
 
 		for (ItemStack itemStack : loot) {
-			// Bukkit.broadcastMessage("oldType: " + itemStack.getType());
 			switch (itemStack.getType()) {
 				case DIAMOND_BOOTS:
 				case DIAMOND_CHESTPLATE:
 				case DIAMOND_HELMET: 
 				case DIAMOND_LEGGINGS:
-					// Bukkit.broadcastMessage("setType");
 					itemStack.setType(null);
 					break;
 				default:

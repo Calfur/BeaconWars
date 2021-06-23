@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class BeaconManager {
 
@@ -80,7 +80,7 @@ public class BeaconManager {
 		try {			
 			teamIdOfBeacon = getTeamByBeaconLocation(location).getId();
 		}catch(Exception e) {
-			player.sendMessage(ChatColor.DARK_RED + "Error, unregistrierter Beacon");
+			player.sendMessage(StringFormatter.Error("Error, unregistrierter Beacon"));
 			return false;
 		}
 		int teamIdOfPlayer = Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId();

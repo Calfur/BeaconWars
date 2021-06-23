@@ -11,7 +11,7 @@ public class PlayerKicker implements Runnable {
 
 	@Override
 	public void run() {
-		playerToKick.kickPlayer("Du bist nicht registriert und noch keinem Team zugewiesen. Melde dich bitte über Discord bei den Admins.");
+		playerToKick.kickPlayer("Du bist nicht registriert und noch keinem Team zugewiesen. Melde dich bitte bei einem Admin.");
 	}
 	
 }

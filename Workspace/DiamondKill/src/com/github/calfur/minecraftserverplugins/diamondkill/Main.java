@@ -46,7 +46,6 @@ public class Main extends JavaPlugin {
 		new EventRegistrator();
 
 		DeathBanPluginInteraction.tryChangeBanDuration(10);
-		//BeaconBreakStrengthIncreaser.increaseBreakStrength();
 		
 		startItemSpawner();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {

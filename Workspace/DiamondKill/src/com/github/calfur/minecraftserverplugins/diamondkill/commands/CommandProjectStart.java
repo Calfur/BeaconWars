@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandProjectStart implements CommandExecutor {
 	private boolean isProjectActive = true;
@@ -25,7 +26,7 @@ public class CommandProjectStart implements CommandExecutor {
 			if(executor.hasPermission("admin")) {			
 				return toggleProject(executor);
 			}else {
-				executor.sendMessage("Fehlende Berechtigung für diesen command");
+				executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen command"));
 				return false;
 			}
 		}
@@ -81,7 +82,7 @@ public class CommandProjectStart implements CommandExecutor {
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.GOLD + (ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxx"));
 		Bukkit.broadcastMessage(" ");
-		Bukkit.broadcastMessage(ChatColor.AQUA + "Möge die Macht mit dir sein!");
+		Bukkit.broadcastMessage(ChatColor.AQUA + "Lets go!");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.GOLD + (ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxx"));
 		Bukkit.broadcastMessage(" ");

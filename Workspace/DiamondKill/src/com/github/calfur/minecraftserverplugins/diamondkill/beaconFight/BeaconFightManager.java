@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class BeaconFightManager {
 	private List<BeaconFight> beaconFights = new ArrayList<BeaconFight>();
@@ -111,7 +111,7 @@ public class BeaconFightManager {
 	public boolean addBeaconBreak(Player destructor, Location beaconLocation) {
 		BeaconFight ongoingBeaconFight = getOngoingBeaconFight();
 		if(ongoingBeaconFight == null) {
-			Bukkit.broadcastMessage(ChatColor.DARK_RED + "ERROR: Beacon abgebaut obwohl kein Beaconevent aktiv ist! Bitte Server neustarten");
+			Bukkit.broadcastMessage(StringFormatter.Error("ERROR: Beacon abgebaut obwohl kein Beaconevent aktiv ist! Bitte Server neustarten"));
 			return false;
 		}
 		return addBeaconBreak(destructor, beaconLocation, ongoingBeaconFight);
@@ -120,7 +120,7 @@ public class BeaconFightManager {
 	private boolean addBeaconBreak(Player destructor, Location beaconLocation, BeaconFight beaconFight) {
 		HashMap<Integer, ItemStack> notAddedItems = destructor.getInventory().addItem(new ItemStack(Material.BEACON, 1));
 		if(notAddedItems.size() != 0) {
-			destructor.sendMessage(ChatColor.RED + "Kein freien Platz im Inventar gefunden, Beacon konnte nicht abgebaut werden");
+			destructor.sendMessage(StringFormatter.Error("Kein freien Platz im Inventar gefunden, Beacon konnte nicht abgebaut werden"));
 			return false;
 		}
 		beaconFight.addBeaconDestruction(destructor, beaconLocation);

@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class TeamAttackManager {
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
@@ -20,7 +21,7 @@ public class TeamAttackManager {
 		if(activeAttack != null) {
 			activeAttacks.remove(activeAttack.getKey());
 		}else {
-			Bukkit.broadcastMessage(ChatColor.RED + "ERROR: removeActiveAttack() -> Attack could not be founded to remove");
+			Bukkit.broadcastMessage(StringFormatter.Error("ERROR: removeActiveAttack() -> Attack could not be founded to remove"));
 		}
 	}
 	

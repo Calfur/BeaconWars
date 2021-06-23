@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -15,6 +14,7 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandStartProjectForPlayers  implements CommandExecutor {
 
@@ -28,14 +28,14 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 					if(player != null) {
 						startProjectForPlayer(player);
 					}else {
-						executor.sendMessage(ChatColor.DARK_RED + "Spieler " + args[0] + " konnte nicht gefunden werden (muss online sein)");
+						executor.sendMessage(StringFormatter.Error("Spieler " + args[0] + " konnte nicht gefunden werden (muss online sein)"));
 					}
 				}else {
-					executor.sendMessage(ChatColor.DARK_RED + "Falsche Anzahl Parameter");
+					executor.sendMessage(StringFormatter.Error("Falsche Anzahl Parameter"));
 					return false;
 				}
 			}else {
-				executor.sendMessage(ChatColor.DARK_RED + "Fehlende Berechtigung für diesen Command");
+				executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 				return false;
 			}
 		}else if(sender instanceof BlockCommandSender) { // Commandblock führt den Command aus

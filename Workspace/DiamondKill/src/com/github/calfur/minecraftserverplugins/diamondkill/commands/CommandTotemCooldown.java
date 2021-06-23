@@ -1,7 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,13 +21,13 @@ public class CommandTotemCooldown implements CommandExecutor {
 				String playerWhoseCooldownIsRequestedName = args[0];
 				Player playerWhoseCooldownIsRequested = Bukkit.getPlayer(playerWhoseCooldownIsRequestedName);
 				if(playerWhoseCooldownIsRequested == null) {				
-					executor.sendMessage(ChatColor.DARK_RED + "Der Spieler " + playerWhoseCooldownIsRequestedName + " ist nicht online");
+					executor.sendMessage(StringFormatter.Error("Der Spieler " + playerWhoseCooldownIsRequestedName + " ist nicht online"));
 					return false;
 				}
 				sendTotemCooldownMessage(executor, playerWhoseCooldownIsRequested);
 				return true;
 			}else {
-				executor.sendMessage(ChatColor.DARK_RED + "Zu viele Parameter angegeben");
+				executor.sendMessage(StringFormatter.Error("Zu viele Parameter angegeben"));
 				return false;				
 			}
 		}

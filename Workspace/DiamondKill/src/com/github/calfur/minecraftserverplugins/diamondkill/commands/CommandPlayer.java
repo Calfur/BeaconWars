@@ -43,25 +43,25 @@ public class CommandPlayer implements CommandExecutor {
 						if(executor.hasPermission("admin")) {	
 							return deletePlayer(executor, args);
 						}else {
-							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 							return true;
 						}
 					case "add":
 						if(executor.hasPermission("admin")) {	
 							return addPlayer(executor, args);
 						}else {
-							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 							return true;
 						}
 					case "edit":
 						if(executor.hasPermission("admin")) {	
 							return editPlayer(executor, args);
 						}else {
-							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 							return true;
 						}
 					default:
-						executor.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Subcommand");
+						executor.sendMessage(StringFormatter.Error(subCommand + " ist kein vorhandener Subcommand"));
 						return false;
 				}
 			}			
@@ -71,7 +71,7 @@ public class CommandPlayer implements CommandExecutor {
 
 	private boolean sendPlayerList(Player executor, String[] args) {
 		if(args.length != 1) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
@@ -84,12 +84,12 @@ public class CommandPlayer implements CommandExecutor {
 
 	private boolean sendPlayerInfo(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		String name = args[1];
 		if(!playerDbConnection.existsPlayer(name)) {
-			executor.sendMessage(ChatColor.RED + "Dieser Spieler ist nicht registriert");
+			executor.sendMessage(StringFormatter.Error("Dieser Spieler ist nicht registriert"));
 			return false;
 		}
 		PlayerJson playerJson = playerDbConnection.getPlayer(name);
@@ -115,12 +115,12 @@ public class CommandPlayer implements CommandExecutor {
 	
 	private boolean deletePlayer(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		String name = args[1];
 		if(!playerDbConnection.existsPlayer(name)) {
-			executor.sendMessage(ChatColor.RED + "Dieser Spieler ist nicht registriert");
+			executor.sendMessage(StringFormatter.Error("Dieser Spieler ist nicht registriert"));
 			return false;
 		}
 		playerDbConnection.removePlayer(name);
@@ -131,7 +131,7 @@ public class CommandPlayer implements CommandExecutor {
 	
 	private boolean editPlayer(Player executor, String[] args) {
 		if(args.length != 4) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		String name;
@@ -142,11 +142,11 @@ public class CommandPlayer implements CommandExecutor {
 			team = Integer.parseInt(args[2]);
 			discordName = args[3].toLowerCase();
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Team Parameter muss dem Typ Int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der Team Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		if(!playerDbConnection.existsPlayer(name)) {
-			executor.sendMessage(ChatColor.RED + "Dieser Spieler ist nicht vorhanden");
+			executor.sendMessage(StringFormatter.Error("Dieser Spieler ist nicht vorhanden"));
 			return false;
 		}
 		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
@@ -157,7 +157,7 @@ public class CommandPlayer implements CommandExecutor {
 	
 	private boolean addPlayer(Player executor, String[] args) {
 		if(args.length != 4) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		String name;
@@ -168,15 +168,15 @@ public class CommandPlayer implements CommandExecutor {
 			team = Integer.parseInt(args[2]);
 			discordName = args[3].toLowerCase();
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Team Parameter muss dem Typ Int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der Team Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		if(playerDbConnection.existsPlayer(name)) {
-			executor.sendMessage(ChatColor.RED + "Dieser Spieler wurde bereits registriert");	
+			executor.sendMessage(StringFormatter.Error("Dieser Spieler wurde bereits registriert"));	
 			return false;
 		}
 		if(!teamDbConnection.existsTeam(team)) {
-			executor.sendMessage(ChatColor.RED + "Ein Team mit der Id " + team + " existiert nicht.");	
+			executor.sendMessage(StringFormatter.Error("Ein Team mit der Id " + team + " existiert nicht."));	
 			return false;
 		}
 		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));

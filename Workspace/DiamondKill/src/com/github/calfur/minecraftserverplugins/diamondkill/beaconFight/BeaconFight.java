@@ -24,6 +24,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbCon
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class BeaconFight {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
@@ -137,7 +138,7 @@ public class BeaconFight {
 				playerJson.addCollectableDiamonds(reward);
 				playerDbConnection.addPlayer(teamLeaderName, playerJson);
 			}else {
-				Bukkit.broadcastMessage(ChatColor.DARK_RED + "Der Teamleader " + teamLeaderName + " von" + teamJson.getColor() + "Team " + teamId + ChatColor.DARK_RED + " wurde noch nicht registriert");
+				Bukkit.broadcastMessage(StringFormatter.Error("Der Teamleader " + teamLeaderName + " von") + teamJson.getColor() + "Team " + teamId + StringFormatter.Error(" wurde noch nicht registriert"));
 			}
 		}
 	}
@@ -244,16 +245,16 @@ public class BeaconFight {
 		PlayerJson attacker = playerDbConnection.getPlayer(placer.getName());
 		
 		if(teamWhereBeaconWasPlaced == null) {
-			placer.sendMessage(ChatColor.DARK_RED + "Du musst den Beacon an den Beacon von deinem Team plazieren");
+			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren"));
 			return;
 		}
 		if(teamWhereBeaconWasPlaced.getId() != attacker.getTeamId()) {
-			placer.sendMessage(ChatColor.DARK_RED + "Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId());
+			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId()));
 			return;
 		}		
 		BeaconRaid beaconRaid = getBeaconRaid(placer.getName(), teamWhereBeaconWasPlaced);
 		if(beaconRaid == null) {			
-			placer.sendMessage(ChatColor.DARK_RED + "Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben");
+			placer.sendMessage(StringFormatter.Error("Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben"));
 			BeaconManager.removeOneBeaconFromInventory(placer);
 			return;
 		}
