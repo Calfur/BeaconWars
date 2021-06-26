@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-public class ForbiddenItem {
+public class ForbiddenLootItem {
 	private Material item;
 	private ItemStack substitute;
 	private EnchantmentLevel enchantmentLevel = EnchantmentLevel.noEnchantments;
@@ -15,12 +15,15 @@ public class ForbiddenItem {
 	public Material getItem() {
 		return item;
 	}
+	
 	public void setItem(Material item) {
 		this.item = item;
 	}
+	
 	public ItemStack getSubstitute() {
 		return substitute;
 	}
+	
 	public void setSubstitute(ItemStack substitute) {
 		this.substitute = substitute;
 	}
@@ -29,14 +32,16 @@ public class ForbiddenItem {
 		return enchantmentLevel;
 	}
 	
-	public ForbiddenItem(Material item, ItemStack substitute) {
+	public ForbiddenLootItem(Material item, ItemStack substitute) {
 		this.item = item;
 		this.substitute = substitute;
 	}
-	public ForbiddenItem(Material item, ItemStack substitute, EnchantmentLevel enchantmentLevel) {
+	
+	public ForbiddenLootItem(Material item, ItemStack substitute, EnchantmentLevel enchantmentLevel) {
 		this(item, substitute);
 		this.enchantmentLevel = enchantmentLevel;
 	}
+	
 	public static Map<Enchantment, Integer> nerfEnchantments(Map<Enchantment, Integer> enchantments){
 		Map<Enchantment, Integer> nerfedEnchantments = new HashMap<Enchantment, Integer>();
 		for(Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
