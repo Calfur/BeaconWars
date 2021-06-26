@@ -32,7 +32,6 @@ public class PotionDisabler implements Listener {
 			for (DisabledPotion disabledPotion : disabledPotions) {
 				if(potionType == disabledPotion.getPotionType() && ingredient == disabledPotion.getIngerdient()) {
 					event.setCancelled(true);
-					// Bukkit.broadcastMessage(ChatColor.RED + "Mindestens einer der Tränke ist nicht erlaubt zu brauen. Brauvorgang abgebrochen.");
 					return;
 				}
 			}
