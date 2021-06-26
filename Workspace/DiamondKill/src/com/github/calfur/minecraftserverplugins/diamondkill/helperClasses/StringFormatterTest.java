@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-class StringEditorTest {
+class StringFormatterTest {
 
 	@Test
 	void FirstLetterToUpper_WhenFirstLetterIsLowerCaseLetter_ResultIsUpperCase() {

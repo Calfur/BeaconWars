@@ -37,31 +37,33 @@ public class ChestLootNerf implements Listener {
 	@EventHandler
 	public void onDiamondLootGenerate(LootGenerateEvent event) {
 		List<ItemStack> loot = event.getLoot();
-		ArrayList<ItemStack> itemsToRemove = new ArrayList<>();
-		ArrayList<ItemStack> itemsToAdd = new ArrayList<>();
+		ArrayList<ItemStack> newLoot = new ArrayList<>();
 		for(ItemStack itemStack : loot){
-			for(ForbiddenLootItem forbiddenItem : forbiddenLoot) {
-				if(itemStack.getType() == forbiddenItem.getItem()) {
-					ItemStack substitute = forbiddenItem.getSubstitute();
-					Map<Enchantment, Integer> enchantments = itemStack.getEnchantments();
-					switch(forbiddenItem.getEnchantmentLevel()) {
-						case copiedEnchantments:
-							substitute.addEnchantments(enchantments);
-							break;
-						case nerfedEnchantments:
-							substitute.addEnchantments(ForbiddenLootItem.nerfEnchantments(enchantments));
-							break;
-						default:
-							break;
-					}
-					itemsToRemove.add(itemStack);
-					itemsToAdd.add(substitute);
-					break;
+			newLoot.add(nerfIfNeeded(itemStack));
+		}
+		event.setLoot(newLoot);
+	}
+
+	private ItemStack nerfIfNeeded(ItemStack itemStack) {
+		for(ForbiddenLootItem forbiddenItem : forbiddenLoot) {
+			if(itemStack.getType() == forbiddenItem.getItem()) {
+				ItemStack substitute = forbiddenItem.getCloneOfSubstitute();
+				Map<Enchantment, Integer> enchantments = itemStack.getEnchantments();
+				switch(forbiddenItem.getEnchantmentLevel()) {
+					case copiedEnchantments:
+						substitute.addEnchantments(enchantments);
+						break;
+					case nerfedEnchantments:
+						substitute.addEnchantments(ForbiddenLootItem.nerfEnchantments(enchantments));
+						break;
+					case noEnchantments:
+					default:
+						break;
 				}
+				return substitute;
 			}
 		}
-		loot.removeAll(itemsToRemove);
-		loot.addAll(itemsToAdd);
+		return itemStack;
 	}
 	
 	private ItemStack createColorizedLeatherArmor(ItemStack itemStack, Color color) {

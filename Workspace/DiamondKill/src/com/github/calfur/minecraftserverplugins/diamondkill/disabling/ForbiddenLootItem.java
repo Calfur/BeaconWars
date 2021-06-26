@@ -20,8 +20,8 @@ public class ForbiddenLootItem {
 		this.item = item;
 	}
 	
-	public ItemStack getSubstitute() {
-		return substitute;
+	public ItemStack getCloneOfSubstitute() {
+		return substitute.clone();
 	}
 	
 	public void setSubstitute(ItemStack substitute) {
@@ -45,26 +45,21 @@ public class ForbiddenLootItem {
 	public static Map<Enchantment, Integer> nerfEnchantments(Map<Enchantment, Integer> enchantments){
 		Map<Enchantment, Integer> nerfedEnchantments = new HashMap<Enchantment, Integer>();
 		for(Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
-			//Bukkit.broadcastMessage("Unnerfed: " + enchantment.getKey().getKey().getKey() + " Value: " + enchantment.getValue());
+			Integer newValue = enchantment.getValue();
 			switch(enchantment.getKey().getKey().getKey()) {
-			case "protection":
-				if(enchantment.getValue() > 2) {					
-					nerfedEnchantments.put(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
-				}
-				break;
-			case "projectile_protection":
-				if(enchantment.getValue() > 2) {	
-					nerfedEnchantments.put(Enchantment.PROTECTION_PROJECTILE, 2);
-				}
-				break;
-			case "sharpness":
-				if(enchantment.getValue() > 3) {	
-					nerfedEnchantments.put(Enchantment.DAMAGE_ALL, 3);
-				}
-				break;
-			default:
-				nerfedEnchantments.put(enchantment.getKey(), enchantment.getValue());
+				case "protection":
+				case "projectile_protection":
+					if(enchantment.getValue() > 2) {	
+						newValue = 2;
+					}
+					break;
+				case "sharpness":
+					if(enchantment.getValue() > 3) {	
+						newValue = 3;
+					}
+					break;
 			}
+			nerfedEnchantments.put(enchantment.getKey(), newValue);
 		}
 		return nerfedEnchantments;
 	}
