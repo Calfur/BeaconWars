@@ -16,5 +16,6 @@ public class CommandRegistrator {
 		plugin.getCommand("projectStart").setExecutor(commandProjectStart);
 		plugin.getCommand("startProjectForPlayers").setExecutor(new CommandStartProjectForPlayers());
 		plugin.getCommand("totemCooldown").setExecutor(new CommandTotemCooldown());
+		plugin.getCommand("namenametag").setExecutor(new CommandNameNametag());
 	}
 }

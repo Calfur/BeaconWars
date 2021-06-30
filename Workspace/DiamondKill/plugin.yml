@@ -35,6 +35,9 @@ commands:
   totemcooldown:
     description: Gibt die verbleibende cooldown Zeit zurueck
     usage: /<command> [Spieler]
+  namenametag:
+    description: Benennt nametags welche in der Main-Hand gehalten werden
+    usage: /<command> [Name]
 permissions:
   admin:
     description: Erlaubt das benutzen von allen DiamondKill commands
