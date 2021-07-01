@@ -42,7 +42,24 @@ public class ForbiddenLootItem {
 		this.enchantmentLevel = enchantmentLevel;
 	}
 	
-	public static Map<Enchantment, Integer> nerfEnchantments(Map<Enchantment, Integer> enchantments){
+
+	public ItemStack getSubstituteWithAdjustedEnchantments(Map<Enchantment, Integer> enchantments) {
+		ItemStack newSubstitute = getCloneOfSubstitute();
+		switch(getEnchantmentLevel()) {
+			case copiedEnchantments:
+				newSubstitute.addEnchantments(enchantments);
+				break;
+			case nerfedEnchantments:
+				newSubstitute.addEnchantments(nerfEnchantments(enchantments));
+				break;
+			case noEnchantments:
+			default:
+				break;
+		}
+		return newSubstitute;
+	}
+	
+	private static Map<Enchantment, Integer> nerfEnchantments(Map<Enchantment, Integer> enchantments){
 		Map<Enchantment, Integer> nerfedEnchantments = new HashMap<Enchantment, Integer>();
 		for(Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
 			Integer newValue = enchantment.getValue();

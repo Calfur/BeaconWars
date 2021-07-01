@@ -3,11 +3,9 @@ package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.LootGenerateEvent;
@@ -47,24 +45,12 @@ public class ChestLootNerf implements Listener {
 	private ItemStack nerfIfNeeded(ItemStack itemStack) {
 		for(ForbiddenLootItem forbiddenItem : forbiddenLoot) {
 			if(itemStack.getType() == forbiddenItem.getItem()) {
-				ItemStack substitute = forbiddenItem.getCloneOfSubstitute();
-				Map<Enchantment, Integer> enchantments = itemStack.getEnchantments();
-				switch(forbiddenItem.getEnchantmentLevel()) {
-					case copiedEnchantments:
-						substitute.addEnchantments(enchantments);
-						break;
-					case nerfedEnchantments:
-						substitute.addEnchantments(ForbiddenLootItem.nerfEnchantments(enchantments));
-						break;
-					case noEnchantments:
-					default:
-						break;
-				}
-				return substitute;
+				return forbiddenItem.getSubstituteWithAdjustedEnchantments(itemStack.getEnchantments());
 			}
 		}
 		return itemStack;
 	}
+
 	
 	private ItemStack createColorizedLeatherArmor(ItemStack itemStack, Color color) {
 		ItemMeta itemMeta = itemStack.getItemMeta();

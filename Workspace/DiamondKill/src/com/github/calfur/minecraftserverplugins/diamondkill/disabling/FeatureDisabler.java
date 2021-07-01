@@ -16,5 +16,6 @@ public class FeatureDisabler {
 		plugin.getServer().getPluginManager().registerEvents(new VillagerTradesDisabler(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new PotionDisabler(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new TotemNerf(), plugin);
-	}
+		plugin.getServer().getPluginManager().registerEvents(new FishingNerf(), plugin);
+		}
 }
