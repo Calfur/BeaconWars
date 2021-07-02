@@ -26,16 +26,18 @@ public class FishingNerf implements Listener{
 			if(lootEntity != null && lootEntity.getType() == EntityType.DROPPED_ITEM) {
 				Item lootItem = (Item) lootEntity;
 				ItemStack lootItemStack = lootItem.getItemStack();
-				replaceIfForbidden(lootItemStack);
+				ItemStack newItemStack = replaceIfForbidden(lootItemStack);
+				lootItem.setItemStack(newItemStack);
 			}
 		}
 	}
 
-	private void replaceIfForbidden(ItemStack lootItemStack) {
+	private ItemStack replaceIfForbidden(ItemStack lootItemStack) {
 		for(ForbiddenLootItem forbiddenLootItem : forbiddenLoot) {
 			if(lootItemStack.getType() == forbiddenLootItem.getItem()) {
-				forbiddenLootItem.getSubstituteWithAdjustedEnchantments(lootItemStack.getEnchantments());
+				return forbiddenLootItem.getSubstituteWithAdjustedEnchantments(lootItemStack.getEnchantments());
 			}
 		}
+		return lootItemStack;
 	}
 }
