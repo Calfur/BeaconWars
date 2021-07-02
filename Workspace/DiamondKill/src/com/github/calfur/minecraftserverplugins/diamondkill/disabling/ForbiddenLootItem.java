@@ -59,7 +59,7 @@ public class ForbiddenLootItem {
 		return newSubstitute;
 	}
 	
-	private static Map<Enchantment, Integer> nerfEnchantments(Map<Enchantment, Integer> enchantments){
+	public static Map<Enchantment, Integer> nerfEnchantments(Map<Enchantment, Integer> enchantments){
 		Map<Enchantment, Integer> nerfedEnchantments = new HashMap<Enchantment, Integer>();
 		for(Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
 			Integer newValue = enchantment.getValue();
