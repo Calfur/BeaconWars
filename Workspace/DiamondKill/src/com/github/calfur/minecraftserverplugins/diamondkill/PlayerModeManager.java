@@ -173,7 +173,15 @@ public class PlayerModeManager {
 		}
 	}
 
-	public void activatePlayerHighlight(Player player) {
+	public void updateHighlight(Player player, TopKiller topKiller) {
+		if(player.getName().equalsIgnoreCase(topKiller.getName()) && topKiller.getDiamondValue() >= 5) {
+			activatePlayerHighlight(player);
+		}else {
+			deactivatePlayerHighlight(player);
+		}
+	}
+	
+	private void activatePlayerHighlight(Player player) {
 		PlayerMode playerMode = getPlayerMode(player.getName());
 		if(playerMode == null) {
 			playerMode = addPlayerMode(player);		
@@ -181,7 +189,7 @@ public class PlayerModeManager {
 		playerMode.activateHighlighted();
 	}
 	
-	public void deactivatePlayerHighlight(Player player) {
+	private void deactivatePlayerHighlight(Player player) {
 		PlayerMode playerMode = getPlayerMode(player.getName());
 		if(playerMode != null) {
 			playerMode.deactivateHighlighted();

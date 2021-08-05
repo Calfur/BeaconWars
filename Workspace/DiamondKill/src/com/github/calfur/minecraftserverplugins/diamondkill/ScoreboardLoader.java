@@ -36,10 +36,6 @@ public class ScoreboardLoader {
 	public void setTopKiller(TopKiller topKiller) {
 		TopKiller previousTopKiller = this.topKiller;
 		if(previousTopKiller != null) {
-			Player player = Bukkit.getPlayer(previousTopKiller.getName());
-			if(player != null) {				
-				playerModeManager.deactivatePlayerHighlight(player);
-			}
 		}
 		this.topKiller = topKiller;
 		reloadScoreboardForAllOnlinePlayers();
@@ -69,11 +65,7 @@ public class ScoreboardLoader {
 	}
 	
 	public void reloadScoreboardFor(Player player) {
-		if(player.getName().equalsIgnoreCase(topKiller.getName()) && topKiller.getDiamondValue() >= 5) {
-			playerModeManager.activatePlayerHighlight(player);
-		}else {
-			playerModeManager.deactivatePlayerHighlight(player);
-		}
+		playerModeManager.updateHighlight(player, topKiller);
 		reloadTabList(player);
 		reloadPlayerChatName(player);
 		reloadNameAbovePlayer(player);
