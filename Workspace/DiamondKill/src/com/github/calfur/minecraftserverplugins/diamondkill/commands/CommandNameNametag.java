@@ -20,7 +20,8 @@ public class CommandNameNametag implements CommandExecutor {
 			Player executor = (Player)sender;						
 			if(args.length >= 1) {
 				String name = String.join(" ", args);
-				name = name.substring(0, 32);
+				int maxLength = (name.length() < 32)?name.length():32;
+				name = name.substring(0, maxLength);
 				ItemStack itemInHand;
 				itemInHand = executor.getInventory().getItemInMainHand();
 				if(itemInHand.getType() != Material.NAME_TAG) {
