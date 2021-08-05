@@ -41,10 +41,6 @@ public class ScoreboardLoader {
 				playerModeManager.deactivatePlayerHighlight(player);
 			}
 		}
-		Player player = Bukkit.getPlayer(topKiller.getName());
-		if(player != null && topKiller.getDiamondValue() > 2) {
-			playerModeManager.activatePlayerHighlight(player);
-		}
 		this.topKiller = topKiller;
 		reloadScoreboardForAllOnlinePlayers();
 	}
@@ -73,7 +69,7 @@ public class ScoreboardLoader {
 	}
 	
 	public void reloadScoreboardFor(Player player) {
-		if(player.getName().equalsIgnoreCase(topKiller.getName()) && topKiller.getDiamondValue() > 2) {
+		if(player.getName().equalsIgnoreCase(topKiller.getName()) && topKiller.getDiamondValue() >= 5) {
 			playerModeManager.activatePlayerHighlight(player);
 		}else {
 			playerModeManager.deactivatePlayerHighlight(player);
