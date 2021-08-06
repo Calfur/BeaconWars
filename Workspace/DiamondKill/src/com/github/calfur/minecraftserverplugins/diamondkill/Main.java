@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandProjectStart;
 import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandRegistrator;
+import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskScheduler;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
@@ -63,12 +64,23 @@ public class Main extends JavaPlugin {
 	private void startItemSpawner() {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime fullHour = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0);
-		long ticksUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour) * 20;
-		if(ticksUntilFullHour-6000 < 0) {
-			ticksUntilFullHour += 72000;
+		long secondsUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour);
+		if(secondsUntilFullHour-300 < 0) {
+			fullHour = fullHour.plusHours(1);
+			secondsUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour);
 		}
-		new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)).runTaskTimerAsynchronously(this, ticksUntilFullHour, 72000);
-		new ItemSpawnAnnouncer().runTaskTimerAsynchronously(this, ticksUntilFullHour-6000, 72000);
+
+		fullHour = LocalDateTime.now().plusMinutes(6);
+		
+		TaskScheduler.getInstance().scheduleRepeatingTask(this, 
+				new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)), 
+				fullHour, 
+				3600);
+		
+		TaskScheduler.getInstance().scheduleRepeatingTask(this, 
+				new ItemSpawnAnnouncer(), 
+				fullHour.minusMinutes(5), 
+				3600);
 	}
 	
 	@Override

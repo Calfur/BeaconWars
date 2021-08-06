@@ -9,13 +9,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 
-public class ItemSpawner extends BukkitRunnable {
+public class ItemSpawner implements Runnable {
 	
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private Location location;
@@ -28,22 +27,15 @@ public class ItemSpawner extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-			
-			@Override
-			public void run() {
-				int amountOfOnlineTeams = getCurrentAmountOfOnlineTeams();
-				if(amountOfOnlineTeams >= minimumOfRequiredTeams) {
-					Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");
-					Bukkit.broadcastMessage(ChatColor.GOLD + "Ein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " ist in der Mitte gespawn! Kämpft um ihn!");
-					Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");
-					location.getWorld().dropItem(location, itemsToSpawn);
-				}else {
-					Bukkit.broadcastMessage(ChatColor.GOLD + "Kein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " gespawnt, es sind nur " + ChatColor.RESET + amountOfOnlineTeams + ChatColor.GOLD + " von " + ChatColor.RESET + minimumOfRequiredTeams + ChatColor.GOLD + " benötigten Teams online");
-				}
-			}
-			
-		});
+		int amountOfOnlineTeams = getCurrentAmountOfOnlineTeams();
+		if(amountOfOnlineTeams >= minimumOfRequiredTeams) {
+			Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");
+			Bukkit.broadcastMessage(ChatColor.GOLD + "Ein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " ist in der Mitte gespawn! Kämpft um ihn!");
+			Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");
+			location.getWorld().dropItem(location, itemsToSpawn);
+		}else {
+			Bukkit.broadcastMessage(ChatColor.GOLD + "Kein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " gespawnt, es sind nur " + ChatColor.RESET + amountOfOnlineTeams + ChatColor.GOLD + " von " + ChatColor.RESET + minimumOfRequiredTeams + ChatColor.GOLD + " benötigten Teams online");
+		}
 	}
 
 	private int getCurrentAmountOfOnlineTeams() {

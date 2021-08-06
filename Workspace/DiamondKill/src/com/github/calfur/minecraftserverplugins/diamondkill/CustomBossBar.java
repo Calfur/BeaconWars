@@ -14,6 +14,7 @@ public class CustomBossBar {
 	private BossBarManager manager;
 	private BossBar bossBar;
 	private String title;
+	private int taskId;
 	private LocalDateTime countdownStart;
 	private LocalDateTime countdownEnd;
 
@@ -27,6 +28,10 @@ public class CustomBossBar {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public int getTaskId() {
+		return taskId;
 	}
 	
 	public LocalDateTime getCountdownStart() {
@@ -80,7 +85,7 @@ public class CustomBossBar {
 		this.countdownStart = LocalDateTime.now();
 		this.countdownEnd = countdownEnd;
 		
-		new BossBarProgresser(this).runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
+		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new BossBarProgresser(this), 20, 20);
 	}
 
 	public void destroy() {
