@@ -17,7 +17,7 @@ commands:
     usage: /<command> [add | edit | info | delete | list] Teamnummer Farbe Beacon_x Beacon_y Beacon_z TeamLeader
   playerkill:
     description: Interagiert mit der Killdatenbank
-    usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
+    usage: /<command> [add | info | delete | list] [Id] [Killer] [Opfer]
   beaconfight:
     description: Zum hinzufuegen oder loeschen von Becon Events
     usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]

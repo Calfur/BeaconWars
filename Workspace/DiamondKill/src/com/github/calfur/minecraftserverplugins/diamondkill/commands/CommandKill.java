@@ -50,13 +50,6 @@ public class CommandKill implements CommandExecutor {
 							executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 							return true;
 						}
-					case "edit":
-						if(executor.hasPermission("admin")) {	
-							return editKill(executor, args);
-						}else {
-							executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
-							return true;
-						}
 					default:
 						executor.sendMessage(StringFormatter.Error(subCommand + " ist kein vorhandener Subcommand"));
 						return false;
@@ -121,41 +114,8 @@ public class CommandKill implements CommandExecutor {
 			return false;
 		}
 		killDbConnection.removeKill(killId);
+		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
 		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " gelöscht.");
-		return true;
-	}
-	
-	private boolean editKill(Player executor, String[] args) {
-		if(args.length != 4) {
-			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
-			return false;
-		}
-		int killId;
-		String killer;
-		String victim;
-		LocalDateTime dateTime = LocalDateTime.now();
-		try {
-			killId = Integer.parseInt(args[1]);
-			killer = args[2];
-			victim = args[3];
-		}catch(NumberFormatException e) {
-			executor.sendMessage(StringFormatter.Error("Der Kill Id Parameter muss dem Typ Int entsprechen"));
-			return false;
-		}
-		if(!playerDbConnection.existsPlayer(killer)) {
-			executor.sendMessage(StringFormatter.Error("Der Killer " + killer + " ist nicht registriert"));
-			return false;
-		}
-		if(!playerDbConnection.existsPlayer(victim)) {
-			executor.sendMessage(StringFormatter.Error("Das Opfer " + victim + " ist nicht registriert"));
-			return false;
-		}
-		if(!killDbConnection.existsKill(killId)) {
-			executor.sendMessage(StringFormatter.Error("Dieser Kill ist nicht registriert"));
-			return false;
-		}
-		killDbConnection.addKill(killId, new KillJson(killer, victim, dateTime));
-		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " editiert.");
 		return true;
 	}
 	
@@ -184,15 +144,15 @@ public class CommandKill implements CommandExecutor {
 		}
 		int killId = killDbConnection.getNextId();
 		
-		killDbConnection.addKill(killId, new KillJson(killer, victim, dateTime));
 
 		PlayerJson killerJson = playerDbConnection.getPlayer(killer);
 		
 		int bounty = killDbConnection.getBounty(victim);
 		killerJson.addCollectableDiamonds(bounty);
 		playerDbConnection.addPlayer(killer, killerJson);
+
+		killDbConnection.addKill(killId, new KillJson(killer, victim, dateTime));
 		
-		killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
 		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
 
 		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + ChatColor.RESET + bounty + " Diamanten Kompfgeld an " + killer + " ausgezahlt;");
