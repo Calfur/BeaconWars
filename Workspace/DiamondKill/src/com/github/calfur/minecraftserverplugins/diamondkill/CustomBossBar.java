@@ -14,7 +14,8 @@ public class CustomBossBar {
 	private BossBarManager manager;
 	private BossBar bossBar;
 	private String title;
-	private double bossBarStepPerSecond;
+	private LocalDateTime countdownStart;
+	private LocalDateTime countdownEnd;
 
 	public BossBarManager getManager() {
 		return manager;
@@ -27,9 +28,17 @@ public class CustomBossBar {
 	public String getTitle() {
 		return title;
 	}
-
-	public double getBossBarStepPerSecond() {
-		return bossBarStepPerSecond;
+	
+	public LocalDateTime getCountdownStart() {
+		return countdownStart;
+	}
+	
+	public LocalDateTime getCountdownEnd() {
+		return countdownEnd;
+	}
+	
+	public double getCountdownDuration() {
+		return ChronoUnit.SECONDS.between(countdownStart, countdownEnd);
 	}
 	
 	public CustomBossBar(BossBarManager manager, String title, ChatColor chatColor, LocalDateTime countdownEnd) {
@@ -68,8 +77,8 @@ public class CustomBossBar {
 	}
 	
 	private void activateCountdown(LocalDateTime countdownEnd) {
-		double countDownDurationInSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), countdownEnd);
-		bossBarStepPerSecond = 1 / countDownDurationInSeconds;
+		this.countdownStart = LocalDateTime.now();
+		this.countdownEnd = countdownEnd;
 		
 		new BossBarProgresser(this).runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
 	}

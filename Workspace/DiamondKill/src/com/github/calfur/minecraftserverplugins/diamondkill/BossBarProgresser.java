@@ -1,5 +1,8 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -18,7 +21,13 @@ public class BossBarProgresser extends BukkitRunnable{
 			
 			@Override
 			public void run() {
-				double newProgress = customBossBar.getBossBar().getProgress() - customBossBar.getBossBarStepPerSecond();
+				double timePassed = ChronoUnit.SECONDS.between(customBossBar.getCountdownStart(), LocalDateTime.now());
+				double newProgress;
+				if(timePassed != 0) {					
+					newProgress = 1 - (1 / (customBossBar.getCountdownDuration() / timePassed));
+				}else {
+					newProgress = 1;
+				}
 				if(newProgress >= 0) {					
 					customBossBar.getBossBar().setProgress(newProgress);
 				}else {

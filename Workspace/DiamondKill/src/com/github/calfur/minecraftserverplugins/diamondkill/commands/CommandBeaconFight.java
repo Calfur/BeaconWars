@@ -95,7 +95,7 @@ public class CommandBeaconFight implements CommandExecutor {
 			executor.sendMessage(ChatColor.GREEN + "Beaconevent erfolgreich hinzugefügt. Startet in " + ChatColor.RESET + ChronoUnit.MINUTES.between(LocalDateTime.now(), startTime) + " Minuten");
 			return true;
 		}else {
-			executor.sendMessage(StringFormatter.Error("Beaconfight Event wurde nicht hinzugefügt. Möglicherweise war die Startzeit vor Jetzt, oder ein bestehender Event überschneidet die Zeit."));
+			executor.sendMessage(StringFormatter.Error("Beaconfight Event wurde nicht hinzugefügt. Möglicherweise war die Startzeit vor Jetzt, oder ein bestehendes Event überschneidet die Zeit."));
 			return false;
 		}
 	}
