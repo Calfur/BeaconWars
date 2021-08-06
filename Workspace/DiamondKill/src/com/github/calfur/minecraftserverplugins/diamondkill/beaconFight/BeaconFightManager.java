@@ -65,8 +65,8 @@ public class BeaconFightManager {
 	}
 	
 	public void removeOngoingBeaconFight(BeaconFight beaconFight) {
-		removeBeaconFight(beaconFight);
 		isBeaconEventActive = false;
+		removeBeaconFight(beaconFight);
 	}
 	
 	private void removeNotStartedBeaconFight(BeaconFight beaconFight) {

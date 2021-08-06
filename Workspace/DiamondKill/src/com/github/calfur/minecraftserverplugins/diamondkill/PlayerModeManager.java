@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
@@ -18,6 +19,7 @@ public class PlayerModeManager {
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
+	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 	
 	private HashMap<String, PlayerMode> playerModes = new HashMap<String, PlayerMode>();
 	public static final int buildModeCooldownInMinutes = 30;
@@ -174,7 +176,9 @@ public class PlayerModeManager {
 	}
 
 	public void updateHighlight(Player player, TopKiller topKiller) {
-		if(player.getName().equalsIgnoreCase(topKiller.getName()) && topKiller.getDiamondValue() >= 5) {
+		if(player.getName().equalsIgnoreCase(topKiller.getName()) 
+				&& topKiller.getDiamondValue() >= 5
+				&& !beaconFightManager.isBeaconEventActive()) {
 			activatePlayerHighlight(player);
 		}else {
 			deactivatePlayerHighlight(player);

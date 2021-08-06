@@ -34,9 +34,6 @@ public class ScoreboardLoader {
 	private BossBarManager bossBarManager = new BossBarManager();
 	
 	public void setTopKiller(TopKiller topKiller) {
-		TopKiller previousTopKiller = this.topKiller;
-		if(previousTopKiller != null) {
-		}
 		this.topKiller = topKiller;
 		reloadScoreboardForAllOnlinePlayers();
 	}

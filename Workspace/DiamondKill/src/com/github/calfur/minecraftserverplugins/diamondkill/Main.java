@@ -37,8 +37,8 @@ public class Main extends JavaPlugin {
 		killDbConnection.loadConfig();
 
 		teamAttackManager = new TeamAttackManager();
-		playerModeManager = new PlayerModeManager();
 		beaconFightManager = new BeaconFightManager();
+		playerModeManager = new PlayerModeManager();
 		scoreboardLoader = new ScoreboardLoader();
 		
 		new FeatureDisabler(); 

@@ -10,7 +10,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.String
 public class BeaconDropEvent implements Listener {
 
 	@EventHandler
-	public void onPlayerTeleportsFromEnderPearl(PlayerDropItemEvent event) {	
+	public void onPlayerDropsItem(PlayerDropItemEvent event) {	
 		if(event.getItemDrop().getItemStack().getType() == Material.BEACON) {
 			event.getPlayer().sendMessage(StringFormatter.Error("Du kannst den Beacon nicht droppen"));
 			event.setCancelled(true);
