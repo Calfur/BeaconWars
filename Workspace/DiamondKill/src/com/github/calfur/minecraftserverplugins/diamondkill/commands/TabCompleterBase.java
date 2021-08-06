@@ -20,7 +20,7 @@ public abstract class TabCompleterBase implements TabCompleter {
 		return null;
 	}
 
-	abstract List<String> getSuggestions(String[] previousParameters, Player player);
+	abstract List<String> getSuggestions(String[] previousParameters, Player sender);
 	
 	private List<String> filterMatchingWords(List<String> words, String filter){
 		List<String> filteredWords = new ArrayList<String>();

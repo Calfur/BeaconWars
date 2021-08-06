@@ -39,22 +39,20 @@ public class TabCompleterTeam extends TabCompleterBase {
 			switch (previousParameters[0]) {
 			case "add":
 				if(!sender.hasPermission("Admin")) {
-					return completions;
+					break;
 				}
 				completions.add("[Teamnummer]");
 				break;
 			case "edit":
 			case "delete":
 				if(!sender.hasPermission("Admin")) {
-					return completions;
+					break;
 				}
 			case "info":	
 				for (Entry<String, TeamJson> team : teams.entrySet()) {
 					completions.add(team.getKey());
 				}
 				break;
-			case "list":
-				return completions;
 			default:
 				break;
 			}
@@ -62,7 +60,7 @@ public class TabCompleterTeam extends TabCompleterBase {
 		case 3: // Color
 			if(!sender.hasPermission("Admin") 
 					|| (!previousParameters[0].equalsIgnoreCase("add") && !previousParameters[0].equalsIgnoreCase("edit"))) {
-				return completions;
+				break;
 			}
 			completions.add(ChatColor.AQUA.name());
 			completions.add(ChatColor.BLUE.name());
@@ -80,28 +78,28 @@ public class TabCompleterTeam extends TabCompleterBase {
 		case 4: // Beacon_x
 			if(!sender.hasPermission("Admin") 
 					|| (!previousParameters[0].equalsIgnoreCase("add") && !previousParameters[0].equalsIgnoreCase("edit"))) {
-				return completions;
+				break;
 			}
 			completions.add("[Beacon_x]");
 			break;
 		case 5: // Beacon_y
 			if(!sender.hasPermission("Admin") 
 					|| (!previousParameters[0].equalsIgnoreCase("add") && !previousParameters[0].equalsIgnoreCase("edit"))) {
-				return completions;
+				break;
 			}
 			completions.add("[Beacon_y]");
 			break;
 		case 6: // Beacon_z
 			if(!sender.hasPermission("Admin") 
 					|| (!previousParameters[0].equalsIgnoreCase("add") && !previousParameters[0].equalsIgnoreCase("edit"))) {
-				return completions;
+				break;
 			}
 			completions.add("[Beacon_z]");
 			break;
 		case 7: // TeamLeader
 			if(!sender.hasPermission("Admin") 
 					|| (!previousParameters[0].equalsIgnoreCase("add") && !previousParameters[0].equalsIgnoreCase("edit"))) {
-				return completions;
+				break;
 			}
 			for (Entry<String, PlayerJson> player : players.entrySet()) {
 				completions.add(player.getKey());
