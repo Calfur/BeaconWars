@@ -8,11 +8,11 @@ import org.bukkit.util.NumberConversions;
 
 public class PlayerJson implements ConfigurationSerializable {
 	private int team;	
-	private String discordName;
+	private String realName;
 	private int collectableDiamonds;
 	
-	public String getDiscordName() {
-		return discordName;
+	public String getRealName() {
+		return realName;
 	}
 
 	public int getTeamId() {
@@ -31,9 +31,9 @@ public class PlayerJson implements ConfigurationSerializable {
 		collectableDiamonds -= amount;		
 	}
 	
-	public PlayerJson(int team, String discordName, int collectableDiamonds) {
+	public PlayerJson(int team, String realName, int collectableDiamonds) {
 		this.team = team;
-		this.discordName = discordName;
+		this.realName = realName;
 		this.collectableDiamonds = collectableDiamonds;
 	}
 	
@@ -41,7 +41,7 @@ public class PlayerJson implements ConfigurationSerializable {
 	public Map<String, Object> serialize() {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("team", this.team);
-		data.put("discordName", this.discordName);
+		data.put("realName", this.realName);
 		data.put("collectableDiamonds", this.collectableDiamonds);
 		return data;
 	}
@@ -49,7 +49,7 @@ public class PlayerJson implements ConfigurationSerializable {
 	public static PlayerJson deserialize(Map<String, Object> args) {
 		return new PlayerJson(
 				NumberConversions.toInt(args.get("team")), 
-				(String) args.get("discordName"), 
+				(String) args.get("realName"), 
 				NumberConversions.toInt(args.get("collectableDiamonds"))
 			);
 	}
