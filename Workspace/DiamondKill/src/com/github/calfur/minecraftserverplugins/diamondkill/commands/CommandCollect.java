@@ -29,7 +29,7 @@ public class CommandCollect implements CommandExecutor {
 				try {
 					amount = Integer.parseInt(args[1]);
 				}catch(NumberFormatException e) {
-					executor.sendMessage(StringFormatter.Error("Der Team Parameter muss dem Typ Int entsprechen"));
+					executor.sendMessage(StringFormatter.Error("Der Parameter Anzahl muss dem Typ Int entsprechen"));
 					return false;
 				}
 				switch(type) {
@@ -61,7 +61,7 @@ public class CommandCollect implements CommandExecutor {
 		PlayerJson playerJson = playerDbConnection.getPlayer(executor.getName());
 		int availableDiamonds = playerJson.getCollectableDiamonds();
 		if(availableDiamonds < amount) {
-			executor.sendMessage(StringFormatter.Error("Du kannst nur maximal " + availableDiamonds + " Diamanten einsammeln. Kille Leute um mehr zu erhalten."));
+			executor.sendMessage(StringFormatter.Error("Du kannst momentan nicht mehr als " + availableDiamonds + " Diamanten einsammeln. Kille Leute um mehr zu erhalten."));
 			return false;
 		}
 		playerJson.removeCollectableDiamonds(amount);
