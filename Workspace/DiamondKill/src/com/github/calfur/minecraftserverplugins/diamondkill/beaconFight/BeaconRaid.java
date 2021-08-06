@@ -12,12 +12,11 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.Team;
+import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskScheduler;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 
 public class BeaconRaid {
@@ -28,7 +27,7 @@ public class BeaconRaid {
 	private String destructorName;
 	private Location beaconLocation;
 	private BeaconFight beaconFight;
-	private BukkitTask overtimeTask;
+	private int overtimeTaskId;
 	private int reward = 5;
 	private int maxMinutesToBringBack;
 	private Collection<PotionEffect> attackerEffects;
@@ -75,21 +74,16 @@ public class BeaconRaid {
 		
 		Main.getInstance().getScoreboardLoader().addBossBar(bossBarName, attacker.getColor(), deadline);
 	
-		overtimeTask = new BukkitRunnable() {
+		overtimeTaskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(), 
+				new Runnable() {
 			
-			@Override
-			public void run() {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-					
 					@Override
 					public void run() {
 						doTimeOverActions();				
 					}
-
-				});
-			}
 			
-		}.runTaskLaterAsynchronously(Main.getInstance(), maxMinutesToBringBack*60*20);
+				}, 
+				LocalDateTime.now().plusMinutes(maxMinutesToBringBack));
 	}
 	
 	public void addBeaconPlacement(PlayerJson placer, Player player) {
@@ -122,7 +116,7 @@ public class BeaconRaid {
 	}
 	
 	private void destroy() {
-		overtimeTask.cancel();
+		TaskScheduler.getInstance().cancel(overtimeTaskId);
 		Main.getInstance().getScoreboardLoader().removeBossBar(bossBarName);
 		placeBeaconBack();
 		beaconFight.removeBeaconRaid(this);

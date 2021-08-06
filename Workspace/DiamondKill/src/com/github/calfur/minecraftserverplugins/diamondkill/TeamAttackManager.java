@@ -1,11 +1,13 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskScheduler;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
@@ -39,7 +41,7 @@ public class TeamAttackManager {
 			attack = new Attack(new Team(attacker, attackerColor), new Team(defender, defenderColor));
 			 Main.getInstance().getScoreboardLoader().addAttack(attack);
 		}		
-		int taskId = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new TeamAttackRemover(attack, this), attackDurationSeconds*20);
+		int taskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(), new TeamAttackRemover(attack, this), LocalDateTime.now().plusSeconds(attackDurationSeconds));
 		activeAttacks.put(taskId, attack);
 	}
 	/**

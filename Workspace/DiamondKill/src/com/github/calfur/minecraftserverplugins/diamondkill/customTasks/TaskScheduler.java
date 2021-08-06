@@ -43,7 +43,7 @@ public class TaskScheduler {
 	 * @param runnable
 	 * @param executionTime
 	 */	
-	public int scheduleRepeatingTask(Plugin plugin, Runnable runnable, LocalDateTime executionTime) {
+	public int scheduleDelayedTask(Plugin plugin, Runnable runnable, LocalDateTime executionTime) {
 		return addTask(new Task(plugin, runnable, executionTime));
 	}	
 	
@@ -65,22 +65,22 @@ public class TaskScheduler {
 				tryRunTasks();				
 			}
 
-			private void tryRunTasks() {
-				ArrayList<Integer> taskKeysToDestroy = new ArrayList<Integer>();
-				
-				for (Entry<Integer, Task> task : tasks.entrySet()) {
-					boolean destroyTask = task.getValue().tryRun();
-					if(destroyTask) {
-						taskKeysToDestroy.add(task.getKey());
-					}
-				}
-				
-				for (Integer taskKeyToDestroy : taskKeysToDestroy) {					
-					tasks.remove(taskKeyToDestroy);
-				}
-			}
 			
 		}, 200, 200); //runs every 10 seconds
 	}
 
+	private void tryRunTasks() {
+		ArrayList<Integer> taskKeysToDestroy = new ArrayList<Integer>();
+		
+		for (Entry<Integer, Task> task : tasks.entrySet()) {
+			boolean destroyTask = task.getValue().tryRun();
+			if(destroyTask) {
+				taskKeysToDestroy.add(task.getKey());
+			}
+		}
+		
+		for (Integer taskKeyToDestroy : taskKeysToDestroy) {					
+			tasks.remove(taskKeyToDestroy);
+		}
+	}
 }

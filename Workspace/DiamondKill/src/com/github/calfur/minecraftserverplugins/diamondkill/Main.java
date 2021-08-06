@@ -64,13 +64,12 @@ public class Main extends JavaPlugin {
 	private void startItemSpawner() {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime fullHour = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0);
+		
 		long secondsUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour);
-		if(secondsUntilFullHour-300 < 0) {
+		if(secondsUntilFullHour < 300) {
 			fullHour = fullHour.plusHours(1);
 			secondsUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour);
 		}
-
-		fullHour = LocalDateTime.now().plusMinutes(6);
 		
 		TaskScheduler.getInstance().scheduleRepeatingTask(this, 
 				new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)), 
