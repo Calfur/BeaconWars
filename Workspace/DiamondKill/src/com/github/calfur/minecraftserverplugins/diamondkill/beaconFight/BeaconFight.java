@@ -3,7 +3,6 @@ package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -13,18 +12,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.DeathBanPluginInteraction;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Team;
+import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskScheduler;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class BeaconFight {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
@@ -37,8 +36,8 @@ public class BeaconFight {
 	private List<BeaconRaid> beaconRaids = new ArrayList<BeaconRaid>();
 	private HashMap<Integer, Integer> amountOfLostDefensesPerTeams = new HashMap<Integer, Integer>();
 	int totalDefenceReward = 3;
-	private BukkitTask naturallyEventEndTask;
-	private BukkitTask eventStartTask;
+	private int naturallyEventEndTaskId;
+	private int eventStartTaskId;
 
 	public LocalDateTime getStartTime() {
 		return startTime;
@@ -54,21 +53,18 @@ public class BeaconFight {
 		this.eventDurationInMinutes = eventDurationInMinutes;
 		this.attackDurationInMinutes = attackDurationInMinutes;
 		
-		long ticksTillStart = ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime)*20;
-		if(ticksTillStart > 0) {
-			eventStartTask = new BukkitRunnable() {					
-				@Override
-				public void run() {
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-						
+		long secondsTillStart = ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime);
+		if(secondsTillStart > 0) {
+			eventStartTaskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(),
+					new Runnable() {
+				
 						@Override
 						public void run() {
 							startBeaconFightEvent();
 						}
-						
-					});
-				}					
-			}.runTaskLaterAsynchronously(Main.getInstance(), ticksTillStart);
+				
+					}, 
+					startTime);
 		}else {
 			startBeaconFightEvent();
 		}
@@ -85,28 +81,26 @@ public class BeaconFight {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle false");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time set 0");
 		
-		naturallyEventEndTask = new BukkitRunnable() {					
-			@Override
-			public void run() {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-					
+		naturallyEventEndTaskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(), 
+				new Runnable() {
+			
 					@Override
 					public void run() {
 						stopBeaconFightNaturally();
 					}
-				});
-			}
-		}.runTaskLaterAsynchronously(Main.getInstance(), eventDurationInMinutes*60*20);
+					
+				}, 
+				startTime.plusMinutes(eventDurationInMinutes));
 	}
 
 	public void cancelBeaconFightBeforeStarted() {
-		eventStartTask.cancel();
+		TaskScheduler.getInstance().cancel(eventStartTaskId);
 		end();
 	}
 	
 	public void cancelOngoingBeaconFight() {
 		sendEventCancelMessage();
-		naturallyEventEndTask.cancel();
+		TaskScheduler.getInstance().cancel(naturallyEventEndTaskId);
 		end();
 	}
 	
@@ -138,7 +132,7 @@ public class BeaconFight {
 				playerJson.addCollectableDiamonds(reward);
 				playerDbConnection.addPlayer(teamLeaderName, playerJson);
 			}else {
-				Bukkit.broadcastMessage(ChatColor.DARK_RED + "Der Teamleader " + teamLeaderName + " von" + teamJson.getColor() + "Team " + teamId + ChatColor.DARK_RED + " wurde noch nicht registriert");
+				Bukkit.broadcastMessage(StringFormatter.Error("Der Teamleader " + teamLeaderName + " von") + teamJson.getColor() + "Team " + teamId + StringFormatter.Error(" wurde noch nicht registriert"));
 			}
 		}
 	}
@@ -227,10 +221,7 @@ public class BeaconFight {
 	
 	private void deactivateBuildMode() {
 		PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
-		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-		for (Player player : players) {
-			playerModeManager.reloadPlayerMode(player);
-		}
+		playerModeManager.reloadPlayerModeForAllOnlinePlayers();
 	}
 
 	public void addBeaconDestruction(Player player, Location beaconLocation) {
@@ -248,16 +239,16 @@ public class BeaconFight {
 		PlayerJson attacker = playerDbConnection.getPlayer(placer.getName());
 		
 		if(teamWhereBeaconWasPlaced == null) {
-			placer.sendMessage(ChatColor.DARK_RED + "Du musst den Beacon an den Beacon von deinem Team plazieren");
+			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren"));
 			return;
 		}
 		if(teamWhereBeaconWasPlaced.getId() != attacker.getTeamId()) {
-			placer.sendMessage(ChatColor.DARK_RED + "Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId());
+			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId()));
 			return;
 		}		
 		BeaconRaid beaconRaid = getBeaconRaid(placer.getName(), teamWhereBeaconWasPlaced);
 		if(beaconRaid == null) {			
-			placer.sendMessage(ChatColor.DARK_RED + "Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben");
+			placer.sendMessage(StringFormatter.Error("Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben"));
 			BeaconManager.removeOneBeaconFromInventory(placer);
 			return;
 		}

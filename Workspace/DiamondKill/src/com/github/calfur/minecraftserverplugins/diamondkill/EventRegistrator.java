@@ -17,7 +17,7 @@ public class EventRegistrator {
 		plugin.getServer().getPluginManager().registerEvents(new PlayerLeaveEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new PlayerRespawnEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new BlockBreakEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new MilkEvents(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new PlayerModeRefreshEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new TeleportEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new BeaconItemEvents(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new EnderPerlTeleportEvent(), plugin);

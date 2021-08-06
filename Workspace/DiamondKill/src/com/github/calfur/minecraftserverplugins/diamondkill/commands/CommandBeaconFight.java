@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,8 +14,7 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
-
-import net.md_5.bungee.api.ChatColor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandBeaconFight implements CommandExecutor {
 	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
@@ -33,15 +33,15 @@ public class CommandBeaconFight implements CommandExecutor {
 					case "delete":
 						return tryRemoveBeaconFight(executor, args);
 					default:
-						executor.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Subcommand");
+						executor.sendMessage(StringFormatter.Error(subCommand + " ist kein vorhandener Subcommand"));
 						return false;
 					}
 				}else {
-					executor.sendMessage(ChatColor.RED + "Mindestens ein Parameter benötigt");
+					executor.sendMessage(StringFormatter.Error("Mindestens ein Parameter benötigt"));
 					return false;
 				}			
 			}else {
-				executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+				executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 				return true;
 			}
 		}
@@ -58,7 +58,7 @@ public class CommandBeaconFight implements CommandExecutor {
 			case 4:
 				break;
 			default:
-				executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+				executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 				return false;
 		}
 		LocalDateTime startTime;
@@ -68,34 +68,34 @@ public class CommandBeaconFight implements CommandExecutor {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm");
 			startTime = LocalDateTime.parse(args[1], formatter);
 		}catch(DateTimeParseException e) {
-			executor.sendMessage(ChatColor.RED + "Der DateTime Parameter muss dem Format yyyy-MM-dd_HH:mm entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der DateTime Parameter muss dem Format yyyy-MM-dd_HH:mm entsprechen"));
 			return false;
 		}
 		try {
 			eventDurationInMinutes = Long.parseLong(args[2]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Eventdauer Parameter muss dem Typ Long entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der Eventdauer Parameter muss dem Typ Long entsprechen"));
 			return false;
 		}
 		if(eventDurationInMinutes < 1) {
-			executor.sendMessage(ChatColor.RED + "Die Eventdauer muss mindestens 1min sein");
+			executor.sendMessage(StringFormatter.Error("Die Eventdauer muss mindestens 1min sein"));
 			return false;
 		}
 		try {
 			attackDurationInMinutes = Integer.parseInt(args[3]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Angriffsdauer Parameter muss dem Typ Long entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der Angriffsdauer Parameter muss dem Typ Long entsprechen"));
 			return false;
 		}
 		if(attackDurationInMinutes < 1) {
-			executor.sendMessage(ChatColor.RED + "Die Angriffsdauer muss mindestens 1min sein");
+			executor.sendMessage(StringFormatter.Error("Die Angriffsdauer muss mindestens 1min sein"));
 			return false;
 		}
 		if(beaconFightManager.tryAddBeaconFight(startTime, eventDurationInMinutes, attackDurationInMinutes)) {
 			executor.sendMessage(ChatColor.GREEN + "Beaconevent erfolgreich hinzugefügt. Startet in " + ChatColor.RESET + ChronoUnit.MINUTES.between(LocalDateTime.now(), startTime) + " Minuten");
 			return true;
 		}else {
-			executor.sendMessage(ChatColor.RED + "Beaconfight Event wurde nicht hinzugefügt. Möglicherweise war die Startzeit vor Jetzt, oder ein bestehender Event überschneidet die Zeit.");
+			executor.sendMessage(StringFormatter.Error("Beaconfight Event wurde nicht hinzugefügt. Möglicherweise war die Startzeit vor Jetzt, oder ein bestehendes Event überschneidet die Zeit."));
 			return false;
 		}
 	}
@@ -106,7 +106,7 @@ public class CommandBeaconFight implements CommandExecutor {
 			executor.sendMessage(ChatColor.GREEN + "Beaconevent entfernt");
 			return true;
 		}else {
-			executor.sendMessage(ChatColor.DARK_RED + "Es konnte kein Beaconfight entfernt werden");
+			executor.sendMessage(StringFormatter.Error("Es konnte kein Beaconfight entfernt werden"));
 			return false;
 		}
 	}

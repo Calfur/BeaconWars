@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent ;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
-import net.md_5.bungee.api.ChatColor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class MoveBeaconIntoChestEvent implements Listener {
 	private List<InventoryType> exceptedInventoryTypes = Arrays.asList(InventoryType.PLAYER, InventoryType.CREATIVE, InventoryType.CRAFTING);
@@ -28,13 +28,13 @@ public class MoveBeaconIntoChestEvent implements Listener {
 			
 			boolean beaconItemIsAffected = affectedItem.getType() == Material.BEACON;
 			if(beaconItemIsAffected) {
-				player.sendMessage(ChatColor.DARK_RED + "In diesem Inventartyp kann der Beacon nicht verschoben werden");
+				player.sendMessage(StringFormatter.Error("In diesem Inventartyp kann der Beacon nicht verschoben werden"));
 				event.setCancelled(true);
 				return;
 			}
 			boolean inventoryContainsBeacon = player.getInventory().contains(Material.BEACON) || event.getInventory().contains(Material.BEACON) || player.getInventory().getItemInOffHand().getType() == Material.BEACON;
 			if((event.getAction() == InventoryAction.HOTBAR_SWAP || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD) && inventoryContainsBeacon) {
-				player.sendMessage(ChatColor.DARK_RED + "Während du einen Beacon im inventar hast, ist diese Funktion gesperrt");
+				player.sendMessage(StringFormatter.Error("Während du einen Beacon im inventar hast, ist diese Funktion gesperrt"));
 				event.setCancelled(true);
 				return;
 			}

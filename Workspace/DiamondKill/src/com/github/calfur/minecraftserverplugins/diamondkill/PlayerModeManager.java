@@ -2,6 +2,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -9,13 +10,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class PlayerModeManager {
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
+	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 	
 	private HashMap<String, PlayerMode> playerModes = new HashMap<String, PlayerMode>();
 	public static final int buildModeCooldownInMinutes = 30;
@@ -47,7 +51,7 @@ public class PlayerModeManager {
 									deactivateBuildMode(playerMode);	
 								}else {
 									playerMode.reduceSecondsLeftUntilBuildModeGetsDeactivated(buildModeRangeCheckDelayInSeconds);
-									player.sendMessage(ChatColor.RED + "Nicht mehr im Base Bereich! Baumodus wird in " + secondsUntilBuildModeGetsDeactivated + "s automatisch deaktiviert!");
+									player.sendMessage(StringFormatter.Error("Nicht mehr im Base Bereich! Baumodus wird in " + secondsUntilBuildModeGetsDeactivated + "s automatisch deaktiviert!"));
 								}
 							}else {
 								playerMode.resetSecondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange();
@@ -99,18 +103,18 @@ public class PlayerModeManager {
 	private boolean activateBuildModeIfAllowed(PlayerMode playerMode, Player player) {
 		
 		if(Main.getInstance().getBeaconFightManager().isBeaconEventActive()) {
-			player.sendMessage(ChatColor.DARK_RED + "Während einem Beacon Event kann der Baumodus nicht aktiviert werden");
+			player.sendMessage(StringFormatter.Error("Während einem Beacon Event kann der Baumodus nicht aktiviert werden"));
 			return false;
 		}
 		
 		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
 		if(teamAttackManager.isTeamFighting(teamId)) {	
-			player.sendMessage(ChatColor.DARK_RED + "Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird.");
+			player.sendMessage(StringFormatter.Error("Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird."));
 			return false;
 		}
 		
 		if(!isPlayerWithinRangeOfHisBase(player)) {	
-			player.sendMessage(ChatColor.DARK_RED + "Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden.");
+			player.sendMessage(StringFormatter.Error("Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden."));
 			return false;
 		}
 		
@@ -122,7 +126,7 @@ public class PlayerModeManager {
 		
 		long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
 		if(minutesSinceDeactivated < buildModeCooldownInMinutes) {
-			player.sendMessage(ChatColor.DARK_RED + "Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden");
+			player.sendMessage(StringFormatter.Error("Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden"));
 			return false;
 		}
 		
@@ -152,6 +156,13 @@ public class PlayerModeManager {
 		}
 	}
 	
+	public void reloadPlayerModeForAllOnlinePlayers() {
+		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+		for (Player player : players) {
+			reloadPlayerMode(player);
+		}
+	}
+	
 	public boolean isPlayerInBuildMode(Player player) {
 		PlayerMode playerMode = getPlayerMode(player.getName());
 		if(playerMode == null) {
@@ -164,7 +175,17 @@ public class PlayerModeManager {
 		}
 	}
 
-	public void activatePlayerHighlight(Player player) {
+	public void updateHighlight(Player player, TopKiller topKiller) {
+		if(player.getName().equalsIgnoreCase(topKiller.getName()) 
+				&& topKiller.getDiamondValue() >= 5
+				&& !beaconFightManager.isBeaconEventActive()) {
+			activatePlayerHighlight(player);
+		}else {
+			deactivatePlayerHighlight(player);
+		}
+	}
+	
+	private void activatePlayerHighlight(Player player) {
 		PlayerMode playerMode = getPlayerMode(player.getName());
 		if(playerMode == null) {
 			playerMode = addPlayerMode(player);		
@@ -172,7 +193,7 @@ public class PlayerModeManager {
 		playerMode.activateHighlighted();
 	}
 	
-	public void deactivatePlayerHighlight(Player player) {
+	private void deactivatePlayerHighlight(Player player) {
 		PlayerMode playerMode = getPlayerMode(player.getName());
 		if(playerMode != null) {
 			playerMode.deactivateHighlighted();

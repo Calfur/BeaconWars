@@ -18,7 +18,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFi
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 
 public class ScoreboardLoader {
@@ -34,17 +34,6 @@ public class ScoreboardLoader {
 	private BossBarManager bossBarManager = new BossBarManager();
 	
 	public void setTopKiller(TopKiller topKiller) {
-		TopKiller previousTopKiller = this.topKiller;
-		if(previousTopKiller != null) {
-			Player player = Bukkit.getPlayer(previousTopKiller.getName());
-			if(player != null) {				
-				playerModeManager.deactivatePlayerHighlight(player);
-			}
-		}
-		Player player = Bukkit.getPlayer(topKiller.getName());
-		if(player != null && topKiller.getDiamondValue() > 2) {
-			playerModeManager.activatePlayerHighlight(player);
-		}
 		this.topKiller = topKiller;
 		reloadScoreboardForAllOnlinePlayers();
 	}
@@ -73,11 +62,7 @@ public class ScoreboardLoader {
 	}
 	
 	public void reloadScoreboardFor(Player player) {
-		if(player.getName().equalsIgnoreCase(topKiller.getName()) && topKiller.getDiamondValue() > 2) {
-			playerModeManager.activatePlayerHighlight(player);
-		}else {
-			playerModeManager.deactivatePlayerHighlight(player);
-		}
+		playerModeManager.updateHighlight(player, topKiller);
 		reloadTabList(player);
 		reloadPlayerChatName(player);
 		reloadNameAbovePlayer(player);
@@ -158,7 +143,7 @@ public class ScoreboardLoader {
 			
 			player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
 		}else {
-			listName = ChatColor.DARK_RED + name + " UNREGISTRIERT";
+			listName = StringFormatter.Error(name + " UNREGISTRIERT");
 		}
 		player.setPlayerListName(listName);
 	}
@@ -171,7 +156,7 @@ public class ScoreboardLoader {
 			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();			
 			listName = teamColor + name + getActiveModes(player) + ChatColor.RESET;
 		}else {
-			listName = ChatColor.DARK_RED + "UNREGISTRIERT " + name + ChatColor.RESET;
+			listName = StringFormatter.Error("UNREGISTRIERT " + name);
 		}
 		player.setDisplayName(listName);		
 	}
@@ -207,7 +192,7 @@ public class ScoreboardLoader {
 
 	private String topKillerScoreText() {
 		if(!topKiller.areMultipleTopKiller()) {			
-			return StringEditor.FirstLetterToUpper(topKiller.getName()) + " " + ChatColor.AQUA + topKiller.getDiamondValue() + " Dias";
+			return StringFormatter.FirstLetterToUpper(topKiller.getName()) + " " + ChatColor.AQUA + topKiller.getDiamondValue() + " Dias";
 		}else {
 			return "-";
 		}
@@ -220,6 +205,6 @@ public class ScoreboardLoader {
 			Team defender = attack.getDefender();
 			return (attacker.getColor() + "Team " + attacker.getId()) + (ChatColor.RESET + " -> ") + (defender.getColor() + "Team " + defender.getId());
 		}
-		return StringEditor.RepeatString(" ", scoreNumber);
+		return StringFormatter.RepeatString(" ", scoreNumber);
 	}
 }

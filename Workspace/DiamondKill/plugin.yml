@@ -1,7 +1,10 @@
 name: DiamondKill
 main: com.github.calfur.minecraftserverplugins.diamondkill.Main
 version: 1.1.1
-api-version: 1.13
+api-version: 1.16
+depend: [DeathBan]
+description: You can find a plugin documentation inside of the readme file on https://github.com/Calfur/BeaconWars
+author: Robin Nater
 commands:
   collect:
     description: Gibt dem Spieler die Gewuenschte Anzahl Items aus seinem Belohnungsguthaben
@@ -14,13 +17,13 @@ commands:
     usage: /<command> [add | edit | info | delete | list] Teamnummer Farbe Beacon_x Beacon_y Beacon_z TeamLeader
   playerkill:
     description: Interagiert mit der Killdatenbank
-    usage: /<command> [add | edit | info | delete | list] [Id] Killer Opfer
+    usage: /<command> [add | info | delete | list] [Id] [Killer] [Opfer]
   beaconfight:
     description: Zum hinzufuegen oder loeschen von Becon Events
     usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]
   buildmode:
-    aliases: 
-    - pengin
+    aliases:
+    - baumodus
     description: Aktiviert oder Deaktiviert den Baumodus
     usage: /<command>
   projectStart:
@@ -29,6 +32,12 @@ commands:
   startProjectForPlayers:
     description: Teleportiert Spieler zu ihrem Teambeacon und setzt sie in den Startzustand (Effekte, Hunger, Spawnpoint)
     usage: /<command> [Spieler]
+  totemcooldown:
+    description: Gibt die verbleibende cooldown Zeit zurueck
+    usage: /<command> [Spieler]
+  namenametag:
+    description: Benennt nametags welche in der Main-Hand gehalten werden
+    usage: /<command> [Name]
 permissions:
   admin:
     description: Erlaubt das benutzen von allen DiamondKill commands

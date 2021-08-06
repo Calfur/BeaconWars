@@ -1,10 +1,11 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
-public class BossBarProgresser extends BukkitRunnable{
-	private BossBarProgresser instance = this;
+import org.bukkit.Bukkit;
+
+public class BossBarProgresser implements Runnable{
 	
 	private CustomBossBar customBossBar;
 	
@@ -14,20 +15,19 @@ public class BossBarProgresser extends BukkitRunnable{
 	
 	@Override
 	public void run() {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
-			
-			@Override
-			public void run() {
-				double newProgress = customBossBar.getBossBar().getProgress() - customBossBar.getBossBarStepPerSecond();
-				if(newProgress >= 0) {					
-					customBossBar.getBossBar().setProgress(newProgress);
-				}else {
-					instance.cancel();
-					customBossBar.getManager().removeBossBar(customBossBar);
-				}
-			}
-			
-		});
+		double timePassed = ChronoUnit.SECONDS.between(customBossBar.getCountdownStart(), LocalDateTime.now());
+		double newProgress;
+		if(timePassed != 0) {					
+			newProgress = 1 - (1 / (customBossBar.getCountdownDuration() / timePassed));
+		}else {
+			newProgress = 1;
+		}
+		if(newProgress >= 0) {					
+			customBossBar.getBossBar().setProgress(newProgress);
+		}else {
+			Bukkit.getScheduler().cancelTask(customBossBar.getTaskId());
+			customBossBar.getManager().removeBossBar(customBossBar);
+		}
 	}
 	
 }

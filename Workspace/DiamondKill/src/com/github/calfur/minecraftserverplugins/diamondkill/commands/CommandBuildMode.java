@@ -6,9 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class CommandBuildMode implements CommandExecutor {
 	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
@@ -21,7 +20,7 @@ public class CommandBuildMode implements CommandExecutor {
 				playerModeManager.toggleBuildMode(executor);
 				return true;
 			}else {
-				executor.sendMessage(ChatColor.RED + "Keine Parameter verfügbar");
+				executor.sendMessage(StringFormatter.Error("Keine Parameter verfügbar"));
 				return false;
 			}			
 		}

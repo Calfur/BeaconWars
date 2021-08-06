@@ -27,7 +27,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringEditor;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class KillEvents implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
@@ -56,11 +56,11 @@ public class KillEvents implements Listener {
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(defender)) {
-			attacker.sendMessage(ChatColor.RED + "Dieser Spieler kann nicht angegriffen werden, weil er im Baumodus ist");
+			attacker.sendMessage(StringFormatter.Error("Dieser Spieler kann nicht angegriffen werden, weil er im Baumodus ist"));
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(attacker)) {
-			attacker.sendMessage(ChatColor.RED + "Du kannst keine Spieler angreifen, während du im Baumodus bist");
+			attacker.sendMessage(StringFormatter.Error("Du kannst keine Spieler angreifen, während du im Baumodus bist"));
 			return false;
 		}
 		int defenderTeam = playerDbConnection.getPlayer(defenderName).getTeamId();
@@ -159,21 +159,19 @@ public class KillEvents implements Listener {
 	private void sendDeathMessage(String killer, String victim, int bounty) {
 		ChatColor teamColorKiller = teamDbConnection.getTeam(playerDbConnection.getPlayer(killer).getTeamId()).getColor();
 		ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
-		killer = StringEditor.FirstLetterToUpper(killer);
-		victim = StringEditor.FirstLetterToUpper(victim);
+		killer = StringFormatter.FirstLetterToUpper(killer);
+		victim = StringFormatter.FirstLetterToUpper(victim);
 		Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "" + bounty + " Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
 	}
 	
 	private void removeUndroppableItems(List<ItemStack> loot) {
 
 		for (ItemStack itemStack : loot) {
-			// Bukkit.broadcastMessage("oldType: " + itemStack.getType());
 			switch (itemStack.getType()) {
 				case DIAMOND_BOOTS:
 				case DIAMOND_CHESTPLATE:
 				case DIAMOND_HELMET: 
 				case DIAMOND_LEGGINGS:
-					// Bukkit.broadcastMessage("setType");
 					itemStack.setType(null);
 					break;
 				default:

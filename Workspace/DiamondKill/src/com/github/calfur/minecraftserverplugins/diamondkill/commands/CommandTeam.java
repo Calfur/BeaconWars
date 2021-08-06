@@ -16,6 +16,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandTeam implements CommandExecutor {
 
@@ -36,27 +37,27 @@ public class CommandTeam implements CommandExecutor {
 						if(executor.hasPermission("admin")) {	
 							return deleteTeam(executor, args);
 						}else {
-							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 							return true;
 						}
 					case "add":
 						if(executor.hasPermission("admin")) {	
 							return addTeam(executor, args);
 						}else {
-							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 							return true;
 						}
 					case "edit":
 						if(executor.hasPermission("admin")) {	
 							return editTeam(executor, args);
 						}else {
-							executor.sendMessage(ChatColor.RED + "Fehlende Berechtigung für diesen Command");
+							executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
 							return true;
 						}
 					case "list":
 						return sendTeamList(executor, args);
 					default:
-						executor.sendMessage(ChatColor.RED + subCommand + " ist kein vorhandener Subcommand");
+						executor.sendMessage(StringFormatter.Error(subCommand + " ist kein vorhandener Subcommand"));
 						return false;
 				}
 			}			
@@ -66,7 +67,7 @@ public class CommandTeam implements CommandExecutor {
 
 	private boolean sendTeamList(Player executor, String[] args) {
 		if(args.length != 1) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		Map<String, TeamJson> teams = teamDbConnection.getTeams();
@@ -82,18 +83,18 @@ public class CommandTeam implements CommandExecutor {
 
 	private boolean sendTeamInfo(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
 		try {
 			teamNumber = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Teamnummer Parameter muss dem Typ Int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der Teamnummer Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		if(!teamDbConnection.existsTeam(teamNumber)) {
-			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
+			executor.sendMessage(StringFormatter.Error("Dieses Team ist nicht registriert"));
 			return false;
 		}
 		TeamJson teamJson = teamDbConnection.getTeam(teamNumber);
@@ -107,18 +108,18 @@ public class CommandTeam implements CommandExecutor {
 	
 	private boolean deleteTeam(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
 		try {
 			teamNumber = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Teamnummer Parameter muss dem Typ Int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der Teamnummer Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		if(!teamDbConnection.existsTeam(teamNumber)) {
-			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
+			executor.sendMessage(StringFormatter.Error("Dieses Team ist nicht registriert"));
 			return false;
 		}
 		TeamJson team = teamDbConnection.getTeam(teamNumber);
@@ -130,7 +131,7 @@ public class CommandTeam implements CommandExecutor {
 	
 	private boolean editTeam(Player executor, String[] args) {
 		if(args.length != 7) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -142,35 +143,35 @@ public class CommandTeam implements CommandExecutor {
 		try {
 			teamNumber = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Teamnummer Parameter muss dem Typ Int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der Teamnummer Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}try {
 			chatColor = ChatColor.valueOf(args[2].toUpperCase());
 		}catch(IllegalArgumentException e){
-			executor.sendMessage(ChatColor.RED + args[2] + " ist keine gültige Farbe. Siehe: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html");
+			executor.sendMessage(StringFormatter.Error(args[2] + " ist keine gültige Farbe. Siehe: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html"));
 			return false;
 		}
 		try {
 			beaconLocationX = Integer.parseInt(args[3]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Beacon_x Parameter muss dem Typ int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Beacon_x Parameter muss dem Typ int entsprechen"));
 			return false;
 		}
 		try {
 			beaconLocationY = Integer.parseInt(args[4]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Beacon_y Parameter muss dem Typ int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Beacon_y Parameter muss dem Typ int entsprechen"));
 			return false;
 		}
 		try {
 			beaconLocationZ = Integer.parseInt(args[5]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Beacon_z Parameter muss dem Typ int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Beacon_z Parameter muss dem Typ int entsprechen"));
 			return false;
 		}
 		teamLeader = args[6];
 		if(!teamDbConnection.existsTeam(teamNumber)) {
-			executor.sendMessage(ChatColor.RED + "Dieses Team ist nicht registriert");
+			executor.sendMessage(StringFormatter.Error("Dieses Team ist nicht registriert"));
 			return false;
 		}
 		TeamJson oldTeam = teamDbConnection.getTeam(teamNumber);
@@ -185,7 +186,7 @@ public class CommandTeam implements CommandExecutor {
 	
 	private boolean addTeam(Player executor, String[] args) {
 		if(args.length != 7) {
-			executor.sendMessage(ChatColor.RED + "Der Command enthält nicht die richtige anzahl Parameter");
+			executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -197,36 +198,36 @@ public class CommandTeam implements CommandExecutor {
 		try {
 			teamNumber = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Der Teamnummer Parameter muss dem Typ Int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Der Teamnummer Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		try {
 			chatColor = ChatColor.valueOf(args[2].toUpperCase());
 		}catch(IllegalArgumentException e){
-			executor.sendMessage(ChatColor.RED + args[2] + " ist keine gültige Farbe. Siehe: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html");
+			executor.sendMessage(StringFormatter.Error(args[2] + " ist keine gültige Farbe. Siehe: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html"));
 			return false;
 		}
 		try {
 			beaconLocationX = Integer.parseInt(args[3]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Beacon_x Parameter muss dem Typ int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Beacon_x Parameter muss dem Typ int entsprechen"));
 			return false;
 		}
 		try {
 			beaconLocationY = Integer.parseInt(args[4]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Beacon_y Parameter muss dem Typ int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Beacon_y Parameter muss dem Typ int entsprechen"));
 			return false;
 		}
 		try {
 			beaconLocationZ = Integer.parseInt(args[5]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(ChatColor.RED + "Beacon_z Parameter muss dem Typ int entsprechen");
+			executor.sendMessage(StringFormatter.Error("Beacon_z Parameter muss dem Typ int entsprechen"));
 			return false;
 		}
 		teamLeader = args[6];
 		if(teamDbConnection.existsTeam(teamNumber)) {
-			executor.sendMessage(ChatColor.RED + "Dieses Team wurde bereits registriert");	
+			executor.sendMessage(StringFormatter.Error("Dieses Team wurde bereits registriert"));	
 			return false;
 		}
 		World world = executor.getWorld();

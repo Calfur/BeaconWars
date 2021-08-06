@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class BeaconManager {
 
@@ -80,7 +80,7 @@ public class BeaconManager {
 		try {			
 			teamIdOfBeacon = getTeamByBeaconLocation(location).getId();
 		}catch(Exception e) {
-			player.sendMessage(ChatColor.DARK_RED + "Error, unregistrierter Beacon");
+			player.sendMessage(StringFormatter.Error("Error, unregistrierter Beacon"));
 			return false;
 		}
 		int teamIdOfPlayer = Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId();
@@ -115,6 +115,8 @@ public class BeaconManager {
 	public static void teleportPlayerToBeacon(Player player) {
 		Location beaconLocation = getBeaconLocationByPlayer(player);
 		Location teleportLocation = new Location(beaconLocation.getWorld(), beaconLocation.getX() + 1.5, beaconLocation.getY(), beaconLocation.getZ() + 0.5);	
+		replaceBlock(beaconLocation.getWorld(), beaconLocation.getBlockX() + 1, beaconLocation.getBlockY(), beaconLocation.getBlockZ(), Material.AIR);
+		replaceBlock(beaconLocation.getWorld(), beaconLocation.getBlockX() + 1, beaconLocation.getBlockY() + 1, beaconLocation.getBlockZ(), Material.AIR);
 		player.teleport(teleportLocation);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 3));
 	}
