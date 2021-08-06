@@ -14,7 +14,7 @@ public class TabCompleterCollect extends TabCompleterBase{
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	
 	@Override
-	List<String> getSuggestions(String[] previousParameters, Player player) {
+	List<String> getSuggestions(String[] previousParameters, Player sender) {
 		List<String> completions = new ArrayList<String>();
 		switch (previousParameters.length) {
 		case 1:
@@ -22,7 +22,7 @@ public class TabCompleterCollect extends TabCompleterBase{
 			break;
 		case 2:
 			completions.add("1");
-			PlayerJson playerJson = playerDbConnection.getPlayer(player.getName());
+			PlayerJson playerJson = playerDbConnection.getPlayer(sender.getName());
 			int availableDiamonds = playerJson.getCollectableDiamonds();
 			if(availableDiamonds > 0) {				
 				completions.add("" + availableDiamonds);

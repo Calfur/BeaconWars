@@ -36,7 +36,7 @@ public class TabCompleterPlayer extends TabCompleterBase {
 				completions.add("delete");
 			}
 			break;
-		case 2:
+		case 2: // PlayerName
 			switch (previousParameters[0]) {
 			case "add":
 				if(sender.hasPermission("Admin")) {	
@@ -58,11 +58,9 @@ public class TabCompleterPlayer extends TabCompleterBase {
 				break;
 			case "list":
 				break;
-			default:
-				break;
 			}
 			break;
-		case 3:
+		case 3: // TeamNumber
 			if(sender.hasPermission("Admin")) {	
 				switch (previousParameters[0]) {
 				case "add":
@@ -74,12 +72,15 @@ public class TabCompleterPlayer extends TabCompleterBase {
 				}
 			}
 			break;
-		case 4:
+		case 4: // RealName
 			if(sender.hasPermission("Admin")) {	 
-				completions.add("[RealName]");
+				switch (previousParameters[0]) {
+				case "add":
+				case "edit":
+					completions.add("[RealName]");
+					break;
+				}
 			}
-			break;
-		default:
 			break;
 		}
 		return completions;

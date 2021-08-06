@@ -68,10 +68,15 @@ public class CustomBossBar {
 					break;
 				case DARK_BLUE:
 				case DARK_AQUA:
+				case AQUA:
 					result = BarColor.BLUE;
 					break;
 				case DARK_RED:
 					result = BarColor.RED;
+					break;
+				case DARK_PURPLE:
+				case LIGHT_PURPLE:
+					result = BarColor.PURPLE;
 					break;
 				default:
 					result = BarColor.WHITE;

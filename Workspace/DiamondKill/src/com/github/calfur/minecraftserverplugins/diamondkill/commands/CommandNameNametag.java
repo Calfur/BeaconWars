@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,8 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class CommandNameNametag implements CommandExecutor {
 

@@ -14,7 +14,10 @@ public class CommandRegistrator {
 		plugin.getCommand("player").setExecutor(new CommandPlayer());
 		plugin.getCommand("player").setTabCompleter(new TabCompleterPlayer());
 		
-		plugin.getCommand("team").setExecutor(new CommandTeam());		
+		// /team
+		plugin.getCommand("team").setExecutor(new CommandTeam());
+		plugin.getCommand("team").setTabCompleter(new TabCompleterTeam());
+		
 		plugin.getCommand("playerkill").setExecutor(new CommandKill());
 		plugin.getCommand("buildmode").setExecutor(new CommandBuildMode());
 		plugin.getCommand("beaconfight").setExecutor(new CommandBeaconFight());
