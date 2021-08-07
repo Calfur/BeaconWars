@@ -7,16 +7,14 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.ServerInformation;
 
-public class TabCompleterStartProjectForPlayers extends TabCompleterBase {
+public class TabCompleterTotemCooldown extends TabCompleterBase {
 
 	@Override
 	List<String> getSuggestions(String[] previousParameters, Player sender) {
 		List<String> completions = new ArrayList<String>();
 		switch (previousParameters.length) {
 		case 1:
-			if(sender.hasPermission("Admin")) {	
-				completions.addAll(ServerInformation.getPlayerNamesFromOnlinePlayers());
-			}
+			completions.addAll(ServerInformation.getPlayerNamesFromOnlinePlayers());
 			break;
 		}
 		return completions;

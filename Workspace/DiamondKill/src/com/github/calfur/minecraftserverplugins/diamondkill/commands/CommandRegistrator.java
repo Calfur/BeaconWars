@@ -40,7 +40,10 @@ public class CommandRegistrator {
 		plugin.getCommand("startProjectForPlayers").setExecutor(new CommandStartProjectForPlayers());
 		plugin.getCommand("startProjectForPlayers").setTabCompleter(new TabCompleterStartProjectForPlayers());
 		
-		plugin.getCommand("totemCooldown").setExecutor(new CommandTotemCooldown());
+		// /totemcooldown
+		plugin.getCommand("totemcooldown").setExecutor(new CommandTotemCooldown());
+		plugin.getCommand("totemcooldown").setTabCompleter(new TabCompleterTotemCooldown());
+		
 		plugin.getCommand("namenametag").setExecutor(new CommandNameNametag());
 	}
 }
