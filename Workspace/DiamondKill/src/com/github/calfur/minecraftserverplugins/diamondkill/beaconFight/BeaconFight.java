@@ -71,7 +71,6 @@ public class BeaconFight {
 	}
 	
 	private void startBeaconFightEvent() {
-		BeaconManager.teleportAllOnlinePlayersToBeacon();
 		manager.activateBeaconFightEvent();
 		sendEventStartMessage();
 		deactivateBuildMode();
@@ -81,6 +80,8 @@ public class BeaconFight {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle false");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time set 0");
 		
+		BeaconManager.teleportAllOnlinePlayersToBeacon();
+
 		naturallyEventEndTaskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(), 
 				new Runnable() {
 			
