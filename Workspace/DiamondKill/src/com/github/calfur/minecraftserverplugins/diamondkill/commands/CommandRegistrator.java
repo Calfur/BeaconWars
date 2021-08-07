@@ -33,6 +33,9 @@ public class CommandRegistrator {
 		CommandProjectStart commandProjectStart = new CommandProjectStart();
 		plugin.setCommandProjectStart(commandProjectStart);
 		plugin.getCommand("projectStart").setExecutor(commandProjectStart);
+		plugin.getCommand("projectStart").setTabCompleter(new TabCompleterProjectStart());
+		
+		
 		plugin.getCommand("startProjectForPlayers").setExecutor(new CommandStartProjectForPlayers());
 		plugin.getCommand("totemCooldown").setExecutor(new CommandTotemCooldown());
 		plugin.getCommand("namenametag").setExecutor(new CommandNameNametag());
