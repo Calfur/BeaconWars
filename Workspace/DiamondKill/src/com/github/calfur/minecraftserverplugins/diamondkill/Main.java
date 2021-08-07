@@ -1,22 +1,16 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandProjectStart;
 import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandRegistrator;
-import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskScheduler;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.disabling.FeatureDisabler;
-import com.github.calfur.minecraftserverplugins.diamondkill.hungerGamesLootDrop.ItemSpawnAnnouncer;
-import com.github.calfur.minecraftserverplugins.diamondkill.hungerGamesLootDrop.ItemSpawner;
+import com.github.calfur.minecraftserverplugins.diamondkill.hungerGamesLootDrop.HungerGamesManager;
 
 public class Main extends JavaPlugin {
 	private static Main instance;
@@ -28,7 +22,8 @@ public class Main extends JavaPlugin {
 	private BeaconFightManager beaconFightManager;
 	private static ScoreboardLoader scoreboardLoader;
 	private CommandProjectStart commandProjectStart;
-	
+	private HungerGamesManager hungergamesManager;
+		
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -41,6 +36,7 @@ public class Main extends JavaPlugin {
 		beaconFightManager = new BeaconFightManager();
 		playerModeManager = new PlayerModeManager();
 		scoreboardLoader = new ScoreboardLoader();
+		hungergamesManager = new HungerGamesManager();
 		
 		new FeatureDisabler(); 
 		new CommandRegistrator();
@@ -48,38 +44,11 @@ public class Main extends JavaPlugin {
 
 		DeathBanPluginInteraction.tryChangeBanDuration(10);
 		
-		startItemSpawner();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
-			
-			@Override
-			public void run() {
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle true");
-			}
-			
-		});
+		hungergamesManager.startItemSpawner();
+		
+		runServerStartCommands();
 		
 		playerModeManager.reloadPlayerModeForAllOnlinePlayers();
-	}
-
-	private void startItemSpawner() {
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime fullHour = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0);
-		
-		long secondsUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour);
-		if(secondsUntilFullHour < 300) {
-			fullHour = fullHour.plusHours(1);
-			secondsUntilFullHour = ChronoUnit.SECONDS.between(now, fullHour);
-		}
-		
-		TaskScheduler.getInstance().scheduleRepeatingTask(this, 
-				new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)), 
-				fullHour, 
-				3600);
-		
-		TaskScheduler.getInstance().scheduleRepeatingTask(this, 
-				new ItemSpawnAnnouncer(), 
-				fullHour.minusMinutes(5), 
-				3600);
 	}
 	
 	@Override
@@ -109,6 +78,18 @@ public class Main extends JavaPlugin {
 	public ScoreboardLoader getScoreboardLoader() {
 		return scoreboardLoader;
 	}
+	
+	private void runServerStartCommands() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
+			
+			@Override
+			public void run() {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle true");
+			}
+			
+		});
+	}
+	
 	
 	public PlayerModeManager getPlayerModeManager() {
 		return playerModeManager;
