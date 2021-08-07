@@ -13,8 +13,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
-
 public class BlockBreakEvents implements Listener {
 	private List<Material> unbreakableBlocks = Arrays.asList(Material.NETHERITE_BLOCK, Material.BEACON);
 	
@@ -28,7 +26,6 @@ public class BlockBreakEvents implements Listener {
 					Player player = event.getPlayer();
 					Location location = event.getBlock().getLocation();
 					if(!BeaconManager.isBeaconFromAnotherTeam(player, location)) {						
-						event.getPlayer().sendMessage(StringFormatter.Error("Du kannst deinen eigenen Beacon nicht abbauen"));
 						return;
 					}
 					

@@ -23,7 +23,7 @@ public class TeamAttackManager {
 		if(activeAttack != null) {
 			activeAttacks.remove(activeAttack.getKey());
 		}else {
-			Bukkit.broadcastMessage(StringFormatter.Error("ERROR: removeActiveAttack() -> Attack could not be founded to remove"));
+			Bukkit.broadcastMessage(StringFormatter.error("ERROR: removeActiveAttack() -> Attack could not be founded to remove"));
 		}
 	}
 	

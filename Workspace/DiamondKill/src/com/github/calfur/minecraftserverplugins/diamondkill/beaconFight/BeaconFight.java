@@ -99,16 +99,16 @@ public class BeaconFight {
 		PlayerJson attacker = playerDbConnection.getPlayer(placer.getName());
 		
 		if(teamWhereBeaconWasPlaced == null) {
-			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren"));
+			placer.sendMessage(StringFormatter.error("Du musst den Beacon an den Beacon von deinem Team plazieren"));
 			return;
 		}
 		if(teamWhereBeaconWasPlaced.getId() != attacker.getTeamId()) {
-			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId()));
+			placer.sendMessage(StringFormatter.error("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId()));
 			return;
 		}		
 		BeaconRaid beaconRaid = getBeaconRaid(placer.getName(), teamWhereBeaconWasPlaced);
 		if(beaconRaid == null) {			
-			placer.sendMessage(StringFormatter.Error("Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben"));
+			placer.sendMessage(StringFormatter.error("Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben"));
 			BeaconManager.removeOneBeaconFromInventory(placer);
 			return;
 		}
@@ -236,7 +236,7 @@ public class BeaconFight {
 				playerJson.addCollectableDiamonds(reward);
 				playerDbConnection.addPlayer(teamLeaderName, playerJson);
 			}else {
-				Bukkit.broadcastMessage(StringFormatter.Error("Der Teamleader " + teamLeaderName + " von") + teamJson.getColor() + "Team " + teamId + StringFormatter.Error(" wurde noch nicht registriert"));
+				Bukkit.broadcastMessage(StringFormatter.error("Der Teamleader " + teamLeaderName + " von") + teamJson.getColor() + "Team " + teamId + StringFormatter.error(" wurde noch nicht registriert"));
 			}
 		}
 	}

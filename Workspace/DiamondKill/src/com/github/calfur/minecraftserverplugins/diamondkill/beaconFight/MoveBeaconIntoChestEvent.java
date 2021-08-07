@@ -28,13 +28,13 @@ public class MoveBeaconIntoChestEvent implements Listener {
 			
 			boolean beaconItemIsAffected = affectedItem.getType() == Material.BEACON;
 			if(beaconItemIsAffected) {
-				player.sendMessage(StringFormatter.Error("In diesem Inventartyp kann der Beacon nicht verschoben werden"));
+				player.sendMessage(StringFormatter.error("In diesem Inventartyp kann der Beacon nicht verschoben werden"));
 				event.setCancelled(true);
 				return;
 			}
 			boolean inventoryContainsBeacon = player.getInventory().contains(Material.BEACON) || event.getInventory().contains(Material.BEACON) || player.getInventory().getItemInOffHand().getType() == Material.BEACON;
 			if((event.getAction() == InventoryAction.HOTBAR_SWAP || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD) && inventoryContainsBeacon) {
-				player.sendMessage(StringFormatter.Error("Während du einen Beacon im inventar hast, ist diese Funktion gesperrt"));
+				player.sendMessage(StringFormatter.error("Während du einen Beacon im inventar hast, ist diese Funktion gesperrt"));
 				event.setCancelled(true);
 				return;
 			}

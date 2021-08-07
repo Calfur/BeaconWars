@@ -111,7 +111,7 @@ public class BeaconFightManager {
 	public boolean addBeaconBreak(Player destructor, Location beaconLocation) {
 		BeaconFight ongoingBeaconFight = getOngoingBeaconFight();
 		if(ongoingBeaconFight == null) {
-			Bukkit.broadcastMessage(StringFormatter.Error("ERROR: Beacon abgebaut obwohl kein Beaconevent aktiv ist! Bitte Server neustarten"));
+			Bukkit.broadcastMessage(StringFormatter.error("ERROR: Beacon abgebaut obwohl kein Beaconevent aktiv ist! Bitte Server neustarten"));
 			return false;
 		}
 		return addBeaconBreak(destructor, beaconLocation, ongoingBeaconFight);
@@ -120,7 +120,7 @@ public class BeaconFightManager {
 	private boolean addBeaconBreak(Player destructor, Location beaconLocation, BeaconFight beaconFight) {
 		HashMap<Integer, ItemStack> notAddedItems = destructor.getInventory().addItem(new ItemStack(Material.BEACON, 1));
 		if(notAddedItems.size() != 0) {
-			destructor.sendMessage(StringFormatter.Error("Kein freien Platz im Inventar gefunden, Beacon konnte nicht abgebaut werden"));
+			destructor.sendMessage(StringFormatter.error("Kein freien Platz im Inventar gefunden, Beacon konnte nicht abgebaut werden"));
 			return false;
 		}
 		beaconFight.addBeaconDestruction(destructor, beaconLocation);

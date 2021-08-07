@@ -1,6 +1,8 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.database;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerDbConnection extends DbConnection<PlayerData>{
@@ -60,7 +62,22 @@ public class PlayerDbConnection extends DbConnection<PlayerData>{
 	}
 	
 	public HashMap<String, PlayerJson> getPlayers() {
-		return players;
+		HashMap<String, PlayerJson> filteredPlayers = getAllNonSpectatorPlayers();
+		return filteredPlayers;
+	}
+
+	private HashMap<String, PlayerJson> getAllNonSpectatorPlayers() {
+		HashMap<String, PlayerJson> result = new HashMap<String, PlayerJson>(players);
+		List<String> playersToRemove = new ArrayList<String>();
+		result.forEach((id, player) -> {
+			if(player.getTeamId() == TeamDbConnection.spectatorTeamNumber) {				
+				playersToRemove.add(id);
+			}
+		});	
+		playersToRemove.forEach(id -> {
+			result.remove(id);
+		});
+		return result;
 	}
 
 	public boolean isPlayerSpectator(String key) {

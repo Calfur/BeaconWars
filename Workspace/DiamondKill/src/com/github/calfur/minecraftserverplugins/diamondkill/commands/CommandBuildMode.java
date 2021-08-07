@@ -20,7 +20,7 @@ public class CommandBuildMode implements CommandExecutor {
 				playerModeManager.toggleBuildMode(executor);
 				return true;
 			}else {
-				executor.sendMessage(StringFormatter.Error("Keine Parameter verfügbar"));
+				executor.sendMessage(StringFormatter.error("Keine Parameter verfügbar"));
 				return false;
 			}			
 		}

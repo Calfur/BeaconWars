@@ -12,7 +12,7 @@ public class BeaconDropEvent implements Listener {
 	@EventHandler
 	public void onPlayerDropsItem(PlayerDropItemEvent event) {	
 		if(event.getItemDrop().getItemStack().getType() == Material.BEACON) {
-			event.getPlayer().sendMessage(StringFormatter.Error("Du kannst den Beacon nicht droppen"));
+			event.getPlayer().sendMessage(StringFormatter.error("Du kannst den Beacon nicht droppen"));
 			event.setCancelled(true);
 		}
 	}

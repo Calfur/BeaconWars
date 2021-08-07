@@ -51,7 +51,7 @@ public class PlayerModeManager {
 									deactivateBuildMode(playerMode);	
 								}else {
 									playerMode.reduceSecondsLeftUntilBuildModeGetsDeactivated(buildModeRangeCheckDelayInSeconds);
-									player.sendMessage(StringFormatter.Error("Nicht mehr im Base Bereich! Baumodus wird in " + secondsUntilBuildModeGetsDeactivated + "s automatisch deaktiviert!"));
+									player.sendMessage(StringFormatter.error("Nicht mehr im Base Bereich! Baumodus wird in " + secondsUntilBuildModeGetsDeactivated + "s automatisch deaktiviert!"));
 								}
 							}else {
 								playerMode.resetSecondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange();
@@ -103,18 +103,18 @@ public class PlayerModeManager {
 	private boolean activateBuildModeIfAllowed(PlayerMode playerMode, Player player) {
 		
 		if(Main.getInstance().getBeaconFightManager().isBeaconEventActive()) {
-			player.sendMessage(StringFormatter.Error("Während einem Beacon Event kann der Baumodus nicht aktiviert werden"));
+			player.sendMessage(StringFormatter.error("Während einem Beacon Event kann der Baumodus nicht aktiviert werden"));
 			return false;
 		}
 		
 		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
 		if(teamAttackManager.isTeamFighting(teamId)) {	
-			player.sendMessage(StringFormatter.Error("Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird."));
+			player.sendMessage(StringFormatter.error("Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird."));
 			return false;
 		}
 		
 		if(!isPlayerWithinRangeOfHisBase(player)) {	
-			player.sendMessage(StringFormatter.Error("Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden."));
+			player.sendMessage(StringFormatter.error("Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden."));
 			return false;
 		}
 		
@@ -126,7 +126,7 @@ public class PlayerModeManager {
 		
 		long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
 		if(minutesSinceDeactivated < buildModeCooldownInMinutes) {
-			player.sendMessage(StringFormatter.Error("Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden"));
+			player.sendMessage(StringFormatter.error("Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden"));
 			return false;
 		}
 		

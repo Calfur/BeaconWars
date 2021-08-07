@@ -44,8 +44,8 @@ public class TotemNerf implements Listener {
 					totemCooldowns.remove(totemCooldown);
 				}
 				totemCooldowns.add(new TotemCooldown(uuid));
-				Bukkit.broadcastMessage(player.getDisplayName() + " hat ein Totem benutzt. " + StringFormatter.Bold(TotemCooldown.cooldownLength + "min") + " Totem-Cooldown aktiviert.");
-				player.sendMessage("Benutze " + StringFormatter.Bold("/totemcooldown") + " um die verbleibende Zeit anzuzeigen");
+				Bukkit.broadcastMessage(player.getDisplayName() + " hat ein Totem benutzt. " + StringFormatter.bold(TotemCooldown.cooldownLength + "min") + " Totem-Cooldown aktiviert.");
+				player.sendMessage("Benutze " + StringFormatter.bold("/totemcooldown") + " um die verbleibende Zeit anzuzeigen");
 			}
 		}
 	}

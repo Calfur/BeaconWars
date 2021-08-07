@@ -56,19 +56,19 @@ public class KillEvents implements Listener {
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(defender)) {
-			attacker.sendMessage(StringFormatter.Error("Dieser Spieler kann nicht angegriffen werden, weil er im Baumodus ist"));
+			attacker.sendMessage(StringFormatter.error("Dieser Spieler kann nicht angegriffen werden, weil er im Baumodus ist"));
 			return false;
 		}
 		if(!playerModeManager.isPlayerAllowedToFight(attacker)) {
-			attacker.sendMessage(StringFormatter.Error("Du kannst keine Spieler angreifen, während du im Baumodus bist"));
+			attacker.sendMessage(StringFormatter.error("Du kannst keine Spieler angreifen, während du im Baumodus bist"));
 			return false;
 		}
 		if(playerDbConnection.isPlayerSpectator(defenderName)) {
-			attacker.sendMessage(StringFormatter.Error("Dieser Spieler kann nicht angegriffen werden, weil er Spectator ist"));
+			attacker.sendMessage(StringFormatter.error("Dieser Spieler kann nicht angegriffen werden, weil er Spectator ist"));
 			return false;
 		}
 		if(playerDbConnection.isPlayerSpectator(attackerName)) {
-			attacker.sendMessage(StringFormatter.Error("Du kannst keine Spieler angreifen, weil du Spectator bist"));
+			attacker.sendMessage(StringFormatter.error("Du kannst keine Spieler angreifen, weil du Spectator bist"));
 			return false;
 		}
 		int defenderTeam = playerDbConnection.getPlayer(defenderName).getTeamId();
@@ -167,8 +167,8 @@ public class KillEvents implements Listener {
 	private void sendDeathMessage(String killer, String victim, int bounty) {
 		ChatColor teamColorKiller = teamDbConnection.getTeam(playerDbConnection.getPlayer(killer).getTeamId()).getColor();
 		ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
-		killer = StringFormatter.FirstLetterToUpper(killer);
-		victim = StringFormatter.FirstLetterToUpper(victim);
+		killer = StringFormatter.firstLetterToUpper(killer);
+		victim = StringFormatter.firstLetterToUpper(victim);
 		Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "" + bounty + " Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
 	}
 	
