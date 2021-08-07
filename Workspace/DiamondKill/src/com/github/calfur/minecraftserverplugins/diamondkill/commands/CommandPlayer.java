@@ -104,7 +104,7 @@ public class CommandPlayer implements CommandExecutor {
 		
 		executor.sendMessage((ChatColor.RESET + "Name: ") + (ChatColor.BOLD +  StringFormatter.FirstLetterToUpper(name))); 
 		executor.sendMessage((ChatColor.RESET + "Team: ") + (teamDbConnection.getTeam(playerJson.getTeamId()).getColor() + "" + playerJson.getTeamId()));
-		executor.sendMessage((ChatColor.RESET + "Discord Name: ") + (ChatColor.BOLD + playerJson.getDiscordName()));
+		executor.sendMessage((ChatColor.RESET + "Real Name: ") + (ChatColor.BOLD + playerJson.getRealName()));
 		executor.sendMessage((ChatColor.RESET + "Guthaben: ") + ChatColor.AQUA + playerJson.getCollectableDiamonds() + " Dias");
 		executor.sendMessage((ChatColor.RESET + "K/D (durch Gegner): " + (ChatColor.BOLD + "" + killDbConnection.getAmountOfKills(name) + "/" + killDbConnection.getAmountOfDeaths(name))));
 		executor.sendMessage((ChatColor.RESET + "Tode gesammt: ") + (ChatColor.BOLD + "" + deaths));
@@ -136,11 +136,11 @@ public class CommandPlayer implements CommandExecutor {
 		}
 		String name;
 		int team;
-		String discordName;
+		String realName;
 		try {
 			name = args[1];
 			team = Integer.parseInt(args[2]);
-			discordName = args[3].toLowerCase();
+			realName = args[3];
 		}catch(NumberFormatException e) {
 			executor.sendMessage(StringFormatter.Error("Der Team Parameter muss dem Typ Int entsprechen"));
 			return false;
@@ -149,7 +149,7 @@ public class CommandPlayer implements CommandExecutor {
 			executor.sendMessage(StringFormatter.Error("Dieser Spieler ist nicht vorhanden"));
 			return false;
 		}
-		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
+		playerDbConnection.addPlayer(name, new PlayerJson(team, realName, 0));
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " editiert.");
 		return true;
@@ -162,11 +162,11 @@ public class CommandPlayer implements CommandExecutor {
 		}
 		String name;
 		int team;
-		String discordName;
+		String realName;
 		try {
 			name = args[1];
 			team = Integer.parseInt(args[2]);
-			discordName = args[3].toLowerCase();
+			realName = args[3];
 		}catch(NumberFormatException e) {
 			executor.sendMessage(StringFormatter.Error("Der Team Parameter muss dem Typ Int entsprechen"));
 			return false;
@@ -179,7 +179,7 @@ public class CommandPlayer implements CommandExecutor {
 			executor.sendMessage(StringFormatter.Error("Ein Team mit der Id " + team + " existiert nicht."));	
 			return false;
 		}
-		playerDbConnection.addPlayer(name, new PlayerJson(team, discordName, 0));
+		playerDbConnection.addPlayer(name, new PlayerJson(team, realName, 0));
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " registriert.");
 		return true;

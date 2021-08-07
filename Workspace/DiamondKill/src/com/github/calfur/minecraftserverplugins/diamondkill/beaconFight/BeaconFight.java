@@ -3,10 +3,12 @@ package com.github.calfur.minecraftserverplugins.diamondkill.beaconFight;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,6 +40,7 @@ public class BeaconFight {
 	int totalDefenceReward = 3;
 	private int naturallyEventEndTaskId;
 	private int eventStartTaskId;
+	private List<UUID> teleportedPlayers = new ArrayList<UUID>();
 
 	public LocalDateTime getStartTime() {
 		return startTime;
@@ -70,8 +73,71 @@ public class BeaconFight {
 		}
 	}
 	
+	public void cancelBeaconFightBeforeStarted() {
+		TaskScheduler.getInstance().cancel(eventStartTaskId);
+		end();
+	}
+	
+	public void cancelOngoingBeaconFight() {
+		sendEventCancelMessage();
+		TaskScheduler.getInstance().cancel(naturallyEventEndTaskId);
+		end();
+	}
+
+	public void addBeaconDestruction(Player player, Location beaconLocation) {
+		PlayerJson attacker = playerDbConnection.getPlayer(player.getName());
+		int attackerTeamId = attacker.getTeamId();
+		
+		Team attackerTeam = new Team(attackerTeamId, teamDbConnection.getTeam(attackerTeamId).getColor());
+		Team defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
+		
+		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, attackDurationInMinutes, this));
+	}
+
+	public void tryAddBeaconPlacement(Player placer, Location placedAgainst) {
+		Team teamWhereBeaconWasPlaced = BeaconManager.getTeamByBeaconLocation(placedAgainst);
+		PlayerJson attacker = playerDbConnection.getPlayer(placer.getName());
+		
+		if(teamWhereBeaconWasPlaced == null) {
+			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren"));
+			return;
+		}
+		if(teamWhereBeaconWasPlaced.getId() != attacker.getTeamId()) {
+			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId()));
+			return;
+		}		
+		BeaconRaid beaconRaid = getBeaconRaid(placer.getName(), teamWhereBeaconWasPlaced);
+		if(beaconRaid == null) {			
+			placer.sendMessage(StringFormatter.Error("Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben"));
+			BeaconManager.removeOneBeaconFromInventory(placer);
+			return;
+		}
+		addLostDefense(beaconRaid.getDefender().getId());
+		beaconRaid.addBeaconPlacement(attacker, placer);
+	}
+
+	public void removeBeaconRaid(BeaconRaid beaconRaid) {
+		beaconRaids.remove(beaconRaid);
+	}
+
+	public void removeBeaconRaidsByDestructor(Player leaver) {
+		BeaconRaid[] localBeaconRaids = beaconRaids.toArray(new BeaconRaid[beaconRaids.size()]);
+		for (BeaconRaid beaconRaid : localBeaconRaids) {
+			if(beaconRaid.getDestructorName().equalsIgnoreCase(leaver.getName())) {
+				beaconRaid.doAttackPreventedActions();
+			}
+		}
+	}
+
+	public void teleportPlayerIfHeWasNot(Player player) {
+		UUID uuid = player.getUniqueId();
+		if(!teleportedPlayers.contains(uuid)) {
+			BeaconManager.teleportPlayerToBeacon(player);
+			teleportedPlayers.add(uuid);
+		}
+	}
+
 	private void startBeaconFightEvent() {
-		BeaconManager.teleportAllOnlinePlayersToBeacon();
 		manager.activateBeaconFightEvent();
 		sendEventStartMessage();
 		deactivateBuildMode();
@@ -81,6 +147,12 @@ public class BeaconFight {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle false");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time set 0");
 		
+		BeaconManager.teleportAllOnlinePlayersToBeacon();
+		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+		for (Player player : players) {
+			teleportedPlayers.add(player.getUniqueId());
+		}
+
 		naturallyEventEndTaskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(), 
 				new Runnable() {
 			
@@ -93,15 +165,47 @@ public class BeaconFight {
 				startTime.plusMinutes(eventDurationInMinutes));
 	}
 
-	public void cancelBeaconFightBeforeStarted() {
-		TaskScheduler.getInstance().cancel(eventStartTaskId);
-		end();
+	/**
+	 * 
+	 * @param attackerName
+	 * @param attackerTeam
+	 * @return the first beaconRaid which matches attackerName and attackerTeam, the first which matches the attackerTeam or null
+	 */
+	private BeaconRaid getBeaconRaid(String attackerName, Team attackerTeam) {
+		List<BeaconRaid> beaconRaidsFromTeam = getBeaconRaidsFromTeam(attackerTeam);
+		if(beaconRaidsFromTeam.size() == 0) {
+			return null;
+		}
+		for (BeaconRaid beaconRaid : beaconRaidsFromTeam) {
+			if(beaconRaid.getDestructorName().equalsIgnoreCase(attackerName)) {
+				return beaconRaid;
+			}
+		}
+		return beaconRaidsFromTeam.get(0);
+	}
+
+	private List<BeaconRaid> getBeaconRaidsFromTeam(Team attackerTeam) {
+		List<BeaconRaid> beaconRaidsFromTeam = new ArrayList<BeaconRaid>();
+		for (BeaconRaid beaconRaid : beaconRaids) {
+			if(beaconRaid.getAttacker().getId() == attackerTeam.getId()) {
+				beaconRaidsFromTeam.add(beaconRaid);
+			}
+		}
+		return beaconRaidsFromTeam;
 	}
 	
-	public void cancelOngoingBeaconFight() {
-		sendEventCancelMessage();
-		TaskScheduler.getInstance().cancel(naturallyEventEndTaskId);
-		end();
+	private Integer getAmountOfLostDefenses(Integer teamId) {
+		Integer amountOfLostDefenses = amountOfLostDefensesPerTeams.get(teamId);
+		if(amountOfLostDefenses == null) {
+			amountOfLostDefensesPerTeams.put(teamId, 0);
+			return 0;
+		}
+		return amountOfLostDefenses;
+	}
+	
+	private void addLostDefense(Integer teamId) {
+		Integer amountOfLostDefenses = getAmountOfLostDefenses(teamId);
+		amountOfLostDefensesPerTeams.put(teamId, amountOfLostDefenses + 1);
 	}
 	
 	private void stopBeaconFightNaturally() {
@@ -222,93 +326,5 @@ public class BeaconFight {
 	private void deactivateBuildMode() {
 		PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 		playerModeManager.reloadPlayerModeForAllOnlinePlayers();
-	}
-
-	public void addBeaconDestruction(Player player, Location beaconLocation) {
-		PlayerJson attacker = playerDbConnection.getPlayer(player.getName());
-		int attackerTeamId = attacker.getTeamId();
-		
-		Team attackerTeam = new Team(attackerTeamId, teamDbConnection.getTeam(attackerTeamId).getColor());
-		Team defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
-		
-		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, attackDurationInMinutes, this));
-	}
-
-	public void tryAddBeaconPlacement(Player placer, Location placedAgainst) {
-		Team teamWhereBeaconWasPlaced = BeaconManager.getTeamByBeaconLocation(placedAgainst);
-		PlayerJson attacker = playerDbConnection.getPlayer(placer.getName());
-		
-		if(teamWhereBeaconWasPlaced == null) {
-			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren"));
-			return;
-		}
-		if(teamWhereBeaconWasPlaced.getId() != attacker.getTeamId()) {
-			placer.sendMessage(StringFormatter.Error("Du musst den Beacon an den Beacon von deinem Team plazieren, nicht an den Beacon von " + teamWhereBeaconWasPlaced.getColor() + "Team " + teamWhereBeaconWasPlaced.getId()));
-			return;
-		}		
-		BeaconRaid beaconRaid = getBeaconRaid(placer.getName(), teamWhereBeaconWasPlaced);
-		if(beaconRaid == null) {			
-			placer.sendMessage(StringFormatter.Error("Dein Team hat keinen laufenden Beaconraubzug, du solltest keinen Beacon haben"));
-			BeaconManager.removeOneBeaconFromInventory(placer);
-			return;
-		}
-		addLostDefense(beaconRaid.getDefender().getId());
-		beaconRaid.addBeaconPlacement(attacker, placer);
-	}
-	
-	/**
-	 * 
-	 * @param attackerName
-	 * @param attackerTeam
-	 * @return the first beaconRaid which matches attackerName and attackerTeam, the first which matches the attackerTeam or null
-	 */
-	private BeaconRaid getBeaconRaid(String attackerName, Team attackerTeam) {
-		List<BeaconRaid> beaconRaidsFromTeam = getBeaconRaidsFromTeam(attackerTeam);
-		if(beaconRaidsFromTeam.size() == 0) {
-			return null;
-		}
-		for (BeaconRaid beaconRaid : beaconRaidsFromTeam) {
-			if(beaconRaid.getDestructorName().equalsIgnoreCase(attackerName)) {
-				return beaconRaid;
-			}
-		}
-		return beaconRaidsFromTeam.get(0);
-	}
-
-	private List<BeaconRaid> getBeaconRaidsFromTeam(Team attackerTeam) {
-		List<BeaconRaid> beaconRaidsFromTeam = new ArrayList<BeaconRaid>();
-		for (BeaconRaid beaconRaid : beaconRaids) {
-			if(beaconRaid.getAttacker().getId() == attackerTeam.getId()) {
-				beaconRaidsFromTeam.add(beaconRaid);
-			}
-		}
-		return beaconRaidsFromTeam;
-	}
-
-	public void removeBeaconRaid(BeaconRaid beaconRaid) {
-		beaconRaids.remove(beaconRaid);
-	}
-	
-	private Integer getAmountOfLostDefenses(Integer teamId) {
-		Integer amountOfLostDefenses = amountOfLostDefensesPerTeams.get(teamId);
-		if(amountOfLostDefenses == null) {
-			amountOfLostDefensesPerTeams.put(teamId, 0);
-			return 0;
-		}
-		return amountOfLostDefenses;
-	}
-	
-	private void addLostDefense(Integer teamId) {
-		Integer amountOfLostDefenses = getAmountOfLostDefenses(teamId);
-		amountOfLostDefensesPerTeams.put(teamId, amountOfLostDefenses + 1);
-	}
-
-	public void removeBeaconRaidsByDestructor(Player leaver) {
-		BeaconRaid[] localBeaconRaids = beaconRaids.toArray(new BeaconRaid[beaconRaids.size()]);
-		for (BeaconRaid beaconRaid : localBeaconRaids) {
-			if(beaconRaid.getDestructorName().equalsIgnoreCase(leaver.getName())) {
-				beaconRaid.doAttackPreventedActions();
-			}
-		}
 	}
 }

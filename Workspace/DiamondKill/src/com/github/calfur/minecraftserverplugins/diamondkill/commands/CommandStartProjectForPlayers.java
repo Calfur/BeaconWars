@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -27,8 +28,11 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 					Player player = Bukkit.getPlayerExact(args[0]);
 					if(player != null) {
 						startProjectForPlayer(player);
+						sender.sendMessage(ChatColor.GREEN + "Spieler " + player.getName() + " teleportiert");
+						return true;
 					}else {
 						executor.sendMessage(StringFormatter.Error("Spieler " + args[0] + " konnte nicht gefunden werden (muss online sein)"));
+						return false;
 					}
 				}else {
 					executor.sendMessage(StringFormatter.Error("Falsche Anzahl Parameter"));

@@ -1,11 +1,11 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFight;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 
 public class PlayerJoinEvents implements Listener{
@@ -20,8 +20,9 @@ public class PlayerJoinEvents implements Listener{
 		
 		playerModeManager.reloadPlayerMode(joiner);
 		
-		if(beaconFightManager.isBeaconEventActive() && joiner.getLocation().getWorld().getEnvironment() != World.Environment.NORMAL) {
-			BeaconManager.teleportPlayerToBeacon(joiner);						
+		if(beaconFightManager.isBeaconEventActive()) {
+			BeaconFight beaconFight = beaconFightManager.getOngoingBeaconFight();
+			beaconFight.teleportPlayerIfHeWasNot(joiner);
 		}
 	}
 	

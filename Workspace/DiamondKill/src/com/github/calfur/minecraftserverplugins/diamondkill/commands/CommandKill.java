@@ -11,6 +11,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -67,7 +68,7 @@ public class CommandKill implements CommandExecutor {
 		Map<String, KillJson> kills = killDbConnection.getKills();
 		executor.sendMessage(ChatColor.BOLD + "" + kills.size() + " Kills gefunden:");
 		for (Entry<String, KillJson> kill : kills.entrySet()) {
-			executor.sendMessage(ChatColor.RESET + "Id: " + kill.getKey() + " Killer: " + kill.getValue().getKiller() + " Opfer: " + kill.getValue().getVictim());
+			executor.sendMessage(ChatColor.RESET + "Id: " + kill.getKey() + " Killer: " + StringFormatter.FirstLetterToUpper(kill.getValue().getKiller()) + " Opfer: " + StringFormatter.FirstLetterToUpper(kill.getValue().getVictim()));
 		}
 		return true;
 	}
@@ -90,10 +91,10 @@ public class CommandKill implements CommandExecutor {
 			return false;
 		}
 		KillJson killJson = killDbConnection.getKill(killId);
-		executor.sendMessage(ChatColor.BOLD + "Id: " + killId); 
-		executor.sendMessage(ChatColor.RESET + "Killer: " + killJson.getKiller()); 
-		executor.sendMessage(ChatColor.RESET + "Opfer: " + killJson.getVictim());
-		executor.sendMessage(ChatColor.RESET + "Zeitpunkt: " + killJson.getDateTime());
+		executor.sendMessage(StringFormatter.Bold("Id: " + killId)); 
+		executor.sendMessage(ChatColor.RESET + "Killer: " + StringFormatter.FirstLetterToUpper(killJson.getKiller())); 
+		executor.sendMessage(ChatColor.RESET + "Opfer: " + StringFormatter.FirstLetterToUpper(killJson.getVictim()));
+		executor.sendMessage(ChatColor.RESET + "Zeit: " + killJson.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")));
 		return true;
 	}
 	

@@ -11,7 +11,7 @@ commands:
     usage: /<command> Itemname Anzahl
   player:
     description: Interagiert mit der Spielerdatenbank
-    usage: /<command> [add | edit | info | delete | list] Spielername Teamnummer Discordname
+    usage: /<command> [add | edit | info | delete | list] Spielername Teamnummer RealName
   team:
     description: Interagiert mit der Teamdatenbank
     usage: /<command> [add | edit | info | delete | list] Teamnummer Farbe Beacon_x Beacon_y Beacon_z TeamLeader
