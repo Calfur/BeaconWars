@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -15,8 +16,6 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class CommandStartProjectForPlayers  implements CommandExecutor {
 
