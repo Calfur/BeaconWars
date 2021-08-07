@@ -44,6 +44,8 @@ public class CommandRegistrator {
 		plugin.getCommand("totemcooldown").setExecutor(new CommandTotemCooldown());
 		plugin.getCommand("totemcooldown").setTabCompleter(new TabCompleterTotemCooldown());
 		
+		// /nametag
 		plugin.getCommand("namenametag").setExecutor(new CommandNameNametag());
+		plugin.getCommand("namenametag").setTabCompleter(new TabCompleterNameNametag());
 	}
 }
