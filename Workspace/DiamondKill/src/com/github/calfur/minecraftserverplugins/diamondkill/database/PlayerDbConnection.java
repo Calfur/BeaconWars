@@ -15,8 +15,9 @@ public class PlayerDbConnection extends DbConnection<PlayerData>{
 	public void loadConfig() {
 		if(folder.exists()) {
 			if(file.exists()) {
-				if(read() != null) {
-					read().getData().entrySet().forEach(entry -> {						
+				PlayerData playerData = read();
+				if(playerData != null) {
+					playerData.getData().entrySet().forEach(entry -> {						
 						players.put(entry.getKey(), PlayerJson.deserialize((Map<String, Object>) entry.getValue()));
 						data.getData().put(entry.getKey(), entry.getValue());
 					});
@@ -60,6 +61,13 @@ public class PlayerDbConnection extends DbConnection<PlayerData>{
 	
 	public HashMap<String, PlayerJson> getPlayers() {
 		return players;
+	}
+
+	public boolean isPlayerSpectator(String key) {
+		if(getPlayer(key).getTeamId() == TeamDbConnection.spectatorTeamNumber) {
+			return true;
+		}
+		return false;
 	}
 
 }

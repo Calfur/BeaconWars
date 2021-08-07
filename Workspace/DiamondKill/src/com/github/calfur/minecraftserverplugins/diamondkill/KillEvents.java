@@ -63,6 +63,14 @@ public class KillEvents implements Listener {
 			attacker.sendMessage(StringFormatter.Error("Du kannst keine Spieler angreifen, während du im Baumodus bist"));
 			return false;
 		}
+		if(playerDbConnection.isPlayerSpectator(defenderName)) {
+			attacker.sendMessage(StringFormatter.Error("Dieser Spieler kann nicht angegriffen werden, weil er Spectator ist"));
+			return false;
+		}
+		if(playerDbConnection.isPlayerSpectator(attackerName)) {
+			attacker.sendMessage(StringFormatter.Error("Du kannst keine Spieler angreifen, weil du Spectator bist"));
+			return false;
+		}
 		int defenderTeam = playerDbConnection.getPlayer(defenderName).getTeamId();
 		int attackerTeam = playerDbConnection.getPlayer(attackerName).getTeamId();
 		if(defenderTeam != attackerTeam) {			

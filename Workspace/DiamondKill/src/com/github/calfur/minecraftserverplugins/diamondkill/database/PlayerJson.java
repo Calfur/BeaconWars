@@ -37,6 +37,12 @@ public class PlayerJson implements ConfigurationSerializable {
 		this.collectableDiamonds = collectableDiamonds;
 	}
 	
+	public PlayerJson(int team, String realName) {
+		this.team = team;
+		this.realName = realName;
+		this.collectableDiamonds = 0;
+	}
+
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> data = new HashMap<String, Object>();

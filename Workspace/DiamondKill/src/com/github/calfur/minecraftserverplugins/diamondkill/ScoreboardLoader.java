@@ -139,9 +139,13 @@ public class ScoreboardLoader {
 			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
 			int bounty = killDbConnection.getBounty(name);		
 			
-			listName = teamColor + name + getActiveModes(player) + " " + ChatColor.AQUA + bounty + " Dias";
-			
-			player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
+			if(teamId != TeamDbConnection.spectatorTeamNumber) {				
+				listName = teamColor + name + getActiveModes(player) + " " + ChatColor.AQUA + bounty + " Dias";
+				player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
+			}else {
+				listName = teamColor + name + " [Spec]";
+				player.setPlayerListFooter(ChatColor.RESET + "Du bist im Spectator Team und spielst nicht mit");
+			}
 		}else {
 			listName = StringFormatter.Error(name + " UNREGISTRIERT");
 		}

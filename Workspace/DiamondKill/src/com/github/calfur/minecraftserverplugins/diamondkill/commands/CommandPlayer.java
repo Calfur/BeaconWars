@@ -179,7 +179,7 @@ public class CommandPlayer implements CommandExecutor {
 			executor.sendMessage(StringFormatter.Error("Ein Team mit der Id " + team + " existiert nicht."));	
 			return false;
 		}
-		playerDbConnection.addPlayer(name, new PlayerJson(team, realName, 0));
+		playerDbConnection.addPlayer(name, new PlayerJson(team, realName));
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " registriert.");
 		return true;
