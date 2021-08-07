@@ -16,6 +16,8 @@ import org.bukkit.entity.Player;
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class CommandStartProjectForPlayers  implements CommandExecutor {
 
 	@Override
@@ -27,8 +29,11 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 					Player player = Bukkit.getPlayerExact(args[0]);
 					if(player != null) {
 						startProjectForPlayer(player);
+						sender.sendMessage(ChatColor.GREEN + "Spieler " + player.getName() + " teleportiert");
+						return true;
 					}else {
 						executor.sendMessage(StringFormatter.Error("Spieler " + args[0] + " konnte nicht gefunden werden (muss online sein)"));
+						return false;
 					}
 				}else {
 					executor.sendMessage(StringFormatter.Error("Falsche Anzahl Parameter"));

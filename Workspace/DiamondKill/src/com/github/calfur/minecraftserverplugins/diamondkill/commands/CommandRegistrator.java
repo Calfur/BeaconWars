@@ -30,13 +30,16 @@ public class CommandRegistrator {
 		plugin.getCommand("buildmode").setExecutor(new CommandBuildMode());
 		plugin.getCommand("buildmode").setTabCompleter(new TabCompleterBuildMode());
 		
+		// /projectstart
 		CommandProjectStart commandProjectStart = new CommandProjectStart();
 		plugin.setCommandProjectStart(commandProjectStart);
 		plugin.getCommand("projectStart").setExecutor(commandProjectStart);
 		plugin.getCommand("projectStart").setTabCompleter(new TabCompleterProjectStart());
 		
-		
+		// /startprojectforplayers
 		plugin.getCommand("startProjectForPlayers").setExecutor(new CommandStartProjectForPlayers());
+		plugin.getCommand("startProjectForPlayers").setTabCompleter(new TabCompleterStartProjectForPlayers());
+		
 		plugin.getCommand("totemCooldown").setExecutor(new CommandTotemCooldown());
 		plugin.getCommand("namenametag").setExecutor(new CommandNameNametag());
 	}

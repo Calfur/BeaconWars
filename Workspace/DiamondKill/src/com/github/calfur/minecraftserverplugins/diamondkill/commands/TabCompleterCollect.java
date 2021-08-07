@@ -28,8 +28,6 @@ public class TabCompleterCollect extends TabCompleterBase{
 				completions.add("" + availableDiamonds);
 			}
 			break;
-		default:
-			break;
 		}
 		return completions;
 	}
