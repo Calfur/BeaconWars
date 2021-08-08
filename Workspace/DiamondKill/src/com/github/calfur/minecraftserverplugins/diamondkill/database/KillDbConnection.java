@@ -16,8 +16,9 @@ public class KillDbConnection extends DbConnection<KillData> {
 	public void loadConfig() {
 		if(folder.exists()) {
 			if(file.exists()) {
-				if(read() != null) {
-					read().getData().entrySet().forEach(entry -> {						
+				KillData killData = read();
+				if(killData != null) {
+					killData.getData().entrySet().forEach(entry -> {						
 						kills.put(entry.getKey(), KillJson.deserialize((Map<String, Object>) entry.getValue()));
 						data.getData().put(entry.getKey(), entry.getValue());
 					});

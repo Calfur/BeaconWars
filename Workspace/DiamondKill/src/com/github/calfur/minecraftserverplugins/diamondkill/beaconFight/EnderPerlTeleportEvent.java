@@ -19,7 +19,7 @@ public class EnderPerlTeleportEvent implements Listener {
 		if(event.getMaterial() == Material.ENDER_PEARL && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 			Inventory inventory = player.getInventory();
 			if(inventory.contains(Material.BEACON)) {
-				player.sendMessage(StringFormatter.Error("Du kannst keine Enderperle benutzen während du einen Beacon im Inventar hast"));
+				player.sendMessage(StringFormatter.error("Du kannst keine Enderperle benutzen während du einen Beacon im Inventar hast"));
 				event.setCancelled(true);
 				return;
 			}

@@ -39,7 +39,6 @@ public class TeamJson implements ConfigurationSerializable {
 	}
 	
 	public TeamJson(ChatColor color, String teamLeader, Location beaconLocation) {
-		super();
 		this.teamLeader = teamLeader;
 		this.color = color;
 		this.beaconLocation = beaconLocation;
@@ -69,5 +68,9 @@ public class TeamJson implements ConfigurationSerializable {
 				(String) args.get("teamLeader"),
 				location
 			);
+	}
+
+	public static TeamJson getSpectatorTeam() {
+		return new TeamJson(ChatColor.GRAY, "NULL", new Location(null, 0, 0, 0));
 	}
 }

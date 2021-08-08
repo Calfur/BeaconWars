@@ -26,7 +26,7 @@ public class CommandProjectStart implements CommandExecutor {
 			if(executor.hasPermission("admin")) {			
 				return toggleProject(executor);
 			}else {
-				executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen command"));
+				executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen command"));
 				return false;
 			}
 		}

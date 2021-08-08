@@ -15,13 +15,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class BeaconManager {
 
 	public static Location getBeaconLocationByPlayer(Player player) {
-		return Main.getInstance().getTeamDbConnection().getTeam(Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId()).getBeaconPosition();
+		PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+		String name = player.getName();
+		if(playerDbConnection.existsPlayer(name) && !playerDbConnection.isPlayerSpectator(name)) {			
+			PlayerJson playerJson = playerDbConnection.getPlayer(name);
+			return Main.getInstance().getTeamDbConnection().getTeam(playerJson.getTeamId()).getBeaconPosition();
+		}
+		return null;
 	}
 	
 	public static void placeLevelOneBeacon(Location location) {
@@ -76,18 +85,27 @@ public class BeaconManager {
 	}
 
 	public static boolean isBeaconFromAnotherTeam(Player player, Location location) {
+		if(!Main.getInstance().getPlayerDbConnection().existsPlayer(player.getName())) {			
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(player));	
+			return false;
+		}
+		int teamIdOfPlayer = Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId();
+		if(teamIdOfPlayer == TeamDbConnection.spectatorTeamNumber) {
+			player.sendMessage(StringFormatter.error("Du bist Spectator und kannst darum keinen Beacon abbauen"));
+			return false;
+		}
 		int teamIdOfBeacon;
 		try {			
 			teamIdOfBeacon = getTeamByBeaconLocation(location).getId();
 		}catch(Exception e) {
-			player.sendMessage(StringFormatter.Error("Error, unregistrierter Beacon"));
+			player.sendMessage(StringFormatter.error("Error, unregistrierter Beacon"));
 			return false;
 		}
-		int teamIdOfPlayer = Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId();
-		if(teamIdOfBeacon != teamIdOfPlayer) {
-			return true;
+		if(teamIdOfBeacon == teamIdOfPlayer) {
+			player.sendMessage(StringFormatter.error("Du kannst deinen eigenen Beacon nicht abbauen"));
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -114,6 +132,9 @@ public class BeaconManager {
 
 	public static void teleportPlayerToBeacon(Player player) {
 		Location beaconLocation = getBeaconLocationByPlayer(player);
+		if(beaconLocation == null) { // spectator team
+			return;
+		}
 		Location teleportLocation = new Location(beaconLocation.getWorld(), beaconLocation.getX() + 1.5, beaconLocation.getY(), beaconLocation.getZ() + 0.5);	
 		replaceBlock(beaconLocation.getWorld(), beaconLocation.getBlockX() + 1, beaconLocation.getBlockY(), beaconLocation.getBlockZ(), Material.AIR);
 		replaceBlock(beaconLocation.getWorld(), beaconLocation.getBlockX() + 1, beaconLocation.getBlockY() + 1, beaconLocation.getBlockZ(), Material.AIR);
@@ -130,6 +151,9 @@ public class BeaconManager {
 
 	public static void setBeaconAsRespawnLocation(Player player) {
 		Location beaconLocation = getBeaconLocationByPlayer(player);
+		if(beaconLocation == null) { // spectator team
+			return;
+		}
 		Location respawnLocation = new Location(beaconLocation.getWorld(), beaconLocation.getX() + 1.5, beaconLocation.getY(), beaconLocation.getZ() + 0.5);
 		player.setBedSpawnLocation(respawnLocation, true);
 		

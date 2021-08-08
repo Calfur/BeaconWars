@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class TeamDbConnection extends DbConnection<TeamData> {
 
+	public static final int spectatorTeamNumber = -1;
 	private HashMap<String, TeamJson> teams = new HashMap<>();
 	
 	public TeamDbConnection() {
@@ -31,7 +32,7 @@ public class TeamDbConnection extends DbConnection<TeamData> {
 		
 	public boolean existsTeam(int teamNumber) {
 		String key = Integer.toString(teamNumber);
-		if(teams != null && teams.get(key) != null) {
+		if(teams != null && teams.get(key) != null || teamNumber == spectatorTeamNumber) {
 			return true;
 		}
 		return false;
@@ -57,6 +58,9 @@ public class TeamDbConnection extends DbConnection<TeamData> {
 
 	public TeamJson getTeam(int teamNumber) {
 		String key = Integer.toString(teamNumber);
+		if(teamNumber == spectatorTeamNumber) {
+			return TeamJson.getSpectatorTeam();
+		}
 		return teams.get(key.toLowerCase());
 	}
 	

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.PlayerKicker;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
@@ -29,7 +30,7 @@ public class CommandCollect implements CommandExecutor {
 				try {
 					amount = Integer.parseInt(args[1]);
 				}catch(NumberFormatException e) {
-					executor.sendMessage(StringFormatter.Error("Der Parameter Anzahl muss dem Typ Int entsprechen"));
+					executor.sendMessage(StringFormatter.error("Der Parameter Anzahl muss dem Typ Int entsprechen"));
 					return false;
 				}
 				switch(type) {
@@ -41,11 +42,11 @@ public class CommandCollect implements CommandExecutor {
 						Material material = Material.DIAMOND;
 						return addItemsToInventory(executor, material, amount);
 					default:
-						executor.sendMessage(StringFormatter.Error(type + " ist kein verfügbares Item"));
+						executor.sendMessage(StringFormatter.error(type + " ist kein verfügbares Item"));
 						return false;
 				}
 			}else {
-				executor.sendMessage(StringFormatter.Error("Der Command enthält nicht die richtige anzahl Parameter"));
+				executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
 				return false;
 			}
 		}
@@ -55,13 +56,17 @@ public class CommandCollect implements CommandExecutor {
 	private boolean addItemsToInventory(Player executor, Material material, int amount) {
 		PlayerInventory inventory = executor.getInventory();
 		if(inventory.firstEmpty() == -1) {	//firstEmpty returns -1 if inventory is full
-			executor.sendMessage(StringFormatter.Error("Keinen freien Inventar slot gefunden"));
+			executor.sendMessage(StringFormatter.error("Keinen freien Inventar slot gefunden"));
+			return false;
+		}
+		if(!playerDbConnection.existsPlayer(executor.getName())) {
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(executor));	
 			return false;
 		}
 		PlayerJson playerJson = playerDbConnection.getPlayer(executor.getName());
 		int availableDiamonds = playerJson.getCollectableDiamonds();
 		if(availableDiamonds < amount) {
-			executor.sendMessage(StringFormatter.Error("Du kannst momentan nicht mehr als " + availableDiamonds + " Diamanten einsammeln. Kille Leute um mehr zu erhalten."));
+			executor.sendMessage(StringFormatter.error("Du kannst momentan nicht mehr als " + availableDiamonds + " Diamanten einsammeln. Kille Leute um mehr zu erhalten."));
 			return false;
 		}
 		playerJson.removeCollectableDiamonds(amount);

@@ -23,7 +23,7 @@ public class TeamAttackManager {
 		if(activeAttack != null) {
 			activeAttacks.remove(activeAttack.getKey());
 		}else {
-			Bukkit.broadcastMessage(StringFormatter.Error("ERROR: removeActiveAttack() -> Attack could not be founded to remove"));
+			Bukkit.broadcastMessage(StringFormatter.error("ERROR: removeActiveAttack() -> Attack could not be founded to remove"));
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class TeamAttackManager {
 			ChatColor attackerColor = teamDbConnection.getTeam(attacker).getColor();
 			ChatColor defenderColor = teamDbConnection.getTeam(defender).getColor();
 			attack = new Attack(new Team(attacker, attackerColor), new Team(defender, defenderColor));
-			 Main.getInstance().getScoreboardLoader().addAttack(attack);
+			Main.getInstance().getScoreboardLoader().addAttack(attack);
 		}		
 		int taskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(), new TeamAttackRemover(attack, this), LocalDateTime.now().plusSeconds(attackDurationSeconds));
 		activeAttacks.put(taskId, attack);

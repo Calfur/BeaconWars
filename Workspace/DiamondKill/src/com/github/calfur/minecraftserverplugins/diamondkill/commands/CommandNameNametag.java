@@ -24,7 +24,7 @@ public class CommandNameNametag implements CommandExecutor {
 				ItemStack itemInHand;
 				itemInHand = executor.getInventory().getItemInMainHand();
 				if(itemInHand.getType() != Material.NAME_TAG) {
-					executor.sendMessage(StringFormatter.Error("Du musst ein Nametag in deiner Main-Hand halten"));
+					executor.sendMessage(StringFormatter.error("Du musst ein Nametag in deiner Main-Hand halten"));
 					return false;
 				}
 				renameNameTag(itemInHand, name);

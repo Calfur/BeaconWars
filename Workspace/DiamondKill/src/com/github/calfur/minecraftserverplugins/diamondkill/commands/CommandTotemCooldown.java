@@ -21,13 +21,13 @@ public class CommandTotemCooldown implements CommandExecutor {
 				String playerWhoseCooldownIsRequestedName = args[0];
 				Player playerWhoseCooldownIsRequested = Bukkit.getPlayer(playerWhoseCooldownIsRequestedName);
 				if(playerWhoseCooldownIsRequested == null) {				
-					executor.sendMessage(StringFormatter.Error("Der Spieler " + playerWhoseCooldownIsRequestedName + " ist nicht online"));
+					executor.sendMessage(StringFormatter.error("Der Spieler " + playerWhoseCooldownIsRequestedName + " ist nicht online"));
 					return false;
 				}
 				sendTotemCooldownMessage(executor, playerWhoseCooldownIsRequested);
 				return true;
 			}else {
-				executor.sendMessage(StringFormatter.Error("Zu viele Parameter angegeben"));
+				executor.sendMessage(StringFormatter.error("Zu viele Parameter angegeben"));
 				return false;				
 			}
 		}
@@ -39,7 +39,7 @@ public class CommandTotemCooldown implements CommandExecutor {
 		if(cooldownSeconds == 0) {
 			executor.sendMessage("Du hast keinen aktiven Totem-Cooldown");					
 		}else {
-			executor.sendMessage("Dein Totem-Cooldown dauert noch " + StringFormatter.DisplaySecondsAsTime(cooldownSeconds));	
+			executor.sendMessage("Dein Totem-Cooldown dauert noch " + StringFormatter.displaySecondsAsTime(cooldownSeconds));	
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class CommandTotemCooldown implements CommandExecutor {
 		if(cooldownSeconds == 0) {
 			messageReceiver.sendMessage(playerWhoseCooldownIsRequested.getDisplayName() + " hat keinen aktiven Totem-Cooldown");					
 		}else {
-			messageReceiver.sendMessage("Der Totem-Cooldown von " + playerWhoseCooldownIsRequested.getDisplayName() + " dauert noch " + StringFormatter.DisplaySecondsAsTime(cooldownSeconds));	
+			messageReceiver.sendMessage("Der Totem-Cooldown von " + playerWhoseCooldownIsRequested.getDisplayName() + " dauert noch " + StringFormatter.displaySecondsAsTime(cooldownSeconds));	
 		}
 	}
 }

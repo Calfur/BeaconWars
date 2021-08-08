@@ -15,6 +15,8 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.PlayerKicker;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandStartProjectForPlayers  implements CommandExecutor {
@@ -31,15 +33,15 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 						sender.sendMessage(ChatColor.GREEN + "Spieler " + player.getName() + " teleportiert");
 						return true;
 					}else {
-						executor.sendMessage(StringFormatter.Error("Spieler " + args[0] + " konnte nicht gefunden werden (muss online sein)"));
+						executor.sendMessage(StringFormatter.error("Spieler " + args[0] + " konnte nicht gefunden werden (muss online sein)"));
 						return false;
 					}
 				}else {
-					executor.sendMessage(StringFormatter.Error("Falsche Anzahl Parameter"));
+					executor.sendMessage(StringFormatter.error("Falsche Anzahl Parameter"));
 					return false;
 				}
 			}else {
-				executor.sendMessage(StringFormatter.Error("Fehlende Berechtigung für diesen Command"));
+				executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
 				return false;
 			}
 		}else if(sender instanceof BlockCommandSender) { // Commandblock führt den Command aus
@@ -82,8 +84,14 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 	}
 	
 	private static void startProjectForPlayer(Player player) {
-		BeaconManager.teleportPlayerToBeacon(player);
-		BeaconManager.setBeaconAsRespawnLocation(player);
-		player.setGameMode(GameMode.SURVIVAL);
+		if(!Main.getInstance().getPlayerDbConnection().existsPlayer(player.getName())) {
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(player));	
+			return;
+		}
+		if(!Main.getInstance().getPlayerDbConnection().isPlayerSpectator(player.getName())) {
+			BeaconManager.teleportPlayerToBeacon(player);
+			BeaconManager.setBeaconAsRespawnLocation(player);			
+			player.setGameMode(GameMode.SURVIVAL);
+		}
 	}
 }

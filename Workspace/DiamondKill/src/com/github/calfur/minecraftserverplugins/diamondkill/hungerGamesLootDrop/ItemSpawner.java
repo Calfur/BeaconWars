@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 
 public class ItemSpawner implements Runnable {
 	
@@ -45,7 +46,9 @@ public class ItemSpawner implements Runnable {
 			PlayerJson playerJson = playerDbConnection.getPlayer(player.getName());
 			if(playerJson != null) {
 				int teamId = playerJson.getTeamId();
-				onlineTeams.add(teamId);
+				if(teamId != TeamDbConnection.spectatorTeamNumber) {					
+					onlineTeams.add(teamId);
+				}
 			}
 		}
 		int amountOfOnlineTeams = onlineTeams.size();

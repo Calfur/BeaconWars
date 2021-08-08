@@ -139,11 +139,15 @@ public class ScoreboardLoader {
 			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
 			int bounty = killDbConnection.getBounty(name);		
 			
-			listName = teamColor + name + getActiveModes(player) + " " + ChatColor.AQUA + bounty + " Dias";
-			
-			player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
+			if(teamId != TeamDbConnection.spectatorTeamNumber) {				
+				listName = teamColor + name + getActiveModes(player) + " " + ChatColor.AQUA + bounty + " Dias";
+				player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
+			}else {
+				listName = teamColor + name + " [Spec]";
+				player.setPlayerListFooter(ChatColor.RESET + "Du bist im Spectator Team und spielst nicht mit");
+			}
 		}else {
-			listName = StringFormatter.Error(name + " UNREGISTRIERT");
+			listName = StringFormatter.error(name + " UNREGISTRIERT");
 		}
 		player.setPlayerListName(listName);
 	}
@@ -156,7 +160,7 @@ public class ScoreboardLoader {
 			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();			
 			listName = teamColor + name + getActiveModes(player) + ChatColor.RESET;
 		}else {
-			listName = StringFormatter.Error("UNREGISTRIERT " + name);
+			listName = StringFormatter.error("UNREGISTRIERT " + name);
 		}
 		player.setDisplayName(listName);		
 	}
@@ -192,7 +196,7 @@ public class ScoreboardLoader {
 
 	private String topKillerScoreText() {
 		if(!topKiller.areMultipleTopKiller()) {			
-			return StringFormatter.FirstLetterToUpper(topKiller.getName()) + " " + ChatColor.AQUA + topKiller.getDiamondValue() + " Dias";
+			return StringFormatter.firstLetterToUpper(topKiller.getName()) + " " + ChatColor.AQUA + topKiller.getDiamondValue() + " Dias";
 		}else {
 			return "-";
 		}
@@ -205,6 +209,6 @@ public class ScoreboardLoader {
 			Team defender = attack.getDefender();
 			return (attacker.getColor() + "Team " + attacker.getId()) + (ChatColor.RESET + " -> ") + (defender.getColor() + "Team " + defender.getId());
 		}
-		return StringFormatter.RepeatString(" ", scoreNumber);
+		return StringFormatter.repeatString(" ", scoreNumber);
 	}
 }

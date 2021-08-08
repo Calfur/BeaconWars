@@ -1,6 +1,8 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.database;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerDbConnection extends DbConnection<PlayerData>{
@@ -15,8 +17,9 @@ public class PlayerDbConnection extends DbConnection<PlayerData>{
 	public void loadConfig() {
 		if(folder.exists()) {
 			if(file.exists()) {
-				if(read() != null) {
-					read().getData().entrySet().forEach(entry -> {						
+				PlayerData playerData = read();
+				if(playerData != null) {
+					playerData.getData().entrySet().forEach(entry -> {						
 						players.put(entry.getKey(), PlayerJson.deserialize((Map<String, Object>) entry.getValue()));
 						data.getData().put(entry.getKey(), entry.getValue());
 					});
@@ -59,7 +62,29 @@ public class PlayerDbConnection extends DbConnection<PlayerData>{
 	}
 	
 	public HashMap<String, PlayerJson> getPlayers() {
-		return players;
+		HashMap<String, PlayerJson> filteredPlayers = getAllNonSpectatorPlayers();
+		return filteredPlayers;
+	}
+
+	private HashMap<String, PlayerJson> getAllNonSpectatorPlayers() {
+		HashMap<String, PlayerJson> result = new HashMap<String, PlayerJson>(players);
+		List<String> playersToRemove = new ArrayList<String>();
+		result.forEach((id, player) -> {
+			if(player.getTeamId() == TeamDbConnection.spectatorTeamNumber) {				
+				playersToRemove.add(id);
+			}
+		});	
+		playersToRemove.forEach(id -> {
+			result.remove(id);
+		});
+		return result;
+	}
+
+	public boolean isPlayerSpectator(String key) {
+		if(getPlayer(key).getTeamId() == TeamDbConnection.spectatorTeamNumber) {
+			return true;
+		}
+		return false;
 	}
 
 }

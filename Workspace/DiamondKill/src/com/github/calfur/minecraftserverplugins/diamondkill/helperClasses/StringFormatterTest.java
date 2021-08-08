@@ -12,7 +12,7 @@ class StringFormatterTest {
 		String input = "calfur";
 		String expectedResult = "Calfur";
 		//Act
-		String actualResult = StringFormatter.FirstLetterToUpper(input);
+		String actualResult = StringFormatter.firstLetterToUpper(input);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -23,7 +23,7 @@ class StringFormatterTest {
 		String input = "__XXX__";
 		String expectedResult = "__XXX__";
 		//Act
-		String actualResult = StringFormatter.FirstLetterToUpper(input);
+		String actualResult = StringFormatter.firstLetterToUpper(input);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -35,7 +35,7 @@ class StringFormatterTest {
 		int repetitions = 5;
 		String expectedResult = "     ";
 		//Act
-		String actualResult = StringFormatter.RepeatString(input, repetitions);
+		String actualResult = StringFormatter.repeatString(input, repetitions);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -47,7 +47,7 @@ class StringFormatterTest {
 		int repetitions = 0;
 		String expectedResult = "";
 		//Act
-		String actualResult = StringFormatter.RepeatString(input, repetitions);
+		String actualResult = StringFormatter.repeatString(input, repetitions);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -56,9 +56,9 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsZero_ResultIsAsExpected() {
 		//Arrange
 		long input = 0;
-		String expectedResult = StringFormatter.Bold("0") + "Sekunden";
+		String expectedResult = StringFormatter.bold("0") + "Sekunden";
 		//Act
-		String actualResult = StringFormatter.DisplaySecondsAsTime(input);
+		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -67,9 +67,9 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsBelowOneMinute_ResultIsAsExpected() {
 		//Arrange
 		long input = 37;
-		String expectedResult = StringFormatter.Bold("37") + "Sekunden";
+		String expectedResult = StringFormatter.bold("37") + "Sekunden";
 		//Act
-		String actualResult = StringFormatter.DisplaySecondsAsTime(input);
+		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -78,9 +78,9 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsBelowOneHour_ResultIsAsExpected() {
 		//Arrange
 		long input = 3001;
-		String expectedResult = StringFormatter.Bold("50") + "Minuten und " + StringFormatter.Bold("1") + "Sekunde";
+		String expectedResult = StringFormatter.bold("50") + "Minuten und " + StringFormatter.bold("1") + "Sekunde";
 		//Act
-		String actualResult = StringFormatter.DisplaySecondsAsTime(input);
+		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -89,9 +89,9 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsOverOneHour_ResultIsAsExpected() {
 		//Arrange
 		long input = 3680;
-		String expectedResult = StringFormatter.Bold("1") + "Stunde " + StringFormatter.Bold("1") + "Minute und " + StringFormatter.Bold("20") + "Sekunden";
+		String expectedResult = StringFormatter.bold("1") + "Stunde " + StringFormatter.bold("1") + "Minute und " + StringFormatter.bold("20") + "Sekunden";
 		//Act
-		String actualResult = StringFormatter.DisplaySecondsAsTime(input);
+		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -100,9 +100,9 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsExactlyOneMinute_ResultIsAsExpected() {
 		//Arrange
 		long input = 60;
-		String expectedResult = StringFormatter.Bold("1") + "Minute und " + StringFormatter.Bold("0") + "Sekunden";
+		String expectedResult = StringFormatter.bold("1") + "Minute und " + StringFormatter.bold("0") + "Sekunden";
 		//Act
-		String actualResult = StringFormatter.DisplaySecondsAsTime(input);
+		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
@@ -113,7 +113,7 @@ class StringFormatterTest {
 		String input = "unformatted string";
 		String expectedResult = ChatColor.BOLD + "unformatted string" + ChatColor.RESET;
 		//Act
-		String actualResult = StringFormatter.Bold(input);
+		String actualResult = StringFormatter.bold(input);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
