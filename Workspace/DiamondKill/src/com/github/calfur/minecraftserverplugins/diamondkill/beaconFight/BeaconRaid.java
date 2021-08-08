@@ -116,7 +116,7 @@ public class BeaconRaid {
 	}
 	
 	private void destroy() {
-		TaskScheduler.getInstance().cancel(overtimeTaskId);
+		TaskScheduler.getInstance().cancelTask(overtimeTaskId);
 		Main.getInstance().getScoreboardLoader().removeBossBar(bossBarName);
 		placeBeaconBack();
 		beaconFight.removeBeaconRaid(this);

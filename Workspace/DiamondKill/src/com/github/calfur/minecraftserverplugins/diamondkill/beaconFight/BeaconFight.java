@@ -76,13 +76,13 @@ public class BeaconFight {
 	}
 	
 	public void cancelBeaconFightBeforeStarted() {
-		TaskScheduler.getInstance().cancel(eventStartTaskId);
+		TaskScheduler.getInstance().cancelTask(eventStartTaskId);
 		end();
 	}
 	
 	public void cancelOngoingBeaconFight() {
 		sendEventCancelMessage();
-		TaskScheduler.getInstance().cancel(naturallyEventEndTaskId);
+		TaskScheduler.getInstance().cancelTask(naturallyEventEndTaskId);
 		end();
 	}
 
