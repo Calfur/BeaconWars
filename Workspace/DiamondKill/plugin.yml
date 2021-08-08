@@ -37,7 +37,10 @@ commands:
     usage: /<command> [Spieler]
   namenametag:
     description: Benennt nametags welche in der Main-Hand gehalten werden
-    usage: /<command> [Name]
+    usage: /<command> Name
+  compass:
+    description: Erhalte einen Kompass mit dem ausgewaehlten Ziel
+    usage: /<command> [Base | Spawn | Beacon] [TeamId]
 permissions:
   admin:
     description: Erlaubt das benutzen von allen DiamondKill commands

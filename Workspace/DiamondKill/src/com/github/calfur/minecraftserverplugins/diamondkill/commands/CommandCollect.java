@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,6 +14,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.PlayerKicker;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.InventoryManagement;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandCollect implements CommandExecutor {
@@ -55,7 +57,7 @@ public class CommandCollect implements CommandExecutor {
 
 	private boolean addItemsToInventory(Player executor, Material material, int amount) {
 		PlayerInventory inventory = executor.getInventory();
-		if(inventory.firstEmpty() == -1) {	//firstEmpty returns -1 if inventory is full
+		if(InventoryManagement.isInventoryFull(inventory)) {
 			executor.sendMessage(StringFormatter.error("Keinen freien Inventar slot gefunden"));
 			return false;
 		}
@@ -66,14 +68,15 @@ public class CommandCollect implements CommandExecutor {
 		PlayerJson playerJson = playerDbConnection.getPlayer(executor.getName());
 		int availableDiamonds = playerJson.getCollectableDiamonds();
 		if(availableDiamonds < amount) {
-			executor.sendMessage(StringFormatter.error("Du kannst momentan nicht mehr als " + availableDiamonds + " Diamanten einsammeln. Kille Leute um mehr zu erhalten."));
+			executor.sendMessage(StringFormatter.error("Du kannst momentan nicht mehr als ") + availableDiamonds + StringFormatter.error(" Diamanten einsammeln. Kille Leute um mehr zu erhalten."));
 			return false;
 		}
 		playerJson.removeCollectableDiamonds(amount);
 		playerDbConnection.addPlayer(executor.getName(), playerJson);
 		scoreboardLoader.reloadScoreboardFor(executor);
-		ItemStack item = new ItemStack(material, amount);
-		inventory.addItem(item);
+		ItemStack itemStack = new ItemStack(material, amount);
+		inventory.addItem(itemStack);
+		executor.sendMessage(ChatColor.AQUA + "" + amount + " Diamanten " + ChatColor.GREEN + "wurden zu deinem Inventar hinzugefügt");
 		return true;
 	}
 
