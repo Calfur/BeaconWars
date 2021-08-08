@@ -236,7 +236,7 @@ public class BeaconFight {
 				playerJson.addCollectableDiamonds(reward);
 				playerDbConnection.addPlayer(teamLeaderName, playerJson);
 			}else {
-				Bukkit.broadcastMessage(StringFormatter.error("Der Teamleader " + teamLeaderName + " von") + teamJson.getColor() + "Team " + teamId + StringFormatter.error(" wurde noch nicht registriert"));
+				Bukkit.broadcastMessage(StringFormatter.error("Der Teamleader " + teamLeaderName + " von ") + teamJson.getColor() + "Team " + teamId + StringFormatter.error(" wurde noch nicht registriert"));
 			}
 		}
 	}

@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.PlayerKicker;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandStartProjectForPlayers  implements CommandExecutor {
@@ -83,6 +84,10 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 	}
 	
 	private static void startProjectForPlayer(Player player) {
+		if(!Main.getInstance().getPlayerDbConnection().existsPlayer(player.getName())) {
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(player));	
+			return;
+		}
 		if(!Main.getInstance().getPlayerDbConnection().isPlayerSpectator(player.getName())) {
 			BeaconManager.teleportPlayerToBeacon(player);
 			BeaconManager.setBeaconAsRespawnLocation(player);			

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.PlayerKicker;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
@@ -56,6 +57,10 @@ public class CommandCollect implements CommandExecutor {
 		PlayerInventory inventory = executor.getInventory();
 		if(inventory.firstEmpty() == -1) {	//firstEmpty returns -1 if inventory is full
 			executor.sendMessage(StringFormatter.error("Keinen freien Inventar slot gefunden"));
+			return false;
+		}
+		if(!playerDbConnection.existsPlayer(executor.getName())) {
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(executor));	
 			return false;
 		}
 		PlayerJson playerJson = playerDbConnection.getPlayer(executor.getName());

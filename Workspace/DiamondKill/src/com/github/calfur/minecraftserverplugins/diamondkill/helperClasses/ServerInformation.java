@@ -17,9 +17,15 @@ public class ServerInformation {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 		PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 		for (Player player : players) {
-			if(!playerDbConnection.isPlayerSpectator(player.getName())){				
-				names.add(player.getName());
+			String name = player.getName();
+			if(playerDbConnection.existsPlayer(name)) {
+				if(!playerDbConnection.isPlayerSpectator(name)){				
+					names.add(name);
+				}				
+			}else {
+				names.add(name);
 			}
+			
 		}
 		return names;
 	}

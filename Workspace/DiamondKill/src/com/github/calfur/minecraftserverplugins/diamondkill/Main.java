@@ -1,6 +1,5 @@
 package com.github.calfur.minecraftserverplugins.diamondkill;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
@@ -46,8 +45,6 @@ public class Main extends JavaPlugin {
 		
 		hungergamesManager.startItemSpawner();
 		
-		runServerStartCommands();
-		
 		playerModeManager.reloadPlayerModeForAllOnlinePlayers();
 	}
 	
@@ -77,19 +74,7 @@ public class Main extends JavaPlugin {
 
 	public ScoreboardLoader getScoreboardLoader() {
 		return scoreboardLoader;
-	}
-	
-	private void runServerStartCommands() {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
-			
-			@Override
-			public void run() {
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle true");
-			}
-			
-		});
-	}
-	
+	}	
 	
 	public PlayerModeManager getPlayerModeManager() {
 		return playerModeManager;

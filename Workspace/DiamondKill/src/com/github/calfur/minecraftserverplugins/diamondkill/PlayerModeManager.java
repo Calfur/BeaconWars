@@ -107,6 +107,11 @@ public class PlayerModeManager {
 			return false;
 		}
 		
+		if(!playerDbConnection.existsPlayer(player.getName())){
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(player));	
+			return false;
+		}
+		
 		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
 		if(teamAttackManager.isTeamFighting(teamId)) {	
 			player.sendMessage(StringFormatter.error("Dein Team befindet sich momentan noch in einem Kampf. Der Baumodus kann erst aktiviert werden wenn der Kampf nicht mehr auf dem Scoreboard angezeigt wird."));

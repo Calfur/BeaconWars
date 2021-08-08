@@ -22,10 +22,13 @@ public class TabCompleterCollect extends TabCompleterBase{
 			break;
 		case 2:
 			completions.add("1");
-			PlayerJson playerJson = playerDbConnection.getPlayer(sender.getName());
-			int availableDiamonds = playerJson.getCollectableDiamonds();
-			if(availableDiamonds > 0) {				
-				completions.add("" + availableDiamonds);
+			if(playerDbConnection.existsPlayer(sender.getName()))
+			{
+				PlayerJson playerJson = playerDbConnection.getPlayer(sender.getName());
+				int availableDiamonds = playerJson.getCollectableDiamonds();
+				if(availableDiamonds > 0) {				
+					completions.add("" + availableDiamonds);
+				}
 			}
 			break;
 		}

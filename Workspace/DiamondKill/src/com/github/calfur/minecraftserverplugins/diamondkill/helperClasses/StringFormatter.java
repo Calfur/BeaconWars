@@ -49,6 +49,6 @@ public class StringFormatter {
 	}
 	
 	public static String error(String text) {
-		return ChatColor.YELLOW + text + ChatColor.RESET;
+		return ChatColor.DARK_RED + text + ChatColor.RESET;
 	}
 }

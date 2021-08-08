@@ -25,8 +25,9 @@ public class BeaconManager {
 
 	public static Location getBeaconLocationByPlayer(Player player) {
 		PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
-		if(!playerDbConnection.isPlayerSpectator(player.getName())) {			
-			PlayerJson playerJson = playerDbConnection.getPlayer(player.getName());
+		String name = player.getName();
+		if(playerDbConnection.existsPlayer(name) && !playerDbConnection.isPlayerSpectator(name)) {			
+			PlayerJson playerJson = playerDbConnection.getPlayer(name);
 			return Main.getInstance().getTeamDbConnection().getTeam(playerJson.getTeamId()).getBeaconPosition();
 		}
 		return null;
@@ -84,11 +85,8 @@ public class BeaconManager {
 	}
 
 	public static boolean isBeaconFromAnotherTeam(Player player, Location location) {
-		int teamIdOfBeacon;
-		try {			
-			teamIdOfBeacon = getTeamByBeaconLocation(location).getId();
-		}catch(Exception e) {
-			player.sendMessage(StringFormatter.error("Error, unregistrierter Beacon"));
+		if(!Main.getInstance().getPlayerDbConnection().existsPlayer(player.getName())) {			
+			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(player));	
 			return false;
 		}
 		int teamIdOfPlayer = Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId();
@@ -96,11 +94,18 @@ public class BeaconManager {
 			player.sendMessage(StringFormatter.error("Du bist Spectator und kannst darum keinen Beacon abbauen"));
 			return false;
 		}
-		if(teamIdOfBeacon != teamIdOfPlayer) {
-			return true;
+		int teamIdOfBeacon;
+		try {			
+			teamIdOfBeacon = getTeamByBeaconLocation(location).getId();
+		}catch(Exception e) {
+			player.sendMessage(StringFormatter.error("Error, unregistrierter Beacon"));
+			return false;
 		}
-		player.sendMessage(StringFormatter.error("Du kannst deinen eigenen Beacon nicht abbauen"));
-		return false;
+		if(teamIdOfBeacon == teamIdOfPlayer) {
+			player.sendMessage(StringFormatter.error("Du kannst deinen eigenen Beacon nicht abbauen"));
+			return false;
+		}
+		return true;
 	}
 
 	/**
