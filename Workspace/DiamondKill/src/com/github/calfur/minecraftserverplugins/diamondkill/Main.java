@@ -22,6 +22,7 @@ public class Main extends JavaPlugin {
 	private static ScoreboardLoader scoreboardLoader;
 	private CommandProjectStart commandProjectStart;
 	private HungerGamesManager hungergamesManager;
+	private CompassManager compassManager;
 		
 	@Override
 	public void onEnable() {
@@ -36,6 +37,7 @@ public class Main extends JavaPlugin {
 		playerModeManager = new PlayerModeManager();
 		scoreboardLoader = new ScoreboardLoader();
 		hungergamesManager = new HungerGamesManager();
+		compassManager = new CompassManager();
 		
 		new FeatureDisabler(); 
 		new CommandRegistrator();
@@ -90,5 +92,9 @@ public class Main extends JavaPlugin {
 	
 	public CommandProjectStart getCommandProjectStart() {
 		return commandProjectStart;		
+	}
+
+	public CompassManager getCompassManager() {
+		return compassManager;
 	}
 }

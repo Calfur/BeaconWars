@@ -2,6 +2,7 @@ package com.github.calfur.minecraftserverplugins.diamondkill;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconDropEvent;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconItemEvents;
+import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.CompassRightClickEvent;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.EnderPerlTeleportEvent;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.MoveBeaconIntoChestEvent;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.TeleportEvents;
@@ -23,5 +24,6 @@ public class EventRegistrator {
 		plugin.getServer().getPluginManager().registerEvents(new EnderPerlTeleportEvent(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new BeaconDropEvent(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new MoveBeaconIntoChestEvent(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new CompassRightClickEvent(), plugin);
 	}
 }
