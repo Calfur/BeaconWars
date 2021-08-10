@@ -3,17 +3,14 @@ package com.github.calfur.minecraftserverplugins.diamondkill.database;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TransactionData implements IData {
-	private Map<String, Object> transaction = new HashMap<>();
+public class Data {
+	private Map<String, Object> data = new HashMap<>();
 	
-	@Override
 	public void add(Map<String, Object> data) {
-		this.transaction = data;
+		this.data = data;
 	}
 
-	@Override
 	public Map<String, Object> getData() {
-		return transaction;
+		return data;
 	}
-
 }

@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class TransactionDbConnection extends DbConnection<TransactionData, TransactionJson>{
+public class TransactionDbConnection extends DbConnection<TransactionJson>{
 	
 	public TransactionDbConnection() {
-		super("transaction.json", new TransactionData(), TransactionData.class);
+		super("transaction.json");
 	}
 
 	@Override

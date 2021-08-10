@@ -3,12 +3,12 @@ package com.github.calfur.minecraftserverplugins.diamondkill.database;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TeamDbConnection extends DbConnection<TeamData, TeamJson> {
+public class TeamDbConnection extends DbConnection<TeamJson> {
 
 	public static final int spectatorTeamNumber = -1;
 	
 	public TeamDbConnection() {
-		super("team.json", new TeamData(), TeamData.class);
+		super("team.json");
 	}
 
 	@Override

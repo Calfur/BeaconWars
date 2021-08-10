@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerDbConnection extends DbConnection<PlayerData, PlayerJson>{
+public class PlayerDbConnection extends DbConnection<PlayerJson>{
 	
 	public PlayerDbConnection() {
-		super("player.json", new PlayerData(), PlayerData.class);
+		super("player.json");
 	}
 
 	@Override

@@ -12,24 +12,18 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public abstract class DbConnection<Data extends IData, Json extends ConfigurationSerializable> {
-	protected final File folder = new File("plugins//DiamondKillDatabase");
-	protected final File file;
-		
+public abstract class DbConnection<Json extends ConfigurationSerializable> {
 	protected HashMap<String, Json> jsons = new HashMap<>();
 	
-	private Data data;
-	private Class<Data> dataClass;
-	
-	protected final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	
-	private FileWriter writer;
-	private FileReader reader;
-	
-	public DbConnection(String fileName, Data data, Class<Data> dataClass) {
-		this.data = data;
+	private Data data = new Data();
+
+	private final File folder = new File("plugins//DiamondKillDatabase");
+	private final File file;
+		
+	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		
+	public DbConnection(String fileName) {
 		file = new File(folder + "//" + fileName);
-		this.dataClass = dataClass;
 	}
 		
 	public void loadDatabase() {
@@ -40,7 +34,7 @@ public abstract class DbConnection<Data extends IData, Json extends Configuratio
 					jsons = mapDataToHashMap();
 				}
 			}else {
-				createFile().saveFile().loadDatabase();
+				createFile().loadDatabase();
 			}
 		}else {
 			createFolder().loadDatabase();
@@ -58,22 +52,24 @@ public abstract class DbConnection<Data extends IData, Json extends Configuratio
 		return result;
 	}
 	
-	private DbConnection<Data, Json> createFolder() {
+	private DbConnection<Json> createFolder() {
 		folder.mkdirs();
 		return this;
 	}
 	
-	private DbConnection<Data, Json> createFile() {
+	private DbConnection<Json> createFile() {
 		try {
+			FileWriter writer = writer();
 			file.createNewFile();
-			gson.toJson(data, writer());
+			gson.toJson(data, writer);
+			saveFile(writer);
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 		return this;
 	}
 	
-	private DbConnection<Data, Json> saveFile() {
+	private DbConnection<Json> saveFile(FileWriter writer) {
 		try {
 			writer.close();
 		}catch(IOException e){
@@ -95,30 +91,31 @@ public abstract class DbConnection<Data extends IData, Json extends Configuratio
 	}
 	
 	private Data read() {
-		return gson.fromJson(reader(), dataClass);
+		return gson.fromJson(reader(), Data.class);
 	}
 	
 	private void write(Data data) {
-		gson.toJson(data, writer());
-		saveFile();
+		FileWriter writer = writer();
+		gson.toJson(data, writer);
+		saveFile(writer);
 	}
 	
 	private FileWriter writer() {
 		try {
-			writer = new FileWriter(file);
+			return new FileWriter(file);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		return writer;
+		return null;
 	}	
 	
 	private FileReader reader() {
 		try {
-			reader = new FileReader(file);
+			return new FileReader(file);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		return reader;
+		return null;
 	}
 
 }

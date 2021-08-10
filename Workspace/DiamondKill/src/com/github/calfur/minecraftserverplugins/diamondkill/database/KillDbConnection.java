@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class KillDbConnection extends DbConnection<KillData, KillJson> {
+public class KillDbConnection extends DbConnection<KillJson> {
 
 	public KillDbConnection() {
-		super("kill.json", new KillData(), KillData.class);
+		super("kill.json");
 	}
 
 	@Override
