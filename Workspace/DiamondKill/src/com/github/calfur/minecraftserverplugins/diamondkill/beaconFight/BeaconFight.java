@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -74,13 +76,13 @@ public class BeaconFight {
 	}
 	
 	public void cancelBeaconFightBeforeStarted() {
-		TaskScheduler.getInstance().cancel(eventStartTaskId);
+		TaskScheduler.getInstance().cancelTask(eventStartTaskId);
 		end();
 	}
 	
 	public void cancelOngoingBeaconFight() {
 		sendEventCancelMessage();
-		TaskScheduler.getInstance().cancel(naturallyEventEndTaskId);
+		TaskScheduler.getInstance().cancelTask(naturallyEventEndTaskId);
 		end();
 	}
 
@@ -92,6 +94,16 @@ public class BeaconFight {
 		Team defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
 		
 		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, attackDurationInMinutes, this));
+	}
+	
+	@Nullable
+	public Player getAttackerOfBeaconRaidByDefenderTeam(int defenderTeamId) {
+		for (BeaconRaid beaconRaid : beaconRaids) {
+			if(beaconRaid.getDefender().getId() == defenderTeamId) {
+				return Bukkit.getPlayer(beaconRaid.getDestructorName());
+			}
+		}
+		return null;
 	}
 
 	public void tryAddBeaconPlacement(Player placer, Location placedAgainst) {

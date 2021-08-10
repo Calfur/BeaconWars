@@ -73,9 +73,9 @@ public class CommandTeam implements CommandExecutor {
 		Map<String, TeamJson> teams = teamDbConnection.getTeams();
 		executor.sendMessage(ChatColor.BOLD + "" + teams.size() + " Teams gefunden:");
 		for (Entry<String, TeamJson> team : teams.entrySet()) {
-			int x = team.getValue().getBeaconPosition().getBlockX();
-			int y = team.getValue().getBeaconPosition().getBlockY();
-			int z = team.getValue().getBeaconPosition().getBlockZ();
+			int x = team.getValue().getBeaconLocation().getBlockX();
+			int y = team.getValue().getBeaconLocation().getBlockY();
+			int z = team.getValue().getBeaconLocation().getBlockZ();
 			executor.sendMessage(team.getValue().getColor() + "Team " + team.getKey() + ChatColor.RESET + ": Beacon Koords: (x: " + x + " y: " + y + " z: " + z + ")");
 		}
 		return true;
@@ -98,7 +98,7 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		TeamJson teamJson = teamDbConnection.getTeam(teamNumber);
-		Location beaconLocation = teamJson.getBeaconPosition();
+		Location beaconLocation = teamJson.getBeaconLocation();
 		executor.sendMessage(ChatColor.RESET + "Name: " + ChatColor.BOLD + "Team " + teamNumber); 
 		executor.sendMessage(ChatColor.RESET + "Teamleader: " + teamJson.getTeamLeader()); 
 		executor.sendMessage(ChatColor.RESET + "Farbe: " + teamJson.getColor() + teamJson.getColor().name());
@@ -127,7 +127,7 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		TeamJson team = teamDbConnection.getTeam(teamNumber);
-		BeaconManager.removeLevelOneBeacon(team.getBeaconPosition());
+		BeaconManager.removeLevelOneBeacon(team.getBeaconLocation());
 		teamDbConnection.removeTeam(teamNumber);
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " gelöscht.");
 		return true;
@@ -183,7 +183,7 @@ public class CommandTeam implements CommandExecutor {
 			return false;
 		}
 		TeamJson oldTeam = teamDbConnection.getTeam(teamNumber);
-		BeaconManager.removeLevelOneBeacon(oldTeam.getBeaconPosition());
+		BeaconManager.removeLevelOneBeacon(oldTeam.getBeaconLocation());
 		Location beaconLocation = new Location(executor.getWorld(), beaconLocationX, beaconLocationY, beaconLocationZ);
 		BeaconManager.placeLevelOneBeacon(beaconLocation);
 		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));

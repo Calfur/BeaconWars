@@ -47,7 +47,7 @@ public class TaskScheduler {
 		return addTask(new Task(plugin, runnable, executionTime));
 	}	
 	
-	public void cancel(int taskId) {
+	public void cancelTask(int taskId) {
 		tasks.remove(taskId);
 	}
 	

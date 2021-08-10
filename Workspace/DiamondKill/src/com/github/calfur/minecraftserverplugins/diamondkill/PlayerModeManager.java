@@ -141,7 +141,7 @@ public class PlayerModeManager {
 	
 	private boolean isPlayerWithinRangeOfHisBase(Player player) {
 		int teamId = playerDbConnection.getPlayer(player.getName()).getTeamId();
-		Location baseLocation = teamDbConnection.getTeam(teamId).getBeaconPosition();
+		Location baseLocation = teamDbConnection.getTeam(teamId).getBeaconLocation();
 		Location playerLocation = player.getLocation();
 		int distanceX = Math.abs(playerLocation.getBlockX() - baseLocation.getBlockX());
 		int distanceZ = Math.abs(playerLocation.getBlockZ() - baseLocation.getBlockZ());

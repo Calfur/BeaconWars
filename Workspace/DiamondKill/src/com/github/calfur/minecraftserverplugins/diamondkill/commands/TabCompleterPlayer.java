@@ -65,9 +65,9 @@ public class TabCompleterPlayer extends TabCompleterBase {
 				switch (previousParameters[0]) {
 				case "add":
 				case "edit":
-						for (Entry<String, TeamJson> team : teams.entrySet()) {
-							completions.add(team.getKey());
-						}
+					for (Entry<String, TeamJson> team : teams.entrySet()) {
+						completions.add(team.getKey());
+					}
 					break;
 				}
 			}

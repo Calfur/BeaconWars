@@ -11,7 +11,9 @@ import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskSche
 
 public class HungerGamesManager {
 	
-	public void startItemSpawner() {
+	public static final Location spawnLocation = new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5);
+
+	public void startItemSpawner() {		
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime fullHour = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0);
 		
@@ -22,7 +24,7 @@ public class HungerGamesManager {
 		}
 		
 		TaskScheduler.getInstance().scheduleRepeatingTask(Main.getInstance(), 
-				new ItemSpawner(new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5)), 
+				new ItemSpawner(spawnLocation), 
 				fullHour, 
 				3600);
 		

@@ -28,7 +28,7 @@ public class BeaconManager {
 		String name = player.getName();
 		if(playerDbConnection.existsPlayer(name) && !playerDbConnection.isPlayerSpectator(name)) {			
 			PlayerJson playerJson = playerDbConnection.getPlayer(name);
-			return Main.getInstance().getTeamDbConnection().getTeam(playerJson.getTeamId()).getBeaconPosition();
+			return Main.getInstance().getTeamDbConnection().getTeam(playerJson.getTeamId()).getBeaconLocation();
 		}
 		return null;
 	}
@@ -76,7 +76,7 @@ public class BeaconManager {
 	public static Team getTeamByBeaconLocation(Location beaconLocation) {
 		HashMap<String, TeamJson> teams = Main.getInstance().getTeamDbConnection().getTeams();
 		for (Entry<String, TeamJson> team : teams.entrySet()) {
-			if(team.getValue().getBeaconPosition().equals(beaconLocation)) {
+			if(team.getValue().getBeaconLocation().equals(beaconLocation)) {
 				int teamId = Integer.parseInt(team.getKey());
 				return new Team(teamId, team.getValue().getColor());
 			}

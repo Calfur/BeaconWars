@@ -7,8 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.InventoryManagement;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandNameNametag implements CommandExecutor {
@@ -27,18 +27,12 @@ public class CommandNameNametag implements CommandExecutor {
 					executor.sendMessage(StringFormatter.error("Du musst ein Nametag in deiner Main-Hand halten"));
 					return false;
 				}
-				renameNameTag(itemInHand, name);
+				InventoryManagement.renameItem(itemInHand, name);
 				executor.sendMessage(ChatColor.GREEN + "Nametag umbenannt");
 				return true;
 			}
 		}
 		return false;
-	}
-
-	private void renameNameTag(ItemStack itemInHand, String name) {
-		ItemMeta meta = itemInHand.getItemMeta();
-		meta.setDisplayName(name);
-		itemInHand.setItemMeta(meta);
 	}
 
 }

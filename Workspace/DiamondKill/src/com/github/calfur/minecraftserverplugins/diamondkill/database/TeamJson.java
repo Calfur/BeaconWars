@@ -22,7 +22,7 @@ public class TeamJson implements ConfigurationSerializable {
 		this.color = color;
 	}
 
-	public Location getBeaconPosition() {
+	public Location getBeaconLocation() {
 		return beaconLocation;
 	}
 
