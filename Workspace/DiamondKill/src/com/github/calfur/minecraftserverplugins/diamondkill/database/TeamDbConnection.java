@@ -3,36 +3,22 @@ package com.github.calfur.minecraftserverplugins.diamondkill.database;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TeamDbConnection extends DbConnection<TeamData> {
+public class TeamDbConnection extends DbConnection<TeamData, TeamJson> {
 
 	public static final int spectatorTeamNumber = -1;
-	private HashMap<String, TeamJson> teams = new HashMap<>();
 	
 	public TeamDbConnection() {
 		super("team.json", new TeamData(), TeamData.class);
 	}
-		
-	@SuppressWarnings("unchecked")
-	public void loadConfig() {
-		if(folder.exists()) {
-			if(file.exists()) {
-				if(read() != null) {
-					read().getData().entrySet().forEach(entry -> {						
-						teams.put(entry.getKey(), TeamJson.deserialize((Map<String, Object>) entry.getValue()));
-						data.getData().put(entry.getKey(), entry.getValue());
-					});
-				}
-			}else {
-				createFile().saveConfig().loadConfig();
-			}
-		}else {
-			createFolder().loadConfig();
-		}
+
+	@Override
+	protected TeamJson deserialize(Map<String, Object> serializedJson) {
+		return TeamJson.deserialize((Map<String, Object>) serializedJson);
 	}
 		
 	public boolean existsTeam(int teamNumber) {
 		String key = Integer.toString(teamNumber);
-		if(teams != null && teams.get(key) != null || teamNumber == spectatorTeamNumber) {
+		if(jsons != null && jsons.get(key) != null || teamNumber == spectatorTeamNumber) {
 			return true;
 		}
 		return false;
@@ -40,19 +26,13 @@ public class TeamDbConnection extends DbConnection<TeamData> {
 	
 	public TeamDbConnection addTeam(int teamNumber, TeamJson value) {
 		String key = Integer.toString(teamNumber);
-		data.getData().put(key, value.serialize());
-		teams.put(key, value);
-		gson.toJson(data, writer());
-		saveConfig();
+		addJson(key, value);
 		return this;
 	}	
 	
 	public TeamDbConnection removeTeam(int teamNumber) {
 		String key = Integer.toString(teamNumber);
-		data.getData().remove(key);
-		teams.remove(key);
-		gson.toJson(data, writer());
-		saveConfig();
+		removeJson(key);
 		return this;
 	}
 
@@ -61,10 +41,10 @@ public class TeamDbConnection extends DbConnection<TeamData> {
 		if(teamNumber == spectatorTeamNumber) {
 			return TeamJson.getSpectatorTeam();
 		}
-		return teams.get(key.toLowerCase());
+		return jsons.get(key.toLowerCase());
 	}
 	
 	public HashMap<String, TeamJson> getTeams() {
-		return teams;
+		return jsons;
 	}
 }

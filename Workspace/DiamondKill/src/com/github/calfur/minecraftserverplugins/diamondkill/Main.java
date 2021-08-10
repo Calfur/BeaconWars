@@ -28,9 +28,9 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		
-		playerDbConnection.loadConfig();
-		teamDbConnection.loadConfig();
-		killDbConnection.loadConfig();
+		playerDbConnection.loadDatabase();
+		teamDbConnection.loadDatabase();
+		killDbConnection.loadDatabase();
 
 		teamAttackManager = new TeamAttackManager();
 		beaconFightManager = new BeaconFightManager();
