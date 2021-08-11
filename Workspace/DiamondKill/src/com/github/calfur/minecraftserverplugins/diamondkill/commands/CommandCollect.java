@@ -14,12 +14,15 @@ import com.github.calfur.minecraftserverplugins.diamondkill.PlayerKicker;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.InventoryManagement;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandCollect implements CommandExecutor {
 
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private TransactionDbConnection transactionDbConnection = Main.getInstance().getTransactionDbConnection();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	@Override
@@ -41,8 +44,7 @@ public class CommandCollect implements CommandExecutor {
 					case "diamant":
 					case "dia":
 					case "dias":
-						Material material = Material.DIAMOND;
-						return addItemsToInventory(executor, material, amount);
+						return tryToWithdrawDiamonds(executor, amount);
 					default:
 						executor.sendMessage(StringFormatter.error(type + " ist kein verfügbares Item"));
 						return false;
@@ -55,29 +57,38 @@ public class CommandCollect implements CommandExecutor {
 		return false;
 	}
 
-	private boolean addItemsToInventory(Player executor, Material material, int amount) {
+	private boolean tryToWithdrawDiamonds(Player executor, int amount) {
 		PlayerInventory inventory = executor.getInventory();
 		if(InventoryManagement.isInventoryFull(inventory)) {
 			executor.sendMessage(StringFormatter.error("Keinen freien Inventar slot gefunden"));
 			return false;
 		}
+		
 		if(!playerDbConnection.existsPlayer(executor.getName())) {
 			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(executor));	
 			return false;
 		}
+		
 		PlayerJson playerJson = playerDbConnection.getPlayer(executor.getName());
 		int availableDiamonds = playerJson.getCollectableDiamonds();
 		if(availableDiamonds < amount) {
-			executor.sendMessage(StringFormatter.error("Du kannst momentan nicht mehr als ") + availableDiamonds + StringFormatter.error(" Diamanten einsammeln. Kille Leute um mehr zu erhalten."));
+			executor.sendMessage(StringFormatter.error("Du kannst momentan nicht mehr als ") + StringFormatter.uncoloredDiamondWord(availableDiamonds) + StringFormatter.error(" einsammeln. Kille Leute um mehr zu erhalten."));
 			return false;
 		}
-		playerJson.removeCollectableDiamonds(amount);
-		playerDbConnection.addPlayer(executor.getName(), playerJson);
-		scoreboardLoader.reloadScoreboardFor(executor);
-		ItemStack itemStack = new ItemStack(material, amount);
-		inventory.addItem(itemStack);
-		executor.sendMessage(ChatColor.AQUA + "" + amount + " Diamanten " + ChatColor.GREEN + "wurden zu deinem Inventar hinzugefügt");
+		
+		addDiamondsToInventory(executor, playerJson, amount);
 		return true;
+	}
+
+	private void addDiamondsToInventory(Player player, PlayerJson playerJson, int amount) {
+		playerJson.removeCollectableDiamonds(amount);
+		transactionDbConnection.addTransaction(new TransactionJson(player.getName(), playerJson.getTeamId(), -amount, 0, StringFormatter.uncoloredDiamondWord(amount) + " mit /collect ausgezahlt"));
+		playerDbConnection.addPlayer(player.getName(), playerJson);
+		scoreboardLoader.reloadScoreboardFor(player);
+		
+		ItemStack itemStack = new ItemStack(Material.DIAMOND, amount);
+		player.getInventory().addItem(itemStack);
+		player.sendMessage(StringFormatter.diamondWord(amount) + ChatColor.GREEN + StringFormatter.singularOrPlural(amount, " wurde", " wurden") + " zu deinem Inventar hinzugefügt");
 	}
 
 }

@@ -8,14 +8,18 @@ import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandRegi
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.disabling.FeatureDisabler;
 import com.github.calfur.minecraftserverplugins.diamondkill.hungerGamesLootDrop.HungerGamesManager;
 
 public class Main extends JavaPlugin {
 	private static Main instance;
+	
 	private final PlayerDbConnection playerDbConnection = new PlayerDbConnection();
 	private final TeamDbConnection teamDbConnection = new TeamDbConnection();
 	private final KillDbConnection killDbConnection = new KillDbConnection();
+	private final TransactionDbConnection transactionDbConnection = new TransactionDbConnection();
+	
 	private TeamAttackManager teamAttackManager;
 	private PlayerModeManager playerModeManager;
 	private BeaconFightManager beaconFightManager;
@@ -31,6 +35,7 @@ public class Main extends JavaPlugin {
 		playerDbConnection.loadDatabase();
 		teamDbConnection.loadDatabase();
 		killDbConnection.loadDatabase();
+		transactionDbConnection.loadDatabase();
 
 		teamAttackManager = new TeamAttackManager();
 		beaconFightManager = new BeaconFightManager();
@@ -96,5 +101,9 @@ public class Main extends JavaPlugin {
 
 	public CompassManager getCompassManager() {
 		return compassManager;
+	}
+
+	public TransactionDbConnection getTransactionDbConnection() {		
+		return transactionDbConnection;
 	}
 }

@@ -15,8 +15,16 @@ public class TransactionDbConnection extends DbConnection<TransactionJson>{
 		return TransactionJson.deserialize((Map<String, Object>) serializedJson);
 	}	
 
-	public TransactionDbConnection addTransaction(int id, TransactionJson value) {
-		String key = Integer.toString(id);
+	public boolean existsTransaction(int transactionId) {
+		String key = Integer.toString(transactionId);
+		if(jsons != null && jsons.get(key) != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public TransactionDbConnection addTransaction(TransactionJson value) {
+		String key = Integer.toString(getNextId());
 		addJson(key, value);
 		return this;
 	}	

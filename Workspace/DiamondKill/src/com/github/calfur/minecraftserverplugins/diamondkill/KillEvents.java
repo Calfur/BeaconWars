@@ -169,7 +169,7 @@ public class KillEvents implements Listener {
 		ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
 		killer = StringFormatter.firstLetterToUpper(killer);
 		victim = StringFormatter.firstLetterToUpper(victim);
-		Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "" + bounty + " Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
+		Bukkit.broadcastMessage(teamColorKiller + killer + ChatColor.GOLD + " bekommt " + StringFormatter.diamondWord(bounty) + ChatColor.GOLD + " für den Kill an " + teamColorVictim + victim);
 	}
 	
 	private void removeUndroppableItems(List<ItemStack> loot) {

@@ -41,6 +41,9 @@ commands:
   compass:
     description: Erhalte einen Kompass mit dem ausgewaehlten Ziel
     usage: /<command> [Base | Spawn | Beacon] [TeamId]
+  transaction: 
+    description: Interagiert mit der Transaktionsdatenbank
+    usage: /<command> [info | list] [Id]
 permissions:
   admin:
     description: Erlaubt das benutzen von allen DiamondKill commands

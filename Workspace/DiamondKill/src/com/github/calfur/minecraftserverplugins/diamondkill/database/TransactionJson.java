@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.database;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ public class TransactionJson implements ConfigurationSerializable {
 	private String reason;
 	private int transactedDiamonds;
 	private int transactedPoints;
+	private LocalDateTime dateTime;
 	
 	public String getPlayerName() {
 		return playerName;
@@ -32,13 +34,27 @@ public class TransactionJson implements ConfigurationSerializable {
 	public int getTransactedPoints() {
 		return transactedPoints;
 	}	
+	
+	public LocalDateTime getDateTime() {
+		return dateTime;
+	}
 
-	public TransactionJson(String playerName, int team, String reason, int transactedDiamonds, int transactedPoints) {
+	public TransactionJson(String playerName, int team, int transactedDiamonds, int transactedPoints, String reason) {
 		this.playerName = playerName;
 		this.team = team;
 		this.reason = reason;
 		this.transactedDiamonds = transactedDiamonds;
 		this.transactedPoints = transactedPoints;
+		this.dateTime = LocalDateTime.now().withNano(0);
+	}
+	
+	private TransactionJson(String playerName, int team, int transactedDiamonds, int transactedPoints, String reason, LocalDateTime dateTime) {
+		this.playerName = playerName;
+		this.team = team;
+		this.reason = reason;
+		this.transactedDiamonds = transactedDiamonds;
+		this.transactedPoints = transactedPoints;
+		this.dateTime = dateTime;
 	}
 
 	@Override
@@ -49,6 +65,7 @@ public class TransactionJson implements ConfigurationSerializable {
 		data.put("reason", this.reason);
 		data.put("transactedDiamonds", this.transactedDiamonds);
 		data.put("transactedPoints", this.transactedPoints);
+		data.put("dateTime", this.dateTime.toString());
 		return data;
 	}
 	
@@ -56,9 +73,10 @@ public class TransactionJson implements ConfigurationSerializable {
 		return new TransactionJson(
 				(String) args.get("playerName"), 
 				NumberConversions.toInt(args.get("team")), 
-				(String) args.get("reason"), 
 				NumberConversions.toInt(args.get("transactedDiamonds")),
-				NumberConversions.toInt(args.get("transactedPoints"))
+				NumberConversions.toInt(args.get("transactedPoints")),
+				(String) args.get("reason"),
+				LocalDateTime.parse((CharSequence) args.get("dateTime"))
 			);
 	}
 }

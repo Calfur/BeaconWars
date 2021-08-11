@@ -41,6 +41,18 @@ public abstract class DbConnection<Json extends ConfigurationSerializable> {
 		}
 	}
 	
+	protected void addJson(String key, Json value) {
+		data.getData().put(key, value.serialize());
+		jsons.put(key, value);
+		write(data);
+	}	
+	
+	protected void removeJson(String key) {
+		data.getData().remove(key);
+		jsons.remove(key);
+		write(data);
+	}
+	
 	protected abstract Json deserialize(Map<String, Object> serializedJson);
 
 	@SuppressWarnings("unchecked")
@@ -76,18 +88,6 @@ public abstract class DbConnection<Json extends ConfigurationSerializable> {
 			e.printStackTrace();
 		}
 		return this;
-	}
-	
-	public void addJson(String key, Json value) {
-		data.getData().put(key, value.serialize());
-		jsons.put(key, value);
-		write(data);
-	}	
-	
-	public void removeJson(String key) {
-		data.getData().remove(key);
-		jsons.remove(key);
-		write(data);
 	}
 	
 	private Data read() {
