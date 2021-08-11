@@ -8,10 +8,14 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConne
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,6 +28,7 @@ public class CommandKill implements CommandExecutor {
 
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private TransactionDbConnection transactionDbConnection = Main.getInstance().getTransactionDbConnection();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -121,42 +126,43 @@ public class CommandKill implements CommandExecutor {
 	}
 	
 	private boolean addKill(Player executor, String[] args) {
-		if(args.length != 3) {
+		if(args.length < 4) {
 			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
-		String killer;
-		String victim;
+		String killer = args[1];
+		String victim = args[2];
+		ArrayList<String> reasonWords = new ArrayList<>(Arrays.asList(args));
+		reasonWords.remove(0);
+		reasonWords.remove(0);
+		reasonWords.remove(0);
+		String reason = String.join(" ", reasonWords);
 		LocalDateTime dateTime = LocalDateTime.now();
-		try {
-			killer = args[1];
-			victim = args[2];
-		}catch(NumberFormatException e) {
-			executor.sendMessage(StringFormatter.error("Der Kill Id Parameter muss dem Typ Int entsprechen"));
-			return false;
-		}
+		
 		if(!playerDbConnection.existsPlayer(killer)) {
 			executor.sendMessage(StringFormatter.error("Der Killer " + killer + " ist nicht registriert"));
 			return false;
 		}
+		
 		if(!playerDbConnection.existsPlayer(victim)) {
 			executor.sendMessage(StringFormatter.error("Das Opfer " + victim + " ist nicht registriert"));
 			return false;
 		}
+		
 		int killId = killDbConnection.getNextId();
 		
-
 		PlayerJson killerJson = playerDbConnection.getPlayer(killer);
 		
 		int bounty = killDbConnection.getBounty(victim);
 		killerJson.addCollectableDiamonds(bounty);
 		playerDbConnection.addPlayer(killer, killerJson);
+		transactionDbConnection.addTransaction(new TransactionJson(killer, killerJson.getTeamId(), bounty, bounty*100, reason));
 
 		killDbConnection.addKill(killId, new KillJson(killer, victim, dateTime));
 		
 		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
 
-		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + ChatColor.RESET + bounty + " Diamanten Kompfgeld an " + killer + " ausgezahlt;");
+		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + ChatColor.RESET + bounty + " Diamanten Kompfgeld an " + killer + " ausgezahlt");
 		return true;
 	}
 }

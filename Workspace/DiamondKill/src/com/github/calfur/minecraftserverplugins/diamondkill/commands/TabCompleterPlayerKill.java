@@ -67,6 +67,13 @@ public class TabCompleterPlayerKill extends TabCompleterBase {
 				}
 			}
 			break;
+		case  4: // Reason
+			if(!sender.hasPermission("Admin") 
+					|| !previousParameters[0].equalsIgnoreCase("add")) {
+				break;
+			}
+			completions.add("[Grund]");
+			break;
 		}
 		return completions;
 	}
