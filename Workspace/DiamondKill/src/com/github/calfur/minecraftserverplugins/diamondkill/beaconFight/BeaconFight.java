@@ -27,11 +27,14 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbCon
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class BeaconFight {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private TransactionDbConnection transactionDbConnection = Main.getInstance().getTransactionDbConnection();
 	
 	private LocalDateTime startTime;
 	private BeaconFightManager manager;
@@ -247,6 +250,9 @@ public class BeaconFight {
 			if(playerJson != null) {				
 				playerJson.addCollectableDiamonds(reward);
 				playerDbConnection.addPlayer(teamLeaderName, playerJson);
+				if(reward > 0) {					
+					transactionDbConnection.addTransaction(new TransactionJson(teamLeaderName, teamId, reward, reward*100, "Verteidigerbonus nach dem Beaconevent"));
+				}
 			}else {
 				Bukkit.broadcastMessage(StringFormatter.error("Der Teamleader " + teamLeaderName + " von ") + teamJson.getColor() + "Team " + teamId + StringFormatter.error(" wurde noch nicht registriert"));
 			}
