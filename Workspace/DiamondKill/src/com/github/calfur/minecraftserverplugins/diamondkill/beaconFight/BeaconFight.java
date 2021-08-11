@@ -102,7 +102,7 @@ public class BeaconFight {
 	@Nullable
 	public Player getAttackerOfBeaconRaidByDefenderTeam(int defenderTeamId) {
 		for (BeaconRaid beaconRaid : beaconRaids) {
-			if(beaconRaid.getDefender().getId() == defenderTeamId) {
+			if(beaconRaid.getDefenderTeam().getId() == defenderTeamId) {
 				return Bukkit.getPlayer(beaconRaid.getDestructorName());
 			}
 		}
@@ -127,7 +127,7 @@ public class BeaconFight {
 			BeaconManager.removeOneBeaconFromInventory(placer);
 			return;
 		}
-		addLostDefense(beaconRaid.getDefender().getId());
+		addLostDefense(beaconRaid.getDefenderTeam().getId());
 		beaconRaid.addBeaconPlacement(attacker, placer);
 	}
 
@@ -202,7 +202,7 @@ public class BeaconFight {
 	private List<BeaconRaid> getBeaconRaidsFromTeam(Team attackerTeam) {
 		List<BeaconRaid> beaconRaidsFromTeam = new ArrayList<BeaconRaid>();
 		for (BeaconRaid beaconRaid : beaconRaids) {
-			if(beaconRaid.getAttacker().getId() == attackerTeam.getId()) {
+			if(beaconRaid.getAttackerTeam().getId() == attackerTeam.getId()) {
 				beaconRaidsFromTeam.add(beaconRaid);
 			}
 		}
@@ -248,9 +248,9 @@ public class BeaconFight {
 			String teamLeaderName = teamJson.getTeamLeader();
 			PlayerJson playerJson = playerDbConnection.getPlayer(teamLeaderName);
 			if(playerJson != null) {				
-				playerJson.addCollectableDiamonds(reward);
-				playerDbConnection.addPlayer(teamLeaderName, playerJson);
 				if(reward > 0) {					
+					playerJson.addCollectableDiamonds(reward);
+					playerDbConnection.addPlayer(teamLeaderName, playerJson);
 					transactionDbConnection.addTransaction(new TransactionJson(teamLeaderName, teamId, reward, reward*100, "Verteidigerbonus nach dem Beaconevent"));
 				}
 			}else {
