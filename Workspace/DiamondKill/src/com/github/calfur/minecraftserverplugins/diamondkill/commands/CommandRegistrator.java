@@ -54,6 +54,6 @@ public class CommandRegistrator {
 		
 		// /transaction
 		plugin.getCommand("transaction").setExecutor(new CommandTransaction());
-		//plugin.getCommand("compass").setTabCompleter(new TabCompleterCompass()); TODO
+		plugin.getCommand("transaction").setTabCompleter(new TabCompleterTransaction());
 	}
 }
