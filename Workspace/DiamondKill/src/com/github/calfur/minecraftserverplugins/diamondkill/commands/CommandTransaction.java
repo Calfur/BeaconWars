@@ -91,8 +91,8 @@ public class CommandTransaction implements CommandExecutor {
 		executor.sendMessage(ChatColor.GOLD + "Zeit: " + ChatColor.RESET + transactionJson.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))); 
 		executor.sendMessage(ChatColor.GOLD + "Spieler: " + teamJson.getColor() + transactionJson.getPlayerName());
 		executor.sendMessage(ChatColor.GOLD + "Team: " + teamJson.getColor() + transactionJson.getTeam());
-		executor.sendMessage(ChatColor.GOLD + "Diamanten: " + ChatColor.AQUA + transactionJson.getTransactedDiamonds());
-		executor.sendMessage(ChatColor.GOLD + "Punkte: " + ChatColor.RESET + transactionJson.getTransactedPoints());
+		executor.sendMessage(ChatColor.GOLD + "Transferierte Diamanten: " + ChatColor.AQUA + transactionJson.getTransactedDiamonds());
+		executor.sendMessage(ChatColor.GOLD + "Transferierte Punkte: " + ChatColor.RESET + transactionJson.getTransactedPoints());
 		executor.sendMessage(ChatColor.GOLD + "Grund: " + ChatColor.RESET + transactionJson.getReason());
 		return true;
 	}

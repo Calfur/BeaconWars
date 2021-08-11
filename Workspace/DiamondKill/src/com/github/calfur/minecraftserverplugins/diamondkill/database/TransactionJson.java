@@ -7,6 +7,8 @@ import java.util.Map;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.NumberConversions;
 
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
+
 public class TransactionJson implements ConfigurationSerializable {
 	private String playerName;
 	private int team;
@@ -40,7 +42,7 @@ public class TransactionJson implements ConfigurationSerializable {
 	}
 
 	public TransactionJson(String playerName, int team, int transactedDiamonds, int transactedPoints, String reason) {
-		this.playerName = playerName;
+		this.playerName = StringFormatter.firstLetterToUpper(playerName);
 		this.team = team;
 		this.reason = reason;
 		this.transactedDiamonds = transactedDiamonds;

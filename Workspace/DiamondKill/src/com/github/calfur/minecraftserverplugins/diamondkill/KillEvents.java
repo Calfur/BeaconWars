@@ -27,12 +27,16 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class KillEvents implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection(); 
-	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection(); 
+	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
+	private TransactionDbConnection transactionDbConnection = Main.getInstance().getTransactionDbConnection(); 
+	
 	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
@@ -154,6 +158,7 @@ public class KillEvents implements Listener {
 				int bounty = killDbConnection.getBounty(victim);
 				killerJson.addCollectableDiamonds(bounty);
 				playerDbConnection.addPlayer(killer, killerJson);
+				transactionDbConnection.addTransaction(new TransactionJson(killer, killerJson.getTeamId(), bounty, bounty*100, "Für den kill an " + victim));
 				scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 				
 				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
