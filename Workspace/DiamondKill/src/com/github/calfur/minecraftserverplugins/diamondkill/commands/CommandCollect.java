@@ -73,13 +73,17 @@ public class CommandCollect implements CommandExecutor {
 			return false;
 		}
 		
-		addDiamondsToInventory(executor, playerJson, amount);
+		withdrawDiamonds(executor, playerJson, amount);
 		return true;
 	}
 
-	private void addDiamondsToInventory(Player player, PlayerJson playerJson, int amount) {
-		rewardManager.addReward(player.getName(), amount, 0, StringFormatter.uncoloredDiamondWord(amount) + " mit /collect ausgezahlt");
+	private void withdrawDiamonds(Player player, PlayerJson playerJson, int amount) {
+		rewardManager.addReward(player.getName(), -amount, 0, StringFormatter.uncoloredDiamondWord(amount) + " mit /collect ausgezahlt");
 		
+		addDiamondsToInventory(player, amount);
+	}
+
+	private void addDiamondsToInventory(Player player, int amount) {
 		ItemStack itemStack = new ItemStack(Material.DIAMOND, amount);
 		player.getInventory().addItem(itemStack);
 		player.sendMessage(StringFormatter.diamondWord(amount) + ChatColor.GREEN + StringFormatter.singularOrPlural(amount, " wurde", " wurden") + " zu deinem Inventar hinzugefügt");

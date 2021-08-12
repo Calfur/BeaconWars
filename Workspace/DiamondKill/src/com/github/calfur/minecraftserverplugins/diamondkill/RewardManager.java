@@ -12,7 +12,9 @@ public class RewardManager {
 	
 	public void addReward(String playerName, int amountOfDiamonds, int amountOfPoints, String reason) {
 		PlayerJson playerJson = playerDbConnection.getPlayer(playerName);
-		playerJson.addCollectableDiamonds(amountOfDiamonds);
+		if(amountOfDiamonds != 0) {			
+			playerJson.addCollectableDiamonds(amountOfDiamonds);
+		}
 		playerDbConnection.addPlayer(playerName, playerJson);
 		TransactionJson transactionJson = new TransactionJson(
 				playerName, 
