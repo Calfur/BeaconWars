@@ -15,12 +15,17 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.RewardManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
 import com.github.calfur.minecraftserverplugins.diamondkill.Team;
 import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskScheduler;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionJson;
 
 public class BeaconRaid {
+	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
+	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
+	private RewardManager rewardManager = Main.getInstance().getRewardManager();
+	
 	private Team attackerTeam;
 	private Team defenderTeam;
 	private LocalDateTime deadline;
@@ -73,7 +78,7 @@ public class BeaconRaid {
 	
 		bossBarName = attackerTeam.getColor() + "Team " + attackerTeam.getId() + ChatColor.RESET + " klaut den Beacon von " + defenderTeam.getColor() + "Team " + defenderTeam.getId();
 		
-		Main.getInstance().getScoreboardLoader().addBossBar(bossBarName, attackerTeam.getColor(), deadline);
+		scoreboardLoader.addBossBar(bossBarName, attackerTeam.getColor(), deadline);
 	
 		overtimeTaskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(), 
 				new Runnable() {
@@ -87,16 +92,14 @@ public class BeaconRaid {
 				LocalDateTime.now().plusMinutes(maxMinutesToBringBack));
 	}
 	
-	public void addBeaconPlacement(PlayerJson placer, Player player) {
+	public void addBeaconPlacement(Player player) {
 		Bukkit.broadcastMessage(player.getName() + " von " + attackerTeam.getColor() + "Team " + attackerTeam.getId() + ChatColor.RESET + " hat den Beacon von " + defenderTeam.getColor() + "Team " + defenderTeam.getId() + ChatColor.RESET + " erfolgreich zurückgebracht");
 		Bukkit.broadcastMessage(player.getName() + " erhält dafür " + ChatColor.AQUA + reward + " Dias");
 		
-		placer.addCollectableDiamonds(reward);
-		Main.getInstance().getPlayerDbConnection().addPlayer(player.getName(), placer);
-		Main.getInstance().getTransactionDbConnection().addTransaction(new TransactionJson(player.getName(), attackerTeam.getId(), reward, reward*100, "Belohnung für das erfolgreiche stehlen und zurückbringen des Beacons von Team " + defenderTeam.getId()));
+		rewardManager.addReward(player.getName(), reward, reward*100, "Belohnung für das erfolgreiche stehlen und zurückbringen des Beacons von Team " + defenderTeam.getId());
 		
 		BeaconManager.removeOneBeaconFromInventory(player);
-		Main.getInstance().getScoreboardLoader().reloadScoreboardFor(player);
+		scoreboardLoader.reloadScoreboardFor(player);
 		
 		removePotionEffects(player);
 		
@@ -114,13 +117,13 @@ public class BeaconRaid {
 	private void removePotionEffects(Player player) {
 		for (PotionEffect potionEffect : attackerEffects) {			
 			player.removePotionEffect(potionEffect.getType());
-			Main.getInstance().getPlayerModeManager().reloadPlayerMode(player);
+			playerModeManager.reloadPlayerMode(player);
 		}
 	}
 	
 	private void destroy() {
 		TaskScheduler.getInstance().cancelTask(overtimeTaskId);
-		Main.getInstance().getScoreboardLoader().removeBossBar(bossBarName);
+		scoreboardLoader.removeBossBar(bossBarName);
 		placeBeaconBack();
 		beaconFight.removeBeaconRaid(this);
 	}

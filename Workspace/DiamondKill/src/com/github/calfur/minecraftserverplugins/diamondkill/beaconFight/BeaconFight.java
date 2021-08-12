@@ -21,20 +21,19 @@ import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.DeathBanPluginInteraction;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.RewardManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Team;
 import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskScheduler;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class BeaconFight {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
-	private TransactionDbConnection transactionDbConnection = Main.getInstance().getTransactionDbConnection();
+	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	private LocalDateTime startTime;
 	private BeaconFightManager manager;
@@ -128,7 +127,7 @@ public class BeaconFight {
 			return;
 		}
 		addLostDefense(beaconRaid.getDefenderTeam().getId());
-		beaconRaid.addBeaconPlacement(attacker, placer);
+		beaconRaid.addBeaconPlacement(placer);
 	}
 
 	public void removeBeaconRaid(BeaconRaid beaconRaid) {
@@ -246,12 +245,9 @@ public class BeaconFight {
 			int reward = defenseReward.getValue();
 			TeamJson teamJson = teamDbConnection.getTeam(teamId);
 			String teamLeaderName = teamJson.getTeamLeader();
-			PlayerJson playerJson = playerDbConnection.getPlayer(teamLeaderName);
-			if(playerJson != null) {				
+			if(playerDbConnection.existsPlayer(teamLeaderName)) {				
 				if(reward > 0) {					
-					playerJson.addCollectableDiamonds(reward);
-					playerDbConnection.addPlayer(teamLeaderName, playerJson);
-					transactionDbConnection.addTransaction(new TransactionJson(teamLeaderName, teamId, reward, reward*100, "Verteidigerbonus nach dem Beaconevent"));
+					rewardManager.addReward(teamLeaderName, reward, 0, "Verteidigerbonus nach dem Beaconevent");
 				}
 			}else {
 				Bukkit.broadcastMessage(StringFormatter.error("Der Teamleader " + teamLeaderName + " von ") + teamJson.getColor() + "Team " + teamId + StringFormatter.error(" wurde noch nicht registriert"));

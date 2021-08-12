@@ -27,6 +27,7 @@ public class Main extends JavaPlugin {
 	private CommandProjectStart commandProjectStart;
 	private HungerGamesManager hungergamesManager;
 	private CompassManager compassManager;
+	private RewardManager rewardManager;
 		
 	@Override
 	public void onEnable() {
@@ -43,6 +44,7 @@ public class Main extends JavaPlugin {
 		scoreboardLoader = new ScoreboardLoader();
 		hungergamesManager = new HungerGamesManager();
 		compassManager = new CompassManager();
+		rewardManager = new RewardManager();
 		
 		new FeatureDisabler(); 
 		new CommandRegistrator();
@@ -105,5 +107,9 @@ public class Main extends JavaPlugin {
 
 	public TransactionDbConnection getTransactionDbConnection() {		
 		return transactionDbConnection;
+	}
+
+	public RewardManager getRewardManager() {
+		return rewardManager;
 	}
 }

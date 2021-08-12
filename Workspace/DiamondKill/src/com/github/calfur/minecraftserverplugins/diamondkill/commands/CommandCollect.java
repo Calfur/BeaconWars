@@ -11,19 +11,16 @@ import org.bukkit.inventory.PlayerInventory;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerKicker;
-import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
+import com.github.calfur.minecraftserverplugins.diamondkill.RewardManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.InventoryManagement;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandCollect implements CommandExecutor {
 
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
-	private TransactionDbConnection transactionDbConnection = Main.getInstance().getTransactionDbConnection();
-	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
+	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -81,10 +78,7 @@ public class CommandCollect implements CommandExecutor {
 	}
 
 	private void addDiamondsToInventory(Player player, PlayerJson playerJson, int amount) {
-		playerJson.removeCollectableDiamonds(amount);
-		transactionDbConnection.addTransaction(new TransactionJson(player.getName(), playerJson.getTeamId(), -amount, 0, StringFormatter.uncoloredDiamondWord(amount) + " mit /collect ausgezahlt"));
-		playerDbConnection.addPlayer(player.getName(), playerJson);
-		scoreboardLoader.reloadScoreboardFor(player);
+		rewardManager.addReward(player.getName(), amount, 0, StringFormatter.uncoloredDiamondWord(amount) + " mit /collect ausgezahlt");
 		
 		ItemStack itemStack = new ItemStack(Material.DIAMOND, amount);
 		player.getInventory().addItem(itemStack);

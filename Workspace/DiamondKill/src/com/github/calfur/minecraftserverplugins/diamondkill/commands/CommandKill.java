@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.RewardManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.TopKiller;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
@@ -19,8 +20,6 @@ import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbCon
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.TransactionJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandKill implements CommandExecutor {
@@ -28,7 +27,7 @@ public class CommandKill implements CommandExecutor {
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
-	private TransactionDbConnection transactionDbConnection = Main.getInstance().getTransactionDbConnection();
+	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -193,14 +192,11 @@ public class CommandKill implements CommandExecutor {
 			executor.sendMessage(StringFormatter.error("Das Opfer " + victim + " ist nicht registriert"));
 			return false;
 		}
-				
-		PlayerJson killerJson = playerDbConnection.getPlayer(killer);
 		
 		int bounty = killDbConnection.getBounty(victim);
-		killerJson.addCollectableDiamonds(bounty);
-		playerDbConnection.addPlayer(killer, killerJson);
-		transactionDbConnection.addTransaction(new TransactionJson(killer, killerJson.getTeamId(), bounty, bounty*100, reason));
-
+		
+		rewardManager.addReward(killer, bounty, bounty*100, "Für den manuell hinzugefügten Kill an " + victim + ", " + reason);
+		
 		String killId = killDbConnection.addKill(new KillJson(killer, victim, dateTime));
 		
 		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
