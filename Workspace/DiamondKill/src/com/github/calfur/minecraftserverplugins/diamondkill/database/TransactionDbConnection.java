@@ -44,7 +44,7 @@ public class TransactionDbConnection extends DbConnection<TransactionJson>{
 		return jsons;
 	}
 
-	public int getNextId() {
+	private int getNextId() {
 		int heighestId = 0;
 		for (Entry<String, TransactionJson> transaction : jsons.entrySet()) {
 			int id = Integer.parseInt(transaction.getKey());
@@ -53,5 +53,9 @@ public class TransactionDbConnection extends DbConnection<TransactionJson>{
 			}
 		}
 		return heighestId + 1;
+	}
+
+	public int getAmountOfAvailablePages() {
+		return (int) Math.ceil((getNextId()-1) / 10.0);
 	}
 }

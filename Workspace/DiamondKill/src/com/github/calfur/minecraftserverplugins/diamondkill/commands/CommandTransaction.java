@@ -2,8 +2,6 @@ package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -31,9 +29,9 @@ public class CommandTransaction implements CommandExecutor {
 				String subCommand = args[0].toLowerCase();
 				switch(subCommand) {
 					case "info":
-						return sendTransactionInfo(executor, args);
+						return doTransactionInfo(executor, args);
 					case "list":
-						return sendTransactionList(executor, args);
+						return doTransactionList(executor, args);
 					default:
 						executor.sendMessage(StringFormatter.error(subCommand + " ist kein vorhandener Subcommand"));
 						return false;
@@ -43,29 +41,55 @@ public class CommandTransaction implements CommandExecutor {
 		return false;
 	}
 
-	private boolean sendTransactionList(Player executor, String[] args) {
-		if(args.length != 1) {
+	private boolean doTransactionList(Player executor, String[] args) {
+		int page;
+		int lastAvailablePage = transactionDbConnection.getAmountOfAvailablePages();
+		if(args.length == 1) {
+			page = lastAvailablePage;
+		}else if (args.length == 2) {
+			try {
+				page = Integer.parseInt(args[1]);
+			}catch (Exception e) {
+				executor.sendMessage(StringFormatter.error("Der Parameter Page muss dem typ int entsprechen"));
+				return false;
+			}
+			if(page < 1 || page > lastAvailablePage) {
+				executor.sendMessage(StringFormatter.error("Seite " + page + " wurde nicht gefunden. Es sind " + lastAvailablePage + " Seiten verfügbar"));
+				return false;
+			}
+		}else {		
 			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;
 		}
-		Map<String, TransactionJson> transactions = transactionDbConnection.getTransactions();
-		executor.sendMessage(ChatColor.BOLD + "" + transactions.size() + " Transaktionen gefunden:");
-		HashMap<String, TeamJson> teams = teamDbConnection.getTeams();
-		for (Entry<String, TransactionJson> transaction : transactions.entrySet()) {
-			TransactionJson transactionJson = transaction.getValue();
-			TeamJson team = teams.get(Integer.toString(transactionJson.getTeam()));
-			ChatColor teamColor = team.getColor();
-			executor.sendMessage( 
-					ChatColor.GOLD + "Id: " + ChatColor.RESET + transaction.getKey() + 
-					ChatColor.GOLD + ", Zeit: " + ChatColor.RESET + transactionJson.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")) + 
-					ChatColor.GOLD + ", Spieler: " + teamColor + transactionJson.getPlayerName() + ChatColor.RESET + 
-					ChatColor.GOLD + ", Diamanten: " + ChatColor.AQUA + transactionJson.getTransactedDiamonds() + ChatColor.RESET + 
-					ChatColor.GOLD + ", Punkte: " + ChatColor.RESET + transactionJson.getTransactedPoints());
-		}
+		sendTransactionList(executor, page);
 		return true;
 	}
 
-	private boolean sendTransactionInfo(Player executor, String[] args) {
+	private void sendTransactionList(Player executor, int page) {
+		executor.sendMessage(ChatColor.BOLD + "Seite " + page + " von " + transactionDbConnection.getAmountOfAvailablePages() + ":");
+		HashMap<String, TeamJson> teams = teamDbConnection.getTeams();
+
+		int firstTransactionToShow = page * 10 - 9;
+		int lastTransactionToShow = page * 10;
+		for (int i = firstTransactionToShow; i <= lastTransactionToShow; i++) {
+			if(transactionDbConnection.existsTransaction(i)) {				
+				TransactionJson transactionJson = transactionDbConnection.getTransaction(i);
+				TeamJson team = teams.get(Integer.toString(transactionJson.getTeam()));
+				ChatColor teamColor = ChatColor.WHITE;
+				if(team != null) {				
+					teamColor = team.getColor();
+				}
+				executor.sendMessage( 
+						ChatColor.GOLD + "Id: " + ChatColor.RESET + i + 
+						ChatColor.GOLD + ", Zeit: " + ChatColor.RESET + transactionJson.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")) + 
+						ChatColor.GOLD + ", Spieler: " + teamColor + transactionJson.getPlayerName() + ChatColor.RESET + 
+						ChatColor.GOLD + ", Diamanten: " + ChatColor.AQUA + transactionJson.getTransactedDiamonds() + ChatColor.RESET + 
+						ChatColor.GOLD + ", Punkte: " + ChatColor.RESET + transactionJson.getTransactedPoints());
+			}
+		}
+	}
+
+	private boolean doTransactionInfo(Player executor, String[] args) {
 		if(args.length != 2) {
 			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
 			return false;

@@ -25,11 +25,17 @@ public class TabCompleterTransaction extends TabCompleterBase {
 			completions.add("info");
 			completions.add("list");
 			break;
-		case 2: // TransactionId
+		case 2: // TransactionId | Page
 			switch (previousParameters[0]) {
 			case "info":
 				for (Entry<String, TransactionJson> transaction : transactions.entrySet()) {
 					completions.add(transaction.getKey());
+				}
+				break;
+			case "list":
+				int lastAvailablePage = transactionDbConnection.getAmountOfAvailablePages();
+				for(int i = 1; i <= lastAvailablePage; i++) {
+					completions.add(Integer.toString(i));
 				}
 				break;
 			}
