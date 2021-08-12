@@ -23,28 +23,32 @@ public class KillDbConnection extends DbConnection<KillJson> {
 		return false;
 	}
 	
-	public KillDbConnection addKill(int killNumber, KillJson value) {
-		String key = Integer.toString(killNumber);
-		addJson(key, value);
-		return this;
+	/**
+	 * 
+	 * @param killJson
+	 * @return kill id
+	 */
+	public String addKill(KillJson killJson) {
+		String id = Integer.toString(getNextId());
+		addJson(id, killJson);
+		return id;
 	}	
 	
-	public KillDbConnection removeKill(int killNumber) {
-		String key = Integer.toString(killNumber);
-		removeJson(key);
-		return this;
+	public void removeKill(int killId) {
+		String id = Integer.toString(killId);
+		removeJson(id);
 	}
 
-	public KillJson getKill(int killNumber) {
-		String key = Integer.toString(killNumber);
-		return jsons.get(key.toLowerCase());
+	public KillJson getKill(int killId) {
+		String id = Integer.toString(killId);
+		return jsons.get(id.toLowerCase());
 	}
 	
 	public HashMap<String, KillJson> getKills() {
 		return jsons;
 	}
 
-	public int getNextId() {
+	private int getNextId() {
 		int heighestId = 0;
 		for (Entry<String, KillJson> kill : jsons.entrySet()) {
 			int id = Integer.parseInt(kill.getKey());
@@ -90,5 +94,9 @@ public class KillDbConnection extends DbConnection<KillJson> {
 			result = 1;
 		}
 		return result;
+	}
+
+	public int getAmountOfAvailablePages() {
+		return (int) Math.ceil((getNextId()-1) / 10.0);
 	}
 }

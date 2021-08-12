@@ -1,7 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -67,18 +66,13 @@ public class CommandTransaction implements CommandExecutor {
 
 	private void sendTransactionList(Player executor, int page) {
 		executor.sendMessage(ChatColor.BOLD + "Seite " + page + " von " + transactionDbConnection.getAmountOfAvailablePages() + ":");
-		HashMap<String, TeamJson> teams = teamDbConnection.getTeams();
-
+		
 		int firstTransactionToShow = page * 10 - 9;
 		int lastTransactionToShow = page * 10;
 		for (int i = firstTransactionToShow; i <= lastTransactionToShow; i++) {
 			if(transactionDbConnection.existsTransaction(i)) {				
 				TransactionJson transactionJson = transactionDbConnection.getTransaction(i);
-				TeamJson team = teams.get(Integer.toString(transactionJson.getTeam()));
-				ChatColor teamColor = ChatColor.WHITE;
-				if(team != null) {				
-					teamColor = team.getColor();
-				}
+				ChatColor teamColor = getTeamColor(transactionJson.getTeam());
 				executor.sendMessage( 
 						ChatColor.GOLD + "Id: " + ChatColor.RESET + i + 
 						ChatColor.GOLD + ", Zeit: " + ChatColor.RESET + transactionJson.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")) + 
@@ -89,6 +83,16 @@ public class CommandTransaction implements CommandExecutor {
 		}
 	}
 
+	private ChatColor getTeamColor(int teamId) {
+		ChatColor teamColor = ChatColor.WHITE;
+		TeamJson teamJson = teamDbConnection.getTeam(teamId);
+		if(teamJson == null) {				
+			return teamColor;
+		}
+		teamColor = teamJson.getColor();			
+		return teamColor;
+	}
+	
 	private boolean doTransactionInfo(Player executor, String[] args) {
 		if(args.length != 2) {
 			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));

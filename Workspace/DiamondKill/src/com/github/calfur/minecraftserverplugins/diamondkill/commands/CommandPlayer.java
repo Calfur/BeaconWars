@@ -149,7 +149,8 @@ public class CommandPlayer implements CommandExecutor {
 			executor.sendMessage(StringFormatter.error("Dieser Spieler ist nicht vorhanden"));
 			return false;
 		}
-		playerDbConnection.addPlayer(name, new PlayerJson(team, realName, 0));
+		int collectableDiamonds = playerDbConnection.getPlayer(name).getCollectableDiamonds();
+		playerDbConnection.addPlayer(name, new PlayerJson(team, realName, collectableDiamonds));
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		executor.sendMessage(ChatColor.GREEN + name + " editiert.");
 		return true;

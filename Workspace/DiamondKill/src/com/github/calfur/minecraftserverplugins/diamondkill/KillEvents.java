@@ -161,7 +161,7 @@ public class KillEvents implements Listener {
 				transactionDbConnection.addTransaction(new TransactionJson(killer, killerJson.getTeamId(), bounty, bounty*100, "Für den kill an " + victim));
 				scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 				
-				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
+				killDbConnection.addKill(new KillJson(killer, victim, LocalDateTime.now()));
 				
 				sendDeathMessage(killer, victim, bounty);
 				Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
