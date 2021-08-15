@@ -43,7 +43,7 @@ commands:
     usage: /<command> [Base | Spawn | Beacon] [TeamId]
   transaction: 
     description: Interagiert mit der Transaktionsdatenbank
-    usage: /<command> [info | list] [Id | page]
+    usage: /<command> [info | list | add | reverse] [Id | page | diamonds | points] [amount] [player] [reason]
 permissions:
   admin:
     description: Erlaubt das benutzen von allen DiamondKill commands

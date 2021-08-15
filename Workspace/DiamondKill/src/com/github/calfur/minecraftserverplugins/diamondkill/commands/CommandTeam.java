@@ -67,7 +67,7 @@ public class CommandTeam implements CommandExecutor {
 
 	private boolean sendTeamList(Player executor, String[] args) {
 		if(args.length != 1) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		Map<String, TeamJson> teams = teamDbConnection.getTeams();
@@ -83,7 +83,7 @@ public class CommandTeam implements CommandExecutor {
 
 	private boolean sendTeamInfo(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -108,7 +108,7 @@ public class CommandTeam implements CommandExecutor {
 	
 	private boolean deleteTeam(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -135,7 +135,7 @@ public class CommandTeam implements CommandExecutor {
 	
 	private boolean editTeam(Player executor, String[] args) {
 		if(args.length != 7) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -194,7 +194,7 @@ public class CommandTeam implements CommandExecutor {
 	
 	private boolean addTeam(Player executor, String[] args) {
 		if(args.length != 7) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;

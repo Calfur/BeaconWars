@@ -81,7 +81,7 @@ public class CommandKill implements CommandExecutor {
 				return false;
 			}
 		}else {		
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		sendKillList(executor, page);
@@ -125,7 +125,7 @@ public class CommandKill implements CommandExecutor {
 
 	private boolean sendKillInfo(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int killId;
@@ -149,7 +149,7 @@ public class CommandKill implements CommandExecutor {
 	
 	private boolean deleteKill(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int killId;
@@ -171,7 +171,7 @@ public class CommandKill implements CommandExecutor {
 	
 	private boolean addKill(Player executor, String[] args) {
 		if(args.length < 4) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String killer = args[1];

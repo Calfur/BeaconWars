@@ -47,7 +47,7 @@ public class CommandCollect implements CommandExecutor {
 						return false;
 				}
 			}else {
-				executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+				executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 				return false;
 			}
 		}

@@ -71,7 +71,7 @@ public class CommandPlayer implements CommandExecutor {
 
 	private boolean sendPlayerList(Player executor, String[] args) {
 		if(args.length != 1) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
@@ -84,7 +84,7 @@ public class CommandPlayer implements CommandExecutor {
 
 	private boolean sendPlayerInfo(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String name = args[1];
@@ -115,7 +115,7 @@ public class CommandPlayer implements CommandExecutor {
 	
 	private boolean deletePlayer(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String name = args[1];
@@ -131,7 +131,7 @@ public class CommandPlayer implements CommandExecutor {
 	
 	private boolean editPlayer(Player executor, String[] args) {
 		if(args.length != 4) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String name;
@@ -158,7 +158,7 @@ public class CommandPlayer implements CommandExecutor {
 	
 	private boolean addPlayer(Player executor, String[] args) {
 		if(args.length != 4) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String name;
