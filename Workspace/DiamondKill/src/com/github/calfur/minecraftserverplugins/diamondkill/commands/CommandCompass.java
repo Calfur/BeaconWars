@@ -38,14 +38,14 @@ public class CommandCompass implements CommandExecutor {
 					compassManager.addCompassToInventory(executor, CompassType.beacon, teamNumber);
 					return true;
 				case "Spawn":
-					executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+					executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 					return false;
 				default:
 					executor.sendMessage(StringFormatter.error(args[0] + " ist kein gültiger subcommand"));
 					return false;
 				}
 			}
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		return false;

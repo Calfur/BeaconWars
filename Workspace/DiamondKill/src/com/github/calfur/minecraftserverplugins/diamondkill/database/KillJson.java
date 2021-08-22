@@ -36,7 +36,6 @@ public class KillJson implements ConfigurationSerializable {
 	}
 
 	public KillJson(String killer, String victim, LocalDateTime dateTime) {
-		super();
 		this.killer = killer.toLowerCase();
 		this.victim = victim.toLowerCase();
 		this.dateTime = dateTime;

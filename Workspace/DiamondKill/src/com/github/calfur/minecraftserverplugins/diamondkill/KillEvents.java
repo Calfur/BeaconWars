@@ -25,17 +25,17 @@ import com.github.calfur.minecraftserverplugins.diamondkill.commands.CommandProj
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class KillEvents implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection(); 
-	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection(); 
+	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
+	private RewardManager rewardManager = Main.getInstance().getRewardManager();
+	
 	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
-	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 	private CommandProjectStart commandProjectStart = Main.getInstance().getCommandProjectStart();
 	
@@ -149,14 +149,12 @@ public class KillEvents implements Listener {
 				
 				String killer = latestHitByPlayer.getAttacker();
 				String victim = latestHitByPlayer.getDefender();
-				PlayerJson killerJson = playerDbConnection.getPlayer(killer);
 				
 				int bounty = killDbConnection.getBounty(victim);
-				killerJson.addCollectableDiamonds(bounty);
-				playerDbConnection.addPlayer(killer, killerJson);
-				scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 				
-				killDbConnection.addKill(killDbConnection.getNextId(), new KillJson(killer, victim, LocalDateTime.now()));
+				rewardManager.addReward(killer, bounty, bounty*100, "Für den Kill an " + victim);
+				
+				killDbConnection.addKill(new KillJson(killer, victim, LocalDateTime.now()));
 				
 				sendDeathMessage(killer, victim, bounty);
 				Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
@@ -169,7 +167,7 @@ public class KillEvents implements Listener {
 		ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
 		killer = StringFormatter.firstLetterToUpper(killer);
 		victim = StringFormatter.firstLetterToUpper(victim);
-		Bukkit.broadcastMessage((teamColorKiller + killer) + (ChatColor.GOLD + " bekommt ") + (ChatColor.AQUA + "" + bounty + " Diamanten") + (ChatColor.GOLD + " für den Kill an ") + (teamColorVictim + victim));
+		Bukkit.broadcastMessage(teamColorKiller + killer + ChatColor.GOLD + " bekommt " + StringFormatter.diamondWord(bounty) + ChatColor.GOLD + " für den Kill an " + teamColorVictim + victim);
 	}
 	
 	private void removeUndroppableItems(List<ItemStack> loot) {

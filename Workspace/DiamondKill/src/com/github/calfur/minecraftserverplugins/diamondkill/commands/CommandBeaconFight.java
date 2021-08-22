@@ -58,7 +58,7 @@ public class CommandBeaconFight implements CommandExecutor {
 			case 4:
 				break;
 			default:
-				executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+				executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 				return false;
 		}
 		LocalDateTime startTime;

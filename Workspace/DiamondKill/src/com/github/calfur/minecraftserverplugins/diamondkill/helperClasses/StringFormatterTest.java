@@ -117,4 +117,129 @@ class StringFormatterTest {
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
+
+	@Test
+	void uncoleredDiamondWord_WhenAmountIsOne_WordIsSingular() {
+		//Arrange
+		int input = 1;
+		String expectedResult = "1 Diamant";
+		//Act
+		String actualResult = StringFormatter.uncoloredDiamondWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+	
+	@Test
+	void uncoleredDiamondWord_WhenAmountIsThree_WordIsPlural() {
+		//Arrange
+		int input = 3;
+		String expectedResult = "3 Diamanten";
+		//Act
+		String actualResult = StringFormatter.uncoloredDiamondWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	void diamondWord_WhenAmountIsOne_WordIsSingular() {
+		//Arrange
+		int input = 1;
+		String expectedResult = ChatColor.AQUA + "1 Diamant" + ChatColor.RESET;
+		//Act
+		String actualResult = StringFormatter.diamondWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+	
+	@Test
+	void diamondWord_WhenAmountIsThree_WordIsPlural() {
+		//Arrange
+		int input = 3;
+		String expectedResult = ChatColor.AQUA + "3 Diamanten" + ChatColor.RESET;
+		//Act
+		String actualResult = StringFormatter.diamondWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+	
+	@Test
+	void diamondWord_WhenAmountIsMinusOne_WordIsSingular() {
+		//Arrange
+		int input = -1;
+		String expectedResult = ChatColor.AQUA + "-1 Diamant" + ChatColor.RESET;
+		//Act
+		String actualResult = StringFormatter.diamondWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+	
+	@Test
+	void diamondWord_WhenAmountIsMinusThree_WordIsSingular() {
+		//Arrange
+		int input = -3;
+		String expectedResult = ChatColor.AQUA + "-3 Diamanten" + ChatColor.RESET;
+		//Act
+		String actualResult = StringFormatter.diamondWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	void singularOrPlural_WhenAmountIsOne_WordIsSingular() {
+		//Arrange
+		int input = 1;
+		String singular = "Singular";
+		String plural = "Plural";
+		String expectedResult = "Singular";
+		//Act
+		String actualResult = StringFormatter.singularOrPlural(input, singular, plural);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+	
+	@Test
+	void singularOrPlural_WhenAmountIsThree_WordIsPlural() {
+		//Arrange
+		int input = 3;
+		String singular = "Singular";
+		String plural = "Plural";
+		String expectedResult = "Plural";
+		//Act
+		String actualResult = StringFormatter.singularOrPlural(input, singular, plural);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	void uncoleredShortDiamondWord_WhenAmountIsOne_WordIsSingular() {
+		//Arrange
+		int input = 1;
+		String expectedResult = "1 Dia";
+		//Act
+		String actualResult = StringFormatter.uncoloredDiaWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	void uncoleredShortDiamondWord_WhenAmountIsThree_WordIsPlural() {
+		//Arrange
+		int input = 3;
+		String expectedResult = "3 Dias";
+		//Act
+		String actualResult = StringFormatter.uncoloredDiaWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+	
+	@Test
+	void uncoleredShortDiamondWord_WhenAmountIsZero_WordIsPlural() {
+		//Arrange
+		int input = 0;
+		String expectedResult = "0 Dias";
+		//Act
+		String actualResult = StringFormatter.uncoloredDiaWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
 }

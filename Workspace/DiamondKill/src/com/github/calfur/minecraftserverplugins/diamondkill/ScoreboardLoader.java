@@ -4,20 +4,24 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFight;
 import com.github.calfur.minecraftserverplugins.diamondkill.beaconFight.BeaconFightManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.ScoreboardHelper;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 
@@ -32,6 +36,7 @@ public class ScoreboardLoader {
 	private TopKiller topKiller;
 	private ArrayList<Attack> attacks = new ArrayList<Attack>();
 	private BossBarManager bossBarManager = new BossBarManager();
+	private static final boolean displayTeamPoints = true;
 	
 	public void setTopKiller(TopKiller topKiller) {
 		this.topKiller = topKiller;
@@ -90,46 +95,52 @@ public class ScoreboardLoader {
 		Objective objective = defaultScoreboard.registerNewObjective("Sidebar", "dummy", ChatColor.BOLD + "Beacon wars");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-		BeaconFight ongoingBeaconFight = beaconFightManager.getOngoingBeaconFight();
+		ArrayList<String> scoreTexts = new ArrayList<String>();
 		
+		// Beacon fight if existing
+		BeaconFight ongoingBeaconFight = beaconFightManager.getOngoingBeaconFight();
 		if(ongoingBeaconFight != null) {
-			Score score11 = objective.getScore("Beaconevent" + ChatColor.GRAY + ":");
-			score11.setScore(11);
-			Score score10 = objective.getScore("Ende" + ChatColor.GRAY + ": " + ChatColor.RESET + ChatColor.BOLD + ongoingBeaconFight.getEndTime().format(DateTimeFormatter.ofPattern("dd.MM HH:mm")));
-			score10.setScore(10);
-			Score score9 = objective.getScore("         ");
-			score9.setScore(9);
+			scoreTexts.add("Beaconevent");
+			scoreTexts.add("Ende" + ChatColor.GRAY + ": " + ChatColor.RESET + ChatColor.BOLD + ongoingBeaconFight.getEndTime().format(DateTimeFormatter.ofPattern("dd.MM HH:mm")));
+			scoreTexts.add("");
 		}else {
 			BeaconFight nextWaitingBeaconFight = beaconFightManager.getNextWaitingBeaconFight();
 			if(nextWaitingBeaconFight != null) {				
-				Score score11 = objective.getScore("Beaconevent" + ChatColor.GRAY + ":");
-				score11.setScore(11);
-				Score score10 = objective.getScore("Start" + ChatColor.GRAY + ": " + ChatColor.RESET + ChatColor.BOLD + nextWaitingBeaconFight.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM HH:mm")));
-				score10.setScore(10);
-				Score score9 = objective.getScore("         ");
-				score9.setScore(9);
+				scoreTexts.add("Beaconevent");
+				scoreTexts.add("Start" + ChatColor.GRAY + ": " + ChatColor.RESET + ChatColor.BOLD + nextWaitingBeaconFight.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM HH:mm")));
+				scoreTexts.add("");
 			}
 		}
+
+		// Team points
+		if(displayTeamPoints) {			
+			scoreTexts.add("Punktestand");
+			scoreTexts.add(getTeamPointsText(0));
+			scoreTexts.add(getTeamPointsText(1));
+			scoreTexts.add(getTeamPointsText(2));
+			scoreTexts.add("");
+		}else {
+			scoreTexts.add("");
+			scoreTexts.add("");
+			scoreTexts.add("");
+			scoreTexts.add("");
+			scoreTexts.add("");
+		}
 		
-		Score score8 = objective.getScore("Höchste K/D" + ChatColor.GRAY + ":");
-		score8.setScore(8);
-		Score score7 = objective.getScore(topKillerScoreText());
-		score7.setScore(7);
-		Score score6 = objective.getScore("      ");
-		score6.setScore(6);
-		Score score5 = objective.getScore("Aktuelle Angriffe" + ChatColor.GRAY + ":");
-		score5.setScore(5);
-		Score score4 = objective.getScore(attackScoreText(0, 4));
-		score4.setScore(4);
-		Score score3 = objective.getScore(attackScoreText(1, 3));
-		score3.setScore(3);
-		Score score2 = objective.getScore(attackScoreText(2, 2));
-		score2.setScore(2);
-		Score score1 = objective.getScore(attackScoreText(3, 1));
-		score1.setScore(1);
-		Score score0 = objective.getScore(attackScoreText(4, 0));
-		score0.setScore(0);			
+		// TopKiller
+		scoreTexts.add("Höchste K/D");
+		scoreTexts.add(topKillerScoreText());
+		scoreTexts.add("");
+		
+		// Current attacks
+		scoreTexts.add("Aktuelle Angriffe");
+		scoreTexts.add(attackScoreText(0));
+		scoreTexts.add(attackScoreText(1));
+		scoreTexts.add(attackScoreText(2));
+		
+		ScoreboardHelper.addScoreRows(objective, scoreTexts);
 	}
+
 	
 	private void reloadTabList(Player player) {
 		String name = player.getName();
@@ -195,20 +206,53 @@ public class ScoreboardLoader {
 	}
 
 	private String topKillerScoreText() {
-		if(!topKiller.areMultipleTopKiller()) {			
-			return StringFormatter.firstLetterToUpper(topKiller.getName()) + " " + ChatColor.AQUA + topKiller.getDiamondValue() + " Dias";
+		if(!topKiller.areMultipleTopKiller()) {
+			PlayerJson playerJson = playerDbConnection.getPlayer(topKiller.getName());
+			ChatColor teamColor = ChatColor.RESET;
+			if(playerJson != null) {				
+				teamColor = teamDbConnection.getTeam(playerJson.getTeamId()).getColor();
+			}
+			return teamColor + StringFormatter.firstLetterToUpper(topKiller.getName()) + ChatColor.GRAY + ": " + StringFormatter.diaWord(topKiller.getDiamondValue());
 		}else {
 			return "-";
 		}
 	}
 	
-	private String attackScoreText(int position, int scoreNumber) {
+	private String attackScoreText(int position) {
 		if(attacks.size() > position) {
 			Attack attack = attacks.get(position);
 			Team attacker = attack.getAttacker();
 			Team defender = attack.getDefender();
 			return (attacker.getColor() + "Team " + attacker.getId()) + (ChatColor.RESET + " -> ") + (defender.getColor() + "Team " + defender.getId());
 		}
-		return StringFormatter.repeatString(" ", scoreNumber);
+		return "";
+	}
+	
+	private String getTeamPointsText(int position) {
+		HashMap<String, TeamJson> teams = teamDbConnection.getTeams();
+		if(teams.size() > position) {
+			ArrayList<String> teamIds = new ArrayList<>();
+			teamIds.addAll(teams.keySet());
+			teamIds.sort(new Comparator<String>() {
+
+				@Override
+				public int compare(String firstTeamId, String secondTeamId) {
+					TeamJson firstTeamJson = teams.get(firstTeamId);
+					TeamJson secondTeamJson = teams.get(secondTeamId);
+					if(firstTeamJson.getPoints() < secondTeamJson.getPoints()) {
+						return 1;
+					}else if(firstTeamJson.getPoints() == secondTeamJson.getPoints()) {						
+						return 0;
+					}
+					return -1;
+				}
+				
+			});
+			
+			String teamId = teamIds.get(position);
+			TeamJson teamJson = teams.get(teamId);
+			return teamJson.getColor() + "Team " + teamId + ChatColor.GRAY + ": " + ChatColor.RESET + teamJson.getPoints();
+		}
+		return "";
 	}
 }

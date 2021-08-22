@@ -21,6 +21,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.DeathBanPluginInteraction;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerModeManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.RewardManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Team;
 import com.github.calfur.minecraftserverplugins.diamondkill.customTasks.TaskScheduler;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
@@ -32,6 +33,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.String
 public class BeaconFight {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	private LocalDateTime startTime;
 	private BeaconFightManager manager;
@@ -99,7 +101,7 @@ public class BeaconFight {
 	@Nullable
 	public Player getAttackerOfBeaconRaidByDefenderTeam(int defenderTeamId) {
 		for (BeaconRaid beaconRaid : beaconRaids) {
-			if(beaconRaid.getDefender().getId() == defenderTeamId) {
+			if(beaconRaid.getDefenderTeam().getId() == defenderTeamId) {
 				return Bukkit.getPlayer(beaconRaid.getDestructorName());
 			}
 		}
@@ -124,8 +126,8 @@ public class BeaconFight {
 			BeaconManager.removeOneBeaconFromInventory(placer);
 			return;
 		}
-		addLostDefense(beaconRaid.getDefender().getId());
-		beaconRaid.addBeaconPlacement(attacker, placer);
+		addLostDefense(beaconRaid.getDefenderTeam().getId());
+		beaconRaid.addBeaconPlacement(placer);
 	}
 
 	public void removeBeaconRaid(BeaconRaid beaconRaid) {
@@ -199,7 +201,7 @@ public class BeaconFight {
 	private List<BeaconRaid> getBeaconRaidsFromTeam(Team attackerTeam) {
 		List<BeaconRaid> beaconRaidsFromTeam = new ArrayList<BeaconRaid>();
 		for (BeaconRaid beaconRaid : beaconRaids) {
-			if(beaconRaid.getAttacker().getId() == attackerTeam.getId()) {
+			if(beaconRaid.getAttackerTeam().getId() == attackerTeam.getId()) {
 				beaconRaidsFromTeam.add(beaconRaid);
 			}
 		}
@@ -243,10 +245,10 @@ public class BeaconFight {
 			int reward = defenseReward.getValue();
 			TeamJson teamJson = teamDbConnection.getTeam(teamId);
 			String teamLeaderName = teamJson.getTeamLeader();
-			PlayerJson playerJson = playerDbConnection.getPlayer(teamLeaderName);
-			if(playerJson != null) {				
-				playerJson.addCollectableDiamonds(reward);
-				playerDbConnection.addPlayer(teamLeaderName, playerJson);
+			if(playerDbConnection.existsPlayer(teamLeaderName)) {				
+				if(reward > 0) {					
+					rewardManager.addReward(teamLeaderName, reward, 0, "Verteidigerbonus nach dem Beaconevent");
+				}
 			}else {
 				Bukkit.broadcastMessage(StringFormatter.error("Der Teamleader " + teamLeaderName + " von ") + teamJson.getColor() + "Team " + teamId + StringFormatter.error(" wurde noch nicht registriert"));
 			}

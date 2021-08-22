@@ -11,7 +11,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.PlayerKicker;
-import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
+import com.github.calfur.minecraftserverplugins.diamondkill.RewardManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.InventoryManagement;
@@ -20,7 +20,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.String
 public class CommandCollect implements CommandExecutor {
 
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
-	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
+	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -41,43 +41,60 @@ public class CommandCollect implements CommandExecutor {
 					case "diamant":
 					case "dia":
 					case "dias":
-						Material material = Material.DIAMOND;
-						return addItemsToInventory(executor, material, amount);
+						return tryToWithdrawDiamonds(executor, amount);
 					default:
 						executor.sendMessage(StringFormatter.error(type + " ist kein verfügbares Item"));
 						return false;
 				}
 			}else {
-				executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+				executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 				return false;
 			}
 		}
 		return false;
 	}
 
-	private boolean addItemsToInventory(Player executor, Material material, int amount) {
+	private boolean tryToWithdrawDiamonds(Player executor, int amount) {
 		PlayerInventory inventory = executor.getInventory();
 		if(InventoryManagement.isInventoryFull(inventory)) {
 			executor.sendMessage(StringFormatter.error("Keinen freien Inventar slot gefunden"));
 			return false;
 		}
+		
 		if(!playerDbConnection.existsPlayer(executor.getName())) {
 			Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), new PlayerKicker(executor));	
 			return false;
 		}
+		
 		PlayerJson playerJson = playerDbConnection.getPlayer(executor.getName());
 		int availableDiamonds = playerJson.getCollectableDiamonds();
 		if(availableDiamonds < amount) {
-			executor.sendMessage(StringFormatter.error("Du kannst momentan nicht mehr als ") + availableDiamonds + StringFormatter.error(" Diamanten einsammeln. Kille Leute um mehr zu erhalten."));
+			executor.sendMessage(StringFormatter.error("Du kannst momentan nicht mehr als ") + StringFormatter.uncoloredDiamondWord(availableDiamonds) + StringFormatter.error(" einsammeln. Kille Leute um mehr zu erhalten."));
 			return false;
 		}
-		playerJson.removeCollectableDiamonds(amount);
-		playerDbConnection.addPlayer(executor.getName(), playerJson);
-		scoreboardLoader.reloadScoreboardFor(executor);
-		ItemStack itemStack = new ItemStack(material, amount);
-		inventory.addItem(itemStack);
-		executor.sendMessage(ChatColor.AQUA + "" + amount + " Diamanten " + ChatColor.GREEN + "wurden zu deinem Inventar hinzugefügt");
+		if(amount <= 0) {
+			executor.sendMessage(StringFormatter.error("Wähle eine Anzahl welche mindestens 1 ist"));
+			return false;
+		}
+		if(amount > 64) {
+			executor.sendMessage(StringFormatter.error("Du kannst maximal 64 Diamanten auf einmal einsammeln"));
+			return false;
+		}
+		
+		withdrawDiamonds(executor, playerJson, amount);
 		return true;
+	}
+
+	private void withdrawDiamonds(Player player, PlayerJson playerJson, int amount) {
+		rewardManager.addReward(player.getName(), -amount, 0, StringFormatter.uncoloredDiamondWord(amount) + " mit /collect ausgezahlt");
+		
+		addDiamondsToInventory(player, amount);
+	}
+
+	private void addDiamondsToInventory(Player player, int amount) {
+		ItemStack itemStack = new ItemStack(Material.DIAMOND, amount);
+		player.getInventory().addItem(itemStack);
+		player.sendMessage(StringFormatter.diamondWord(amount) + ChatColor.GREEN + StringFormatter.singularOrPlural(amount, " wurde", " wurden") + " zu deinem Inventar hinzugefügt");
 	}
 
 }

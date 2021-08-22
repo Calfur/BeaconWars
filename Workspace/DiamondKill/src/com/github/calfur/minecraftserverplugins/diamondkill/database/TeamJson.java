@@ -13,6 +13,7 @@ public class TeamJson implements ConfigurationSerializable {
 	private ChatColor color;
 	private Location beaconLocation;
 	private String teamLeader;
+	private int points;
 
 	public ChatColor getColor() {
 		return color;
@@ -37,11 +38,31 @@ public class TeamJson implements ConfigurationSerializable {
 	public void setTeamLeader(String teamLeader) {
 		this.teamLeader = teamLeader;
 	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void addPoints(int amount) {
+		points += amount;
+	}
+	
+	public void removePoints(int amount) {
+		points -= amount;
+	}
 	
 	public TeamJson(ChatColor color, String teamLeader, Location beaconLocation) {
 		this.teamLeader = teamLeader;
 		this.color = color;
 		this.beaconLocation = beaconLocation;
+		this.points = 0;
+	}
+	
+	public TeamJson(ChatColor color, String teamLeader, Location beaconLocation, int points) {
+		this.teamLeader = teamLeader;
+		this.color = color;
+		this.beaconLocation = beaconLocation;
+		this.points = points;
 	}
 
 	@Override
@@ -53,6 +74,7 @@ public class TeamJson implements ConfigurationSerializable {
 		data.put("beaconLocation_x", this.beaconLocation.getX());
 		data.put("beaconLocation_y", this.beaconLocation.getY());
 		data.put("beaconLocation_z", this.beaconLocation.getZ());
+		data.put("points", this.points);
 		return data;
 	}
 	
@@ -66,11 +88,12 @@ public class TeamJson implements ConfigurationSerializable {
 		return new TeamJson(
 				ChatColor.valueOf((String) args.get("color")),
 				(String) args.get("teamLeader"),
-				location
+				location,
+				NumberConversions.toInt(args.get("points"))
 			);
 	}
 
 	public static TeamJson getSpectatorTeam() {
-		return new TeamJson(ChatColor.GRAY, "NULL", new Location(null, 0, 0, 0));
+		return new TeamJson(ChatColor.GRAY, "NULL", new Location(null, 0, 0, 0), 0);
 	}
 }

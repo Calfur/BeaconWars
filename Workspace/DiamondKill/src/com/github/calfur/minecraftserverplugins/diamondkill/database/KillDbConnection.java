@@ -4,71 +4,53 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class KillDbConnection extends DbConnection<KillData> {
+public class KillDbConnection extends DbConnection<KillJson> {
 
-	private HashMap<String, KillJson> kills = new HashMap<>();
-	
 	public KillDbConnection() {
-		super("kill.json", new KillData(), KillData.class);
+		super("kill.json");
 	}
-		
-	@SuppressWarnings("unchecked")
-	public void loadConfig() {
-		if(folder.exists()) {
-			if(file.exists()) {
-				KillData killData = read();
-				if(killData != null) {
-					killData.getData().entrySet().forEach(entry -> {						
-						kills.put(entry.getKey(), KillJson.deserialize((Map<String, Object>) entry.getValue()));
-						data.getData().put(entry.getKey(), entry.getValue());
-					});
-				}
-			}else {
-				createFile().saveConfig().loadConfig();
-			}
-		}else {
-			createFolder().loadConfig();
-		}
+
+	@Override
+	protected KillJson deserialize(Map<String, Object> serializedJson) {
+		return KillJson.deserialize((Map<String, Object>) serializedJson);
 	}
 		
 	public boolean existsKill(int killNumber) {
 		String key = Integer.toString(killNumber);
-		if(kills != null && kills.get(key) != null) {
+		if(jsons != null && jsons.get(key) != null) {
 			return true;
 		}
 		return false;
 	}
 	
-	public KillDbConnection addKill(int killNumber, KillJson value) {
-		String key = Integer.toString(killNumber);
-		data.getData().put(key, value.serialize());
-		kills.put(key, value);
-		gson.toJson(data, writer());
-		saveConfig();
-		return this;
+	/**
+	 * 
+	 * @param killJson
+	 * @return kill id
+	 */
+	public String addKill(KillJson killJson) {
+		String id = Integer.toString(getNextId());
+		addJson(id, killJson);
+		return id;
 	}	
 	
-	public KillDbConnection removeKill(int killNumber) {
-		String key = Integer.toString(killNumber);
-		data.getData().remove(key);
-		kills.remove(key);
-		gson.toJson(data, writer());
-		saveConfig();
-		return this;
+	public void removeKill(int killId) {
+		String id = Integer.toString(killId);
+		removeJson(id);
 	}
 
-	public KillJson getKill(int killNumber) {
-		String key = Integer.toString(killNumber);
-		return kills.get(key.toLowerCase());
+	public KillJson getKill(int killId) {
+		String id = Integer.toString(killId);
+		return jsons.get(id.toLowerCase());
 	}
 	
 	public HashMap<String, KillJson> getKills() {
-		return kills;
+		return jsons;
 	}
 
-	public int getNextId() {
+	private int getNextId() {
 		int heighestId = 0;
-		for (Entry<String, Object> kill : data.getData().entrySet()) {
+		for (Entry<String, KillJson> kill : jsons.entrySet()) {
 			int id = Integer.parseInt(kill.getKey());
 			if(heighestId < id) {
 				heighestId = id;
@@ -80,7 +62,7 @@ public class KillDbConnection extends DbConnection<KillData> {
 	public int getAmountOfKills(String killer) {
 		killer = killer.toLowerCase();
 		int result = 0;
-		for (Entry<String, KillJson> kill : kills.entrySet()) {
+		for (Entry<String, KillJson> kill : jsons.entrySet()) {
 			String currentKiller = kill.getValue().getKiller();
 			if(currentKiller.equals(killer)) {
 				result++;
@@ -92,7 +74,7 @@ public class KillDbConnection extends DbConnection<KillData> {
 	public int getAmountOfDeaths(String victim) {
 		victim = victim.toLowerCase();
 		int result = 0;
-		for (Entry<String, KillJson> kill : kills.entrySet()) {
+		for (Entry<String, KillJson> kill : jsons.entrySet()) {
 			String currentVictim = kill.getValue().getVictim();
 			if(currentVictim.equals(victim)) {
 				result++;
@@ -112,5 +94,9 @@ public class KillDbConnection extends DbConnection<KillData> {
 			result = 1;
 		}
 		return result;
+	}
+
+	public int getAmountOfAvailablePages() {
+		return (int) Math.ceil((getNextId()-1) / 10.0);
 	}
 }

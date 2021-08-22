@@ -1,29 +1,33 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
-import org.bukkit.entity.Player;
-
-import com.github.calfur.minecraftserverplugins.diamondkill.Main;
-import com.github.calfur.minecraftserverplugins.diamondkill.TopKiller;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
-import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
-import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import com.github.calfur.minecraftserverplugins.diamondkill.Main;
+import com.github.calfur.minecraftserverplugins.diamondkill.RewardManager;
+import com.github.calfur.minecraftserverplugins.diamondkill.TopKiller;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.KillDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.KillJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
+import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
 
 public class CommandKill implements CommandExecutor {
 
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
+	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -35,7 +39,7 @@ public class CommandKill implements CommandExecutor {
 					case "info":
 						return sendKillInfo(executor, args);
 					case "list":
-						return sendKillList(executor, args);
+						return killList(executor, args);
 					case "delete":
 					case "remove":
 						if(executor.hasPermission("admin")) {	
@@ -60,23 +64,68 @@ public class CommandKill implements CommandExecutor {
 		return false;
 	}
 
-	private boolean sendKillList(Player executor, String[] args) {
-		if(args.length != 1) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+	private boolean killList(Player executor, String[] args) {
+		int page;
+		int lastAvailablePage = killDbConnection.getAmountOfAvailablePages();
+		if(args.length == 1) {
+			page = lastAvailablePage;
+		}else if (args.length == 2) {
+			try {
+				page = Integer.parseInt(args[1]);
+			}catch (Exception e) {
+				executor.sendMessage(StringFormatter.error("Der Parameter Page muss dem typ int entsprechen"));
+				return false;
+			}
+			if(page < 1 || page > lastAvailablePage) {
+				executor.sendMessage(StringFormatter.error("Seite " + page + " wurde nicht gefunden. Es sind " + lastAvailablePage + " Seiten verfügbar"));
+				return false;
+			}
+		}else {		
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
-		Map<String, KillJson> kills = killDbConnection.getKills();
-		executor.sendMessage(ChatColor.BOLD + "" + kills.size() + " Kills gefunden:");
-		for (Entry<String, KillJson> kill : kills.entrySet()) {
-			executor.sendMessage(ChatColor.RESET + "Id: " + kill.getKey() + " Killer: " + StringFormatter.firstLetterToUpper(kill.getValue().getKiller()) + " Opfer: " + StringFormatter.firstLetterToUpper(kill.getValue().getVictim()));
-		}
+		sendKillList(executor, page);
 		return true;
+	}
+
+	private void sendKillList(Player executor, int page) {
+		executor.sendMessage(ChatColor.BOLD + "Seite " + page + " von " + killDbConnection.getAmountOfAvailablePages() + ":");
+		
+		int firstKillToShow = page * 10 - 9;
+		int lastKillToShow = page * 10;
+		for (int i = firstKillToShow; i <= lastKillToShow; i++) {
+			if(killDbConnection.existsKill(i)) {	
+				KillJson kill = killDbConnection.getKill(i);
+
+				ChatColor killerColor = getPlayerColor(kill.getKiller());
+				ChatColor victimColor = getPlayerColor(kill.getVictim());
+				
+				executor.sendMessage(
+						ChatColor.GOLD + "Id: " + ChatColor.RESET + i + 
+						ChatColor.GOLD + ", Killer: " + killerColor + StringFormatter.firstLetterToUpper(kill.getKiller()) + 
+						ChatColor.GOLD + ", Opfer: " + victimColor + StringFormatter.firstLetterToUpper(kill.getVictim()));
+			}
+		}
+	}
+
+	private ChatColor getPlayerColor(String playerName) {
+		ChatColor playerColor = ChatColor.WHITE;
+		PlayerJson playerJson = playerDbConnection.getPlayer(playerName);
+		if(playerJson == null) {
+			return playerColor;
+		}
+		TeamJson playerTeam = teamDbConnection.getTeam(playerJson.getTeamId());
+		if(playerTeam == null) {				
+			return playerColor;
+		}
+		playerColor = playerTeam.getColor();			
+		return playerColor;
 	}
 
 
 	private boolean sendKillInfo(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int killId;
@@ -100,7 +149,7 @@ public class CommandKill implements CommandExecutor {
 	
 	private boolean deleteKill(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int killId;
@@ -121,42 +170,38 @@ public class CommandKill implements CommandExecutor {
 	}
 	
 	private boolean addKill(Player executor, String[] args) {
-		if(args.length != 3) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+		if(args.length < 4) {
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
-		String killer;
-		String victim;
+		String killer = args[1];
+		String victim = args[2];
+		ArrayList<String> reasonWords = new ArrayList<>(Arrays.asList(args));
+		reasonWords.remove(0);
+		reasonWords.remove(0);
+		reasonWords.remove(0);
+		String reason = String.join(" ", reasonWords);
 		LocalDateTime dateTime = LocalDateTime.now();
-		try {
-			killer = args[1];
-			victim = args[2];
-		}catch(NumberFormatException e) {
-			executor.sendMessage(StringFormatter.error("Der Kill Id Parameter muss dem Typ Int entsprechen"));
-			return false;
-		}
+		
 		if(!playerDbConnection.existsPlayer(killer)) {
 			executor.sendMessage(StringFormatter.error("Der Killer " + killer + " ist nicht registriert"));
 			return false;
 		}
+		
 		if(!playerDbConnection.existsPlayer(victim)) {
 			executor.sendMessage(StringFormatter.error("Das Opfer " + victim + " ist nicht registriert"));
 			return false;
 		}
-		int killId = killDbConnection.getNextId();
-		
-
-		PlayerJson killerJson = playerDbConnection.getPlayer(killer);
 		
 		int bounty = killDbConnection.getBounty(victim);
-		killerJson.addCollectableDiamonds(bounty);
-		playerDbConnection.addPlayer(killer, killerJson);
-
-		killDbConnection.addKill(killId, new KillJson(killer, victim, dateTime));
+		
+		rewardManager.addReward(killer, bounty, bounty*100, "Für den manuell hinzugefügten Kill an " + victim + ", " + reason);
+		
+		String killId = killDbConnection.addKill(new KillJson(killer, victim, dateTime));
 		
 		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
 
-		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + ChatColor.RESET + bounty + " Diamanten Kompfgeld an " + killer + " ausgezahlt;");
+		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + ChatColor.RESET + bounty + " Diamanten Kompfgeld an " + killer + " ausgezahlt");
 		return true;
 	}
 }

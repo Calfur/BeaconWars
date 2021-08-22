@@ -33,7 +33,7 @@ public class TabCompleterPlayerKill extends TabCompleterBase {
 				completions.add("delete");
 			}
 			break;
-		case 2: // Id or Killer
+		case 2: // Id | Killer | Page
 			switch (previousParameters[0]) {
 			case "add": // Killer
 				if(!sender.hasPermission("Admin")) {
@@ -53,6 +53,12 @@ public class TabCompleterPlayerKill extends TabCompleterBase {
 					completions.add(kill.getKey());
 				}
 				break;
+			case "list":
+				int lastAvailablePage = killDbConnection.getAmountOfAvailablePages();
+				for(int i = 1; i <= lastAvailablePage; i++) {
+					completions.add(Integer.toString(i));
+				}
+				break;
 			}
 			break;
 		case 3: // Victim
@@ -66,6 +72,13 @@ public class TabCompleterPlayerKill extends TabCompleterBase {
 					completions.add(name);
 				}
 			}
+			break;
+		case  4: // Reason
+			if(!sender.hasPermission("Admin") 
+					|| !previousParameters[0].equalsIgnoreCase("add")) {
+				break;
+			}
+			completions.add("[Grund]");
 			break;
 		}
 		return completions;

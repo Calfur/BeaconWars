@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -14,6 +15,8 @@ import org.bukkit.entity.Player;
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
@@ -21,6 +24,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.String
 public class CommandTeam implements CommandExecutor {
 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	@Override
@@ -67,7 +71,7 @@ public class CommandTeam implements CommandExecutor {
 
 	private boolean sendTeamList(Player executor, String[] args) {
 		if(args.length != 1) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		Map<String, TeamJson> teams = teamDbConnection.getTeams();
@@ -76,14 +80,14 @@ public class CommandTeam implements CommandExecutor {
 			int x = team.getValue().getBeaconLocation().getBlockX();
 			int y = team.getValue().getBeaconLocation().getBlockY();
 			int z = team.getValue().getBeaconLocation().getBlockZ();
-			executor.sendMessage(team.getValue().getColor() + "Team " + team.getKey() + ChatColor.RESET + ": Beacon Koords: (x: " + x + " y: " + y + " z: " + z + ")");
+			executor.sendMessage(team.getValue().getColor() + "Team " + team.getKey() + ChatColor.RESET + ": Beacon Koords: (x: " + x + " y: " + y + " z: " + z + ") Punkte: " + team.getValue().getPoints());
 		}
 		return true;
 	}
 
 	private boolean sendTeamInfo(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -102,13 +106,14 @@ public class CommandTeam implements CommandExecutor {
 		executor.sendMessage(ChatColor.RESET + "Name: " + ChatColor.BOLD + "Team " + teamNumber); 
 		executor.sendMessage(ChatColor.RESET + "Teamleader: " + teamJson.getTeamLeader()); 
 		executor.sendMessage(ChatColor.RESET + "Farbe: " + teamJson.getColor() + teamJson.getColor().name());
+		executor.sendMessage(ChatColor.RESET + "Punkte: " + teamJson.getPoints());
 		executor.sendMessage(ChatColor.RESET + "Beacon Position: XYZ= " + beaconLocation.getBlockX() + " / " + beaconLocation.getBlockY() + " / " + beaconLocation.getBlockZ());
 		return true;
 	}
 	
 	private boolean deleteTeam(Player executor, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -126,16 +131,24 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(StringFormatter.error("Dieses Team ist nicht registriert"));
 			return false;
 		}
+		HashMap<String, PlayerJson> players = playerDbConnection.getPlayers();
+		for (Entry<String, PlayerJson> player : players.entrySet()) {
+			if(player.getValue().getTeamId() == teamNumber) {
+				executor.sendMessage(StringFormatter.error("Dieses Team hat noch zugewiesene Spieler und kann darum nicht gelöscht werden. Entferne zuerst alle Mitglieder dieses Teams."));
+				return false;
+			}
+		}
 		TeamJson team = teamDbConnection.getTeam(teamNumber);
 		BeaconManager.removeLevelOneBeacon(team.getBeaconLocation());
 		teamDbConnection.removeTeam(teamNumber);
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " gelöscht.");
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
 	
 	private boolean editTeam(Player executor, String[] args) {
 		if(args.length != 7) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -186,7 +199,7 @@ public class CommandTeam implements CommandExecutor {
 		BeaconManager.removeLevelOneBeacon(oldTeam.getBeaconLocation());
 		Location beaconLocation = new Location(executor.getWorld(), beaconLocationX, beaconLocationY, beaconLocationZ);
 		BeaconManager.placeLevelOneBeacon(beaconLocation);
-		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));
+		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation, oldTeam.getPoints()));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " editiert.");
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;
@@ -194,7 +207,7 @@ public class CommandTeam implements CommandExecutor {
 	
 	private boolean addTeam(Player executor, String[] args) {
 		if(args.length != 7) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige anzahl Parameter"));
+			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int teamNumber;
@@ -243,6 +256,7 @@ public class CommandTeam implements CommandExecutor {
 		BeaconManager.placeLevelOneBeacon(beaconLocation);
 		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " registriert.");
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
 	

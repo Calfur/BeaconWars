@@ -47,9 +47,13 @@ public class CommandRegistrator {
 		// /nametag
 		plugin.getCommand("namenametag").setExecutor(new CommandNameNametag());
 		plugin.getCommand("namenametag").setTabCompleter(new TabCompleterNameNametag());
-		
+
 		// /compass
 		plugin.getCommand("compass").setExecutor(new CommandCompass());
 		plugin.getCommand("compass").setTabCompleter(new TabCompleterCompass());
+		
+		// /transaction
+		plugin.getCommand("transaction").setExecutor(new CommandTransaction());
+		plugin.getCommand("transaction").setTabCompleter(new TabCompleterTransaction());
 	}
 }

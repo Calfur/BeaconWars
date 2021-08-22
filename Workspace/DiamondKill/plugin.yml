@@ -17,7 +17,7 @@ commands:
     usage: /<command> [add | edit | info | delete | list] Teamnummer Farbe Beacon_x Beacon_y Beacon_z TeamLeader
   playerkill:
     description: Interagiert mit der Killdatenbank
-    usage: /<command> [add | info | delete | list] [Id] [Killer] [Opfer]
+    usage: /<command> [add | info | delete | list] [id | page] [Killer] [Opfer] [Grund]
   beaconfight:
     description: Zum hinzufuegen oder loeschen von Becon Events
     usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]
@@ -39,8 +39,13 @@ commands:
     description: Benennt nametags welche in der Main-Hand gehalten werden
     usage: /<command> Name
   compass:
+    aliases:
+    - kompass
     description: Erhalte einen Kompass mit dem ausgewaehlten Ziel
     usage: /<command> [Base | Spawn | Beacon] [TeamId]
+  transaction: 
+    description: Interagiert mit der Transaktionsdatenbank
+    usage: /<command> [info | list | add | reverse] [Id | page | diamonds | points] [amount] [player] [reason]
 permissions:
   admin:
     description: Erlaubt das benutzen von allen DiamondKill commands

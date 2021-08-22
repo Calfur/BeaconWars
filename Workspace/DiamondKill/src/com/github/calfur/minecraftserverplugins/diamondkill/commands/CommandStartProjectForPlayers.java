@@ -37,7 +37,7 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 						return false;
 					}
 				}else {
-					executor.sendMessage(StringFormatter.error("Falsche Anzahl Parameter"));
+					executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 					return false;
 				}
 			}else {
