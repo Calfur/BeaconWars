@@ -72,6 +72,14 @@ public class CommandCollect implements CommandExecutor {
 			executor.sendMessage(StringFormatter.error("Du kannst momentan nicht mehr als ") + StringFormatter.uncoloredDiamondWord(availableDiamonds) + StringFormatter.error(" einsammeln. Kille Leute um mehr zu erhalten."));
 			return false;
 		}
+		if(amount <= 0) {
+			executor.sendMessage(StringFormatter.error("Wähle eine Anzahl welche mindestens 1 ist"));
+			return false;
+		}
+		if(amount > 64) {
+			executor.sendMessage(StringFormatter.error("Du kannst maximal 64 Diamanten auf einmal einsammeln"));
+			return false;
+		}
 		
 		withdrawDiamonds(executor, playerJson, amount);
 		return true;
