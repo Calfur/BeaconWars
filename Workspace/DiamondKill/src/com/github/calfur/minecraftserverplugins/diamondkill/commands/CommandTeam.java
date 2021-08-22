@@ -1,5 +1,6 @@
 package com.github.calfur.minecraftserverplugins.diamondkill.commands;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -14,6 +15,8 @@ import org.bukkit.entity.Player;
 import com.github.calfur.minecraftserverplugins.diamondkill.BeaconManager;
 import com.github.calfur.minecraftserverplugins.diamondkill.Main;
 import com.github.calfur.minecraftserverplugins.diamondkill.ScoreboardLoader;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerDbConnection;
+import com.github.calfur.minecraftserverplugins.diamondkill.database.PlayerJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamDbConnection;
 import com.github.calfur.minecraftserverplugins.diamondkill.database.TeamJson;
 import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.StringFormatter;
@@ -21,6 +24,7 @@ import com.github.calfur.minecraftserverplugins.diamondkill.helperClasses.String
 public class CommandTeam implements CommandExecutor {
 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
+	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
 	@Override
@@ -127,10 +131,18 @@ public class CommandTeam implements CommandExecutor {
 			executor.sendMessage(StringFormatter.error("Dieses Team ist nicht registriert"));
 			return false;
 		}
+		HashMap<String, PlayerJson> players = playerDbConnection.getPlayers();
+		for (Entry<String, PlayerJson> player : players.entrySet()) {
+			if(player.getValue().getTeamId() == teamNumber) {
+				executor.sendMessage(StringFormatter.error("Dieses Team hat noch zugewiesene Spieler und kann darum nicht gelöscht werden. Entferne zuerst alle Mitglieder dieses Teams."));
+				return false;
+			}
+		}
 		TeamJson team = teamDbConnection.getTeam(teamNumber);
 		BeaconManager.removeLevelOneBeacon(team.getBeaconLocation());
 		teamDbConnection.removeTeam(teamNumber);
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " gelöscht.");
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
 	
@@ -244,6 +256,7 @@ public class CommandTeam implements CommandExecutor {
 		BeaconManager.placeLevelOneBeacon(beaconLocation);
 		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " registriert.");
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
 	
