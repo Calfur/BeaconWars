@@ -76,7 +76,7 @@ public class CommandTeam implements CommandExecutor {
 			int x = team.getValue().getBeaconLocation().getBlockX();
 			int y = team.getValue().getBeaconLocation().getBlockY();
 			int z = team.getValue().getBeaconLocation().getBlockZ();
-			executor.sendMessage(team.getValue().getColor() + "Team " + team.getKey() + ChatColor.RESET + ": Beacon Koords: (x: " + x + " y: " + y + " z: " + z + ")");
+			executor.sendMessage(team.getValue().getColor() + "Team " + team.getKey() + ChatColor.RESET + ": Beacon Koords: (x: " + x + " y: " + y + " z: " + z + ") Punkte: " + team.getValue().getPoints());
 		}
 		return true;
 	}
@@ -102,6 +102,7 @@ public class CommandTeam implements CommandExecutor {
 		executor.sendMessage(ChatColor.RESET + "Name: " + ChatColor.BOLD + "Team " + teamNumber); 
 		executor.sendMessage(ChatColor.RESET + "Teamleader: " + teamJson.getTeamLeader()); 
 		executor.sendMessage(ChatColor.RESET + "Farbe: " + teamJson.getColor() + teamJson.getColor().name());
+		executor.sendMessage(ChatColor.RESET + "Punkte: " + teamJson.getPoints());
 		executor.sendMessage(ChatColor.RESET + "Beacon Position: XYZ= " + beaconLocation.getBlockX() + " / " + beaconLocation.getBlockY() + " / " + beaconLocation.getBlockZ());
 		return true;
 	}
@@ -186,7 +187,7 @@ public class CommandTeam implements CommandExecutor {
 		BeaconManager.removeLevelOneBeacon(oldTeam.getBeaconLocation());
 		Location beaconLocation = new Location(executor.getWorld(), beaconLocationX, beaconLocationY, beaconLocationZ);
 		BeaconManager.placeLevelOneBeacon(beaconLocation);
-		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation));
+		teamDbConnection.addTeam(teamNumber, new TeamJson(chatColor, teamLeader, beaconLocation, oldTeam.getPoints()));
 		executor.sendMessage(ChatColor.GREEN + "Team " + teamNumber + " editiert.");
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
 		return true;

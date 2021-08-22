@@ -39,6 +39,8 @@ commands:
     description: Benennt nametags welche in der Main-Hand gehalten werden
     usage: /<command> Name
   compass:
+    aliases:
+    - kompass
     description: Erhalte einen Kompass mit dem ausgewaehlten Ziel
     usage: /<command> [Base | Spawn | Beacon] [TeamId]
   transaction: 
