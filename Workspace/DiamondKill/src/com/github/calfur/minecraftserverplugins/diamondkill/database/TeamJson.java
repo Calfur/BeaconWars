@@ -44,11 +44,11 @@ public class TeamJson implements ConfigurationSerializable {
 	}
 
 	public void addPoints(int amount) {
-		points += amount;		
+		points += amount;
 	}
 	
 	public void removePoints(int amount) {
-		points -= amount;		
+		points -= amount;
 	}
 	
 	public TeamJson(ChatColor color, String teamLeader, Location beaconLocation) {
