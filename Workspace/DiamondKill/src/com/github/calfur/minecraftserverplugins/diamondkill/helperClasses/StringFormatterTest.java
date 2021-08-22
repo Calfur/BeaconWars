@@ -209,4 +209,37 @@ class StringFormatterTest {
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
+
+	@Test
+	void uncoleredShortDiamondWord_WhenAmountIsOne_WordIsSingular() {
+		//Arrange
+		int input = 1;
+		String expectedResult = "1 Dia";
+		//Act
+		String actualResult = StringFormatter.uncoloredDiaWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	void uncoleredShortDiamondWord_WhenAmountIsThree_WordIsPlural() {
+		//Arrange
+		int input = 3;
+		String expectedResult = "3 Dias";
+		//Act
+		String actualResult = StringFormatter.uncoloredDiaWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+	
+	@Test
+	void uncoleredShortDiamondWord_WhenAmountIsZero_WordIsPlural() {
+		//Arrange
+		int input = 0;
+		String expectedResult = "0 Dias";
+		//Act
+		String actualResult = StringFormatter.uncoloredDiaWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
 }

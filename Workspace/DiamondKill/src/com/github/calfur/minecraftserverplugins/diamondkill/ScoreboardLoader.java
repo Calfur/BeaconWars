@@ -212,7 +212,7 @@ public class ScoreboardLoader {
 			if(playerJson != null) {				
 				teamColor = teamDbConnection.getTeam(playerJson.getTeamId()).getColor();
 			}
-			return teamColor + StringFormatter.firstLetterToUpper(topKiller.getName()) + ChatColor.GRAY + ": " + ChatColor.AQUA + topKiller.getDiamondValue() + " Dias";
+			return teamColor + StringFormatter.firstLetterToUpper(topKiller.getName()) + ChatColor.GRAY + ": " + StringFormatter.diaWord(topKiller.getDiamondValue());
 		}else {
 			return "-";
 		}

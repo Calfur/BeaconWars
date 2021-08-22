@@ -44,10 +44,6 @@ public class StringFormatter {
 		return result;
 	}
 	
-	public static String uncoloredDiamondWord(int amount) {
-		return amount + singularOrPlural(amount, " Diamant", " Diamanten");
-	}
-	
 	public static String singularOrPlural(int amount, String singular, String plural) {
 		if(amount == 1 || amount == -1) {
 			return singular;
@@ -58,6 +54,18 @@ public class StringFormatter {
 	
 	public static String diamondWord(int amount) {		
 		return ChatColor.AQUA + uncoloredDiamondWord(amount) + ChatColor.RESET;
+	}
+
+	public static String diaWord(int amount) {
+		return ChatColor.AQUA + uncoloredDiaWord(amount) + ChatColor.RESET;
+	}
+
+	public static String uncoloredDiamondWord(int amount) {
+		return amount + singularOrPlural(amount, " Diamant", " Diamanten");
+	}
+	
+	public static String uncoloredDiaWord(int amount) {
+		return amount + singularOrPlural(amount, " Dia", " Dias");
 	}
 	
 	public static String bold(String text) {
