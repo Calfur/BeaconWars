@@ -1,0 +1,5 @@
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
+
+public class TotemCooldown {
+
+}

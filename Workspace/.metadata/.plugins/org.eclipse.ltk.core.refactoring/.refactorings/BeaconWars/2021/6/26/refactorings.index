@@ -1,0 +1,12 @@
+1624311914272	Delete element
+1624312533146	Delete element
+1624312850874	Delete element
+1624394627520	Rename local variable 'cooldownMiliseconds'
+1624396100536	Extract method 'SendTotemCooldownMessage'
+1624725876431	Rename method 'colorizeLeatherArmor'
+1624725928245	Rename type 'ForbiddenItem'
+1624726208663	Rename type 'NaturalDiamondDisabler'
+1624729512036	Extract method 'replaceItemStackIfTypeIsNerfed'
+1624729638510	Rename method 'getSubstitute'
+1624729754974	Rename method 'replaceItemStackIfTypeIsNerfed'
+1624730648314	Rename type 'StringEditorTest'

@@ -1,0 +1,25 @@
+1613309424727	Rename type 'Player'
+1613311181131	Rename type 'CommandRegisterPlayer'
+1613331300097	Rename local variable 'scoreBoard'
+1613339494989	Rename type 'DisableFeatures'
+1613420246382	Delete element
+1613420327246	Rename type 'DiamondDropsDisabler'
+1613420339489	Rename type 'DiamondDisabler'
+1613421141199	Copy package
+1613421145222	Delete element
+1613421148800	Delete element
+1613763184113	Move compilation units
+1613824594803	Move compilation units
+1613824718913	Rename type 'JsonPlayer'
+1613827431936	Rename local variable 'sender'
+1613829862121	Rename type 'Config'
+1613831180763	Rename type 'DbConnection'
+1613836818382	Delete element
+1613838133950	Delete element
+1613839293093	Rename type 'Config'
+1613840115644	Rename method 'getPlayerConfig'
+1613840689455	Delete element
+1613841162130	Rename field 'player'
+1613842358170	Rename method 'sendPlayerInfo'
+1613842483901	Rename field 'playerDbConnection'
+1613842857351	Rename local variable 'number'

@@ -1,0 +1,10 @@
+package com.github.calfur.minecraftserverplugins.diamondkill.disabling;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public class TotemCooldown {
+	private UUID playerId;
+	private LocalDateTime expirationTime;
+	
+}

@@ -1,0 +1,7 @@
+1614544076546	Rename type 'PlayerJoin'
+1614544225212	Rename type 'KillEvent'
+1614545872366	Rename method 'addHit'
+1614548724648	Rename method 'getNumber'
+1614548735434	Rename field 'number'
+1614548742232	Rename local variable 'number'
+1614551096301	Rename local variable 'defender'

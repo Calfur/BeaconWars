@@ -1,0 +1,17 @@
+1614589816888	Rename local variable 'objective'
+1614593727122	Rename method 'loadTabPlayerName'
+1614593861264	Rename method 'ReloadScoreboardFor'
+1614593865792	Rename method 'ReloadScoreboardForAllOnlinePlayers'
+1614593873947	Rename method 'LoadSideBarScoreboard'
+1614607204777	Move compilation unit
+1614607428287	Rename type 'CommandBuildmode'
+1614607655978	Rename type 'BuildMode'
+1614609398658	Rename type 'BuildModeManager'
+1614609842728	Rename local variable 'secondsSinceDeactivated'
+1614611230984	Rename method 'AddPlayerHit'
+1614611234720	Rename method 'TryAddPlayerHit'
+1614612150026	Rename method 'loadSideBarScoreboard'
+1614615280430	Delete element
+1614890340919	Encapsulate field 'secondsUntilBuildModeGetsDeactivated'
+1614890974258	Rename field 'secondsLeftUntilBuildModeGetsDeactivatedWhenNotInBaseRange'
+1614891032090	Rename method 'reduceSecondsUntilBuildModeGetsDeactivated'
