@@ -16,6 +16,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import com.github.calfur.beaconWars.beaconFight.BeaconFight;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.KillDbConnection;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
@@ -26,6 +27,7 @@ import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 
 public class ScoreboardLoader {
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
@@ -92,7 +94,7 @@ public class ScoreboardLoader {
 			deletableObjective.unregister();
 		}
 		
-		Objective objective = defaultScoreboard.registerNewObjective("Sidebar", "dummy", ChatColor.BOLD + "Beacon wars");
+		Objective objective = defaultScoreboard.registerNewObjective("Sidebar", "dummy", ChatColor.BOLD + configuration.getScoreboardTitle());
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
 		ArrayList<String> scoreTexts = new ArrayList<String>();

@@ -1,7 +1,11 @@
 package com.github.calfur.beaconWars.configuration;
 
-public class DefaultConfiguration {
-	public static final String pluginName = "BeaconWars";	
-	public static final String pluginFolder = "plugins//" + pluginName;
-	public static final String databaseFolder = pluginFolder + "//Database";
+public class DefaultConfiguration implements IConfiguration{
+	private static final String scoreboardTitle = "Beacon Wars";
+
+	@Override
+	public String getScoreboardTitle() {
+		return scoreboardTitle;
+	}
+	
 }

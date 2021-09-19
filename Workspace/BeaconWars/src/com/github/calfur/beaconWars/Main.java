@@ -5,6 +5,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
 import com.github.calfur.beaconWars.commands.CommandProjectStart;
 import com.github.calfur.beaconWars.commands.CommandRegistrator;
+import com.github.calfur.beaconWars.configuration.ConfigurationManager;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.KillDbConnection;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
@@ -15,6 +17,8 @@ import com.github.calfur.beaconWars.hungerGamesLootDrop.HungerGamesManager;
 public class Main extends JavaPlugin {
 	private static Main instance;
 	
+	private final ConfigurationManager configurationManager = new ConfigurationManager();
+	private final IConfiguration configuration = configurationManager.getConfiguration();
 	private final PlayerDbConnection playerDbConnection = new PlayerDbConnection();
 	private final TeamDbConnection teamDbConnection = new TeamDbConnection();
 	private final KillDbConnection killDbConnection = new KillDbConnection();
@@ -111,5 +115,9 @@ public class Main extends JavaPlugin {
 
 	public RewardManager getRewardManager() {
 		return rewardManager;
+	}
+
+	public IConfiguration getConfiguration() {
+		return configuration;
 	}
 }

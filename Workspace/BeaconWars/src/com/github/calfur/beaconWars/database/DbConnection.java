@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-import com.github.calfur.beaconWars.configuration.DefaultConfiguration;
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -18,7 +18,7 @@ public abstract class DbConnection<Json extends ConfigurationSerializable> {
 	
 	private Data data = new Data();
 
-	private final File folder = new File(DefaultConfiguration.databaseFolder);
+	private final File folder = new File(ConstantConfiguration.databaseFolder);
 	private final File file;
 		
 	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
