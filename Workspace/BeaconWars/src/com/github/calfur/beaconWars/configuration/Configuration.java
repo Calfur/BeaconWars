@@ -4,6 +4,10 @@ public class Configuration implements IConfiguration{
 	private DefaultConfiguration defaultConfiguration = new DefaultConfiguration();
 	private DynamicConfiguration dynamicConfiguration;
 	
+	public void setDynamicConfiguration(DynamicConfiguration dynamicConfiguration) {
+		this.dynamicConfiguration = dynamicConfiguration;
+	}
+	
 	public Configuration(DynamicConfiguration dynamicConfiguration) {
 		this.dynamicConfiguration = dynamicConfiguration;
 	}

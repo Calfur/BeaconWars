@@ -1,19 +1,30 @@
 package com.github.calfur.beaconWars.configuration;
 
+import com.github.calfur.beaconWars.Main;
+
 public class ConfigurationManager {
 	private ConfigFileManager configurationDbConnection = new ConfigFileManager();
 	private Configuration configuration;
 	
 	public ConfigurationManager() {
-		updateConfiguration();
+		configurationDbConnection.loadConfigFile();
+		configuration = new Configuration(configurationDbConnection.getDynamicConfiguration());
 	}
 	
 	public Configuration getConfiguration() {
 		return configuration;
 	}
 	
-	public void updateConfiguration() {
+	public boolean updateConfiguration() {
+		boolean success = updateDynamicConfiguration();
+		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
+		return success;
+	}
+	
+	private boolean updateDynamicConfiguration() {
+		boolean success = configurationDbConnection.loadConfigFile();
 		DynamicConfiguration dynamicConfiguration = configurationDbConnection.getDynamicConfiguration();
-		configuration = new Configuration(dynamicConfiguration);
+		configuration.setDynamicConfiguration(dynamicConfiguration);	
+		return success;
 	}
 }

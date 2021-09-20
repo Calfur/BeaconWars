@@ -117,6 +117,10 @@ public class Main extends JavaPlugin {
 		return rewardManager;
 	}
 
+	public ConfigurationManager getConfigurationManager() {
+		return configurationManager;
+	}
+	
 	public IConfiguration getConfiguration() {
 		return configuration;
 	}

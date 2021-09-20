@@ -55,5 +55,9 @@ public class CommandRegistrator {
 		// /transaction
 		plugin.getCommand("transaction").setExecutor(new CommandTransaction());
 		plugin.getCommand("transaction").setTabCompleter(new TabCompleterTransaction());
+		
+		// /reloadConfig
+		plugin.getCommand("reloadConfig").setExecutor(new CommandReloadConfig());
+		plugin.getCommand("reloadConfig").setTabCompleter(new TabCompleterReloadConfig());
 	}
 }
