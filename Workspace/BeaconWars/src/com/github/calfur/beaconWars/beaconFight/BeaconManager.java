@@ -1,4 +1,4 @@
-package com.github.calfur.beaconWars;
+package com.github.calfur.beaconWars.beaconFight;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,6 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.PlayerKicker;
+import com.github.calfur.beaconWars.Team;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
 import com.github.calfur.beaconWars.database.TeamDbConnection;

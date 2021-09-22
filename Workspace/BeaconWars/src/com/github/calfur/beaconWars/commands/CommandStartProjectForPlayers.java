@@ -14,9 +14,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.calfur.beaconWars.BeaconManager;
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerKicker;
+import com.github.calfur.beaconWars.beaconFight.BeaconManager;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class CommandStartProjectForPlayers  implements CommandExecutor {

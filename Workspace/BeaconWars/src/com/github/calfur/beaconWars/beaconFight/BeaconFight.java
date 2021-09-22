@@ -17,7 +17,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.github.calfur.beaconWars.BeaconManager;
 import com.github.calfur.beaconWars.DeathBanPluginInteraction;
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerModeManager;

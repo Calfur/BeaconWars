@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
+import com.github.calfur.beaconWars.beaconFight.BeaconManager;
 
 public class PlayerLeaveEvents implements Listener {
 	BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();

@@ -13,6 +13,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
+import com.github.calfur.beaconWars.beaconFight.BeaconManager;
+
 public class BlockBreakEvents implements Listener {
 	private List<Material> unbreakableBlocks = Arrays.asList(Material.NETHERITE_BLOCK, Material.BEACON);
 	

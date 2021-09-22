@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import com.github.calfur.beaconWars.BeaconManager;
 import com.github.calfur.beaconWars.Main;
 
 public class BeaconItemEvents implements Listener{

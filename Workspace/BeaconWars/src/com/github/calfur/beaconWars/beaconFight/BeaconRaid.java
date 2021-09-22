@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.github.calfur.beaconWars.BeaconManager;
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerModeManager;
 import com.github.calfur.beaconWars.RewardManager;
