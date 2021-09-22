@@ -16,7 +16,7 @@ public class RewardManager {
 	TransactionDbConnection transactionDbConnection = Main.getInstance().getTransactionDbConnection();
 	ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
 	
-	public void addReward(String playerName, int amountOfDiamonds, int amountOfPoints, String reason) {
+	public void addReward(String playerName, Reward reward, String reason) {
 		PlayerJson playerJson = playerDbConnection.getPlayer(playerName);
 		int teamId = playerJson.getTeamId();
 		if(teamId == 0) {
@@ -24,21 +24,22 @@ public class RewardManager {
 			return;
 		}
 		TeamJson teamJson = teamDbConnection.getTeam(teamId);
-		if(amountOfDiamonds != 0) {			
-			playerJson.addCollectableDiamonds(amountOfDiamonds);
+		if(reward.getDiamonds() != 0) {			
+			playerJson.addCollectableDiamonds(reward.getDiamonds());
 			playerDbConnection.addPlayer(playerName, playerJson);
 		}
-		if(amountOfPoints != 0) {
-			teamJson.addPoints(amountOfPoints);
+		if(reward.getPoints() != 0) {
+			teamJson.addPoints(reward.getPoints());
 			teamDbConnection.addTeam(teamId, teamJson);
 		}
 		
 		TransactionJson transactionJson = new TransactionJson(
-				playerName, 
-				teamId, 
-				amountOfDiamonds, 
-				amountOfPoints, 
-				reason);
+			playerName, 
+			teamId, 
+			reward.getDiamonds(), 
+			reward.getPoints(), 
+			reason
+		);
 		transactionDbConnection.addTransaction(transactionJson);
 		
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();

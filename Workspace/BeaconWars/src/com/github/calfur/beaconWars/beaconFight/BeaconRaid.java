@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerModeManager;
+import com.github.calfur.beaconWars.Reward;
 import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.ScoreboardLoader;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
@@ -95,7 +96,7 @@ public class BeaconRaid {
 		Bukkit.broadcastMessage(player.getName() + " von " + attackerTeam.getColor() + "Team " + attackerTeam.getId() + ChatColor.RESET + " hat den Beacon von " + defenderTeam.getColor() + "Team " + defenderTeam.getId() + ChatColor.RESET + " erfolgreich zurückgebracht");
 		Bukkit.broadcastMessage(player.getName() + " erhält dafür " + ChatColor.AQUA + reward + " Dias");
 		
-		rewardManager.addReward(player.getName(), reward, reward*100, "Belohnung für das erfolgreiche stehlen und zurückbringen des Beacons von Team " + defenderTeam.getId());
+		rewardManager.addReward(player.getName(), new Reward(reward, reward*100), "Belohnung für das erfolgreiche stehlen und zurückbringen des Beacons von Team " + defenderTeam.getId());
 		
 		BeaconManager.removeOneBeaconFromInventory(player);
 		scoreboardLoader.reloadScoreboardFor(player);

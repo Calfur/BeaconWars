@@ -11,6 +11,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerKicker;
+import com.github.calfur.beaconWars.Reward;
 import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
@@ -86,7 +87,7 @@ public class CommandCollect implements CommandExecutor {
 	}
 
 	private void withdrawDiamonds(Player player, PlayerJson playerJson, int amount) {
-		rewardManager.addReward(player.getName(), -amount, 0, StringFormatter.uncoloredDiamondWord(amount) + " mit /collect ausgezahlt");
+		rewardManager.addReward(player.getName(), new Reward(-amount, 0), StringFormatter.uncoloredDiamondWord(amount) + " mit /collect ausgezahlt");
 		
 		addDiamondsToInventory(player, amount);
 	}

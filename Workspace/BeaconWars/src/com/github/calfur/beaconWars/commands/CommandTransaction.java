@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.Reward;
 import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
@@ -175,10 +176,10 @@ public class CommandTransaction implements CommandExecutor {
 		String subCommand = args[1];
 		switch(subCommand) {
 		case "diamonds": 
-			rewardManager.addReward(name, amount, 0, reason);
+			rewardManager.addReward(name, new Reward(amount, 0), reason);
 			break;
 		case "points":
-			rewardManager.addReward(name, 0, amount, reason);
+			rewardManager.addReward(name, new Reward(0, amount), reason);
 			break;
 		default:
 			executor.sendMessage(StringFormatter.error(subCommand + " ist kein vorhandener Subcommand"));
@@ -211,8 +212,10 @@ public class CommandTransaction implements CommandExecutor {
 		TransactionJson transactionJson = transactionDbConnection.getTransaction(transactionId);
 		rewardManager.addReward(
 				transactionJson.getPlayerName(), 
-				-transactionJson.getTransactedDiamonds(), 
-				-transactionJson.getTransactedPoints(), 
+				new Reward(
+					-transactionJson.getTransactedDiamonds(), 
+					-transactionJson.getTransactedPoints()
+				), 
 				"Die Transaktion " + transactionId + " wurde rückgängig gemacht, weil: " + reason);
 		executor.sendMessage(ChatColor.GREEN + "Transaktion erfolgreich rückgängig gemacht");
 		return true;

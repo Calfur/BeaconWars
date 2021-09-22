@@ -23,6 +23,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerKicker;
 import com.github.calfur.beaconWars.PlayerModeManager;
+import com.github.calfur.beaconWars.Reward;
 import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
 import com.github.calfur.beaconWars.commands.CommandProjectStart;
@@ -156,7 +157,7 @@ public class KillEvents implements Listener {
 				
 				int bounty = killDbConnection.getBounty(victim);
 				
-				rewardManager.addReward(killer, bounty, bounty*100, "Für den Kill an " + victim);
+				rewardManager.addReward(killer, new Reward(bounty, bounty*100), "Für den Kill an " + victim);
 				
 				killDbConnection.addKill(new KillJson(killer, victim, LocalDateTime.now()));
 				

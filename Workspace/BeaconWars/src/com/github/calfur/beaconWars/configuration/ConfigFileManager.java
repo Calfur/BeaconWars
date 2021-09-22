@@ -13,12 +13,22 @@ public class ConfigFileManager {
 	
 	public DynamicConfiguration getDynamicConfiguration() {
 		return new DynamicConfiguration(
-			getScoreboardTitle()
+			getScoreboardTitle(), 
+			0, 
+			0
 		);
 	}
 	
 	private String getScoreboardTitle() {
 		return (String)configFileConfiguration.get("ScoreboardTitle");
+	}
+
+	public int getRewardBestBeaconDefenseDiamonds() {
+		return (int)configFileConfiguration.get("RewardBestBeaconDefenseDiamonds");
+	}
+
+	public int getRewardBestBeaconDefensePoints() {
+		return (int)configFileConfiguration.get("RewardBestBeaconDefensePoints");
 	}
 
 	public boolean loadConfigFile() {

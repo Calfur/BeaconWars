@@ -20,11 +20,27 @@ public class Configuration implements IConfiguration{
 		);
 	}
 
+	@Override
+	public int getRewardBeaconDefenseTotalDiamonds() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getRewardBeaconDefenseTotalDiamonds(), 
+				defaultConfiguration.getRewardBeaconDefenseTotalDiamonds()
+		);
+	}
+
+	@Override
+	public int getRewardBeaconDefenseTotalPoints() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getRewardBeaconDefenseTotalPoints(), 
+				defaultConfiguration.getRewardBeaconDefenseTotalPoints()
+		);
+	}
+	
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {
 			return preferred;
 		}
 		return alternative;
-	}	
+	}
 
 }

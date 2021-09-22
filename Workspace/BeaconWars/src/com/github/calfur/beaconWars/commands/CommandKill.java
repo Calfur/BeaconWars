@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.Reward;
 import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.database.KillDbConnection;
 import com.github.calfur.beaconWars.database.KillJson;
@@ -195,7 +196,7 @@ public class CommandKill implements CommandExecutor {
 		
 		int bounty = killDbConnection.getBounty(victim);
 		
-		rewardManager.addReward(killer, bounty, bounty*100, "Für den manuell hinzugefügten Kill an " + victim + ", " + reason);
+		rewardManager.addReward(killer, new Reward(bounty, bounty*100), "Für den manuell hinzugefügten Kill an " + victim + ", " + reason);
 		
 		String killId = killDbConnection.addKill(new KillJson(killer, victim, dateTime));
 		
