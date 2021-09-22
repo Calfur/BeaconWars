@@ -6,8 +6,10 @@ import java.io.IOException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class ConfigFileManager {
-
+public class ConfigFileLoader {
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_RESET = "\u001B[0m";
+	
 	private File configFile;
 	private FileConfiguration configFileConfiguration;
 	
@@ -23,12 +25,12 @@ public class ConfigFileManager {
 		return (String)configFileConfiguration.get("ScoreboardTitle");
 	}
 
-	public int getRewardBestBeaconDefenseDiamonds() {
-		return (int)configFileConfiguration.get("RewardBestBeaconDefenseDiamonds");
+	private Integer getRewardBestBeaconDefenseDiamonds() {
+		return getIntegerConfiguration("RewardBestBeaconDefenseDiamonds");
 	}
 
-	public int getRewardBestBeaconDefensePoints() {
-		return (int)configFileConfiguration.get("RewardBestBeaconDefensePoints");
+	private Integer getRewardBestBeaconDefensePoints() {
+		return getIntegerConfiguration("RewardBestBeaconDefensePoints");
 	}
 
 	public boolean loadConfigFile() {
@@ -45,5 +47,16 @@ public class ConfigFileManager {
 			return false;
 		}
 		return true;
+	}
+
+	private Integer getIntegerConfiguration(String path) {
+		try {			
+			return (int)configFileConfiguration.get(path);
+		}catch (NullPointerException e){
+			return null;
+		}catch(ClassCastException e) {
+			System.out.println("[" + ConstantConfiguration.pluginName + "] Config file loader: " + ANSI_RED + "The number set for " + path + " is not valid" + ANSI_RESET);
+			return null;
+		}
 	}
 }

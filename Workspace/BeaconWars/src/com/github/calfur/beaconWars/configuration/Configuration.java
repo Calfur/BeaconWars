@@ -21,7 +21,7 @@ public class Configuration implements IConfiguration{
 	}
 
 	@Override
-	public int getRewardBeaconDefenseTotalDiamonds() {
+	public Integer getRewardBeaconDefenseTotalDiamonds() {
 		return getPreferredConfiguration(
 				dynamicConfiguration.getRewardBeaconDefenseTotalDiamonds(), 
 				defaultConfiguration.getRewardBeaconDefenseTotalDiamonds()
@@ -29,7 +29,7 @@ public class Configuration implements IConfiguration{
 	}
 
 	@Override
-	public int getRewardBeaconDefenseTotalPoints() {
+	public Integer getRewardBeaconDefenseTotalPoints() {
 		return getPreferredConfiguration(
 				dynamicConfiguration.getRewardBeaconDefenseTotalPoints(), 
 				defaultConfiguration.getRewardBeaconDefenseTotalPoints()

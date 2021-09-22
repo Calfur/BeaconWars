@@ -3,7 +3,7 @@ package com.github.calfur.beaconWars.configuration;
 import com.github.calfur.beaconWars.Main;
 
 public class ConfigurationManager {
-	private ConfigFileManager configurationDbConnection = new ConfigFileManager();
+	private ConfigFileLoader configurationDbConnection = new ConfigFileLoader();
 	private Configuration configuration;
 	
 	public ConfigurationManager() {

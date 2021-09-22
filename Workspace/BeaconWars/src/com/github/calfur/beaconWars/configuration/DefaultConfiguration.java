@@ -11,12 +11,12 @@ public class DefaultConfiguration implements IConfiguration{
 	}
 	
 	@Override
-	public int getRewardBeaconDefenseTotalDiamonds() {
+	public Integer getRewardBeaconDefenseTotalDiamonds() {
 		return rewardBeaconDefenseTotalDiamonds;
 	}
 
 	@Override
-	public int getRewardBeaconDefenseTotalPoints() {
+	public Integer getRewardBeaconDefenseTotalPoints() {
 		return rewardBeaconDefenseTotalPoints;
 	}
 	

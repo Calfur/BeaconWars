@@ -2,13 +2,13 @@ package com.github.calfur.beaconWars.configuration;
 
 public class DynamicConfiguration implements IConfiguration {
 	private String scoreboardTitle;
-	private int rewardBeaconDefenseTotalDiamonds;
-	private int rewardBeaconDefenseTotalPoints;
+	private Integer rewardBeaconDefenseTotalDiamonds;
+	private Integer rewardBeaconDefenseTotalPoints;
 	
 	public DynamicConfiguration(
 			String scoreboardTitle,
-			int rewardBestBeaconDefenseDiamonds,
-			int rewardBestBeaconDefensePoints
+			Integer rewardBestBeaconDefenseDiamonds,
+			Integer rewardBestBeaconDefensePoints
 	){
 		this.scoreboardTitle = scoreboardTitle;
 		this.rewardBeaconDefenseTotalDiamonds = rewardBestBeaconDefenseDiamonds;
@@ -21,12 +21,12 @@ public class DynamicConfiguration implements IConfiguration {
 	}
 
 	@Override
-	public int getRewardBeaconDefenseTotalDiamonds() {
+	public Integer getRewardBeaconDefenseTotalDiamonds() {
 		return rewardBeaconDefenseTotalDiamonds;
 	}
 
 	@Override
-	public int getRewardBeaconDefenseTotalPoints() {
+	public Integer getRewardBeaconDefenseTotalPoints() {
 		return rewardBeaconDefenseTotalPoints;
 	}
 	
