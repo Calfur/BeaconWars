@@ -14,8 +14,8 @@ public class ConfigFileManager {
 	public DynamicConfiguration getDynamicConfiguration() {
 		return new DynamicConfiguration(
 			getScoreboardTitle(), 
-			0, 
-			0
+			getRewardBestBeaconDefenseDiamonds(), 
+			getRewardBestBeaconDefensePoints()
 		);
 	}
 	
