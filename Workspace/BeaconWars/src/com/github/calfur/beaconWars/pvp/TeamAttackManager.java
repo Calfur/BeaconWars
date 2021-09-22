@@ -1,4 +1,4 @@
-package com.github.calfur.beaconWars;
+package com.github.calfur.beaconWars.pvp;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;

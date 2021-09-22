@@ -6,6 +6,7 @@ import com.github.calfur.beaconWars.beaconFight.CompassRightClickEvent;
 import com.github.calfur.beaconWars.beaconFight.EnderPerlTeleportEvent;
 import com.github.calfur.beaconWars.beaconFight.MoveBeaconIntoChestEvent;
 import com.github.calfur.beaconWars.beaconFight.TeleportEvents;
+import com.github.calfur.beaconWars.pvp.KillEvents;
 
 public class EventRegistrator {
 	public EventRegistrator() {

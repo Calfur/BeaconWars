@@ -1,8 +1,9 @@
-package com.github.calfur.beaconWars;
+package com.github.calfur.beaconWars.pvp;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.database.KillDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
 

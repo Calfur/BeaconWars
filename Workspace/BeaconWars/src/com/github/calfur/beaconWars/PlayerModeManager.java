@@ -14,6 +14,8 @@ import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
+import com.github.calfur.beaconWars.pvp.TeamAttackManager;
+import com.github.calfur.beaconWars.pvp.TopKiller;
 
 public class PlayerModeManager {
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();

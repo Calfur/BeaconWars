@@ -17,17 +17,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.github.calfur.beaconWars.DeathBanPluginInteraction;
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerModeManager;
 import com.github.calfur.beaconWars.RewardManager;
-import com.github.calfur.beaconWars.Team;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.database.TeamJson;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
+import com.github.calfur.beaconWars.pvp.DeathBanPluginInteraction;
+import com.github.calfur.beaconWars.pvp.Team;
 
 public class BeaconFight {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();

@@ -1,4 +1,4 @@
-package com.github.calfur.beaconWars;
+package com.github.calfur.beaconWars.pvp;
 
 import java.io.File;
 import java.io.IOException;

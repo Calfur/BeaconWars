@@ -1,4 +1,4 @@
-package com.github.calfur.beaconWars;
+package com.github.calfur.beaconWars.pvp;
 
 public class Attack {
 	private Team attacker;

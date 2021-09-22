@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.RewardManager;
-import com.github.calfur.beaconWars.TopKiller;
 import com.github.calfur.beaconWars.database.KillDbConnection;
 import com.github.calfur.beaconWars.database.KillJson;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
@@ -21,6 +20,7 @@ import com.github.calfur.beaconWars.database.PlayerJson;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.database.TeamJson;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
+import com.github.calfur.beaconWars.pvp.TopKiller;
 
 public class CommandKill implements CommandExecutor {
 

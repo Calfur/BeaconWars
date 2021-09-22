@@ -1,4 +1,4 @@
-package com.github.calfur.beaconWars;
+package com.github.calfur.beaconWars.pvp;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -20,6 +20,10 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
+import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.PlayerKicker;
+import com.github.calfur.beaconWars.PlayerModeManager;
+import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
 import com.github.calfur.beaconWars.commands.CommandProjectStart;
 import com.github.calfur.beaconWars.database.KillDbConnection;

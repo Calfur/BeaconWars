@@ -17,8 +17,8 @@ import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerModeManager;
 import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.ScoreboardLoader;
-import com.github.calfur.beaconWars.Team;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
+import com.github.calfur.beaconWars.pvp.Team;
 
 public class BeaconRaid {
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();

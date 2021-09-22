@@ -24,6 +24,9 @@ import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.database.TeamJson;
 import com.github.calfur.beaconWars.helperClasses.ScoreboardHelper;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
+import com.github.calfur.beaconWars.pvp.Attack;
+import com.github.calfur.beaconWars.pvp.Team;
+import com.github.calfur.beaconWars.pvp.TopKiller;
 
 
 public class ScoreboardLoader {

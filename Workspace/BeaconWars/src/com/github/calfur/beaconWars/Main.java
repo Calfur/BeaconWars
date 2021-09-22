@@ -13,6 +13,8 @@ import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.database.TransactionDbConnection;
 import com.github.calfur.beaconWars.disabling.FeatureDisabler;
 import com.github.calfur.beaconWars.hungerGamesLootDrop.HungerGamesManager;
+import com.github.calfur.beaconWars.pvp.DeathBanPluginInteraction;
+import com.github.calfur.beaconWars.pvp.TeamAttackManager;
 
 public class Main extends JavaPlugin {
 	private static Main instance;

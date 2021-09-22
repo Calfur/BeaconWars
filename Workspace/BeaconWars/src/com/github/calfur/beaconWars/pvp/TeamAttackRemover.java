@@ -1,4 +1,7 @@
-package com.github.calfur.beaconWars;
+package com.github.calfur.beaconWars.pvp;
+
+import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.ScoreboardLoader;
 
 public class TeamAttackRemover implements Runnable {
 	private ScoreboardLoader scoreboardLoader = Main.getInstance().getScoreboardLoader();
