@@ -1,5 +1,12 @@
 package com.github.calfur.beaconWars;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
+
 import com.github.calfur.beaconWars.beaconFight.BeaconDropEvent;
 import com.github.calfur.beaconWars.beaconFight.BeaconItemEvents;
 import com.github.calfur.beaconWars.beaconFight.CompassRightClickEvent;
@@ -9,22 +16,34 @@ import com.github.calfur.beaconWars.beaconFight.TeleportEvents;
 import com.github.calfur.beaconWars.pvp.KillEvents;
 
 public class EventRegistrator {
+	private List<Listener> events = Arrays.asList(
+		new KillEvents(),
+		new PlayerJoinEvents(),
+		new PlayerLeaveEvents(),
+		new PlayerRespawnEvents(),
+		new BlockBreakEvents(),
+		new PlayerModeRefreshEvents(),
+		new TeleportEvents(),
+		new BeaconItemEvents(),
+		new EnderPerlTeleportEvent(),
+		new BeaconDropEvent(),
+		new MoveBeaconIntoChestEvent(),
+		new CompassRightClickEvent()		
+	); 
+	
 	public EventRegistrator() {
 		registrateEvents();
 	}
+	
 	private void registrateEvents() {
-		Main plugin = Main.getInstance();
-		plugin.getServer().getPluginManager().registerEvents(new KillEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PlayerJoinEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PlayerLeaveEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PlayerRespawnEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new BlockBreakEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new PlayerModeRefreshEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new TeleportEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new BeaconItemEvents(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new EnderPerlTeleportEvent(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new BeaconDropEvent(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new MoveBeaconIntoChestEvent(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new CompassRightClickEvent(), plugin);
+		for (Listener event : events) {
+			registrateEvent(event);
+		}
+	}
+	
+	private void registrateEvent(Listener event) {
+		Plugin plugin = Main.getInstance();
+		PluginManager pluginManager = plugin.getServer().getPluginManager();
+		pluginManager.registerEvents(event, plugin);
 	}
 }
