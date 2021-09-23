@@ -17,7 +17,9 @@ public class ConfigFileLoader {
 		return new DynamicConfiguration(
 			getScoreboardTitle(), 
 			getRewardBestBeaconDefenseDiamonds(), 
-			getRewardBestBeaconDefensePoints()
+			getRewardBestBeaconDefensePoints(),
+			getRewardBeaconRaidSuccessDiamonds(),
+			getRewardBeaconRaidSuccessPoints()
 		);
 	}
 	
@@ -31,6 +33,14 @@ public class ConfigFileLoader {
 
 	private Integer getRewardBestBeaconDefensePoints() {
 		return getIntegerConfiguration("RewardBestBeaconDefensePoints");
+	}
+
+	private Integer getRewardBeaconRaidSuccessDiamonds() {
+		return getIntegerConfiguration("RewardBeaconRaidSuccessDiamonds");
+	}
+
+	private Integer getRewardBeaconRaidSuccessPoints() {
+		return getIntegerConfiguration("RewardBeaconRaidSuccessPoints");
 	}
 
 	public boolean loadConfigFile() {

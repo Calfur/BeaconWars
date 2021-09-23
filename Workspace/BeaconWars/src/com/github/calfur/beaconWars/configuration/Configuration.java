@@ -36,11 +36,28 @@ public class Configuration implements IConfiguration{
 		);
 	}
 	
+	@Override
+	public Integer getRewardBeaconRaidSuccessDiamonds() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getRewardBeaconRaidSuccessDiamonds(), 
+				defaultConfiguration.getRewardBeaconRaidSuccessDiamonds()
+		);
+	}
+
+	@Override
+	public Integer getRewardBeaconRaidSuccessPoints() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getRewardBeaconRaidSuccessPoints(), 
+				defaultConfiguration.getRewardBeaconRaidSuccessPoints()
+		);
+	}
+	
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {
 			return preferred;
 		}
 		return alternative;
 	}
+
 
 }

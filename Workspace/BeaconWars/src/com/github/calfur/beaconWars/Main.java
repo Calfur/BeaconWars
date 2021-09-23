@@ -118,12 +118,13 @@ public class Main extends JavaPlugin {
 	public RewardManager getRewardManager() {
 		return rewardManager;
 	}
-
-	public ConfigurationManager getConfigurationManager() {
-		return configurationManager;
-	}
 	
 	public IConfiguration getConfiguration() {
 		return configuration;
+	}
+
+	public boolean reloadConfiguration() {
+		configurationManager.reloadConfiguration();
+		return false;
 	}
 }

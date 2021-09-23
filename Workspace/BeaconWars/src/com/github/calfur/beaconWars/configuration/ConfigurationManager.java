@@ -15,13 +15,13 @@ public class ConfigurationManager {
 		return configuration;
 	}
 	
-	public boolean updateConfiguration() {
-		boolean success = updateDynamicConfiguration();
+	public boolean reloadConfiguration() {
+		boolean success = reloadDynamicConfiguration();
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		return success;
 	}
 	
-	private boolean updateDynamicConfiguration() {
+	private boolean reloadDynamicConfiguration() {
 		boolean success = configurationDbConnection.loadConfigFile();
 		DynamicConfiguration dynamicConfiguration = configurationDbConnection.getDynamicConfiguration();
 		configuration.setDynamicConfiguration(dynamicConfiguration);	
