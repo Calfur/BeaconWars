@@ -124,7 +124,6 @@ public class Main extends JavaPlugin {
 	}
 
 	public boolean reloadConfiguration() {
-		configurationManager.reloadConfiguration();
-		return false;
+		return configurationManager.reloadConfiguration();
 	}
 }
