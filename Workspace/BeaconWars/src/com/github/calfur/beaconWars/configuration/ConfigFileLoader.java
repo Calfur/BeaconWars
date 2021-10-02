@@ -19,7 +19,9 @@ public class ConfigFileLoader {
 			getRewardBestBeaconDefenseDiamonds(), 
 			getRewardBestBeaconDefensePoints(),
 			getRewardBeaconRaidSuccessDiamonds(),
-			getRewardBeaconRaidSuccessPoints()
+			getRewardBeaconRaidSuccessPoints(),
+			getRewardKillBountyMultiplicatorDiamonds(),
+			getRewardKillBountyMultiplicatorPoints()
 		);
 	}
 	
@@ -41,6 +43,14 @@ public class ConfigFileLoader {
 
 	private Integer getRewardBeaconRaidSuccessPoints() {
 		return getIntegerConfiguration("RewardBeaconRaidSuccessPoints");
+	}
+
+	private Integer getRewardKillBountyMultiplicatorDiamonds() {
+		return getIntegerConfiguration("RewardKillBountyMultiplicatorDiamonds");
+	}
+
+	private Integer getRewardKillBountyMultiplicatorPoints() {
+		return getIntegerConfiguration("RewardKillBountyMultiplicatorPoints");
 	}
 
 	public boolean loadConfigFile() {

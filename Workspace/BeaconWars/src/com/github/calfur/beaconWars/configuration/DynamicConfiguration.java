@@ -6,19 +6,25 @@ public class DynamicConfiguration implements IConfiguration {
 	private Integer rewardBeaconDefenseTotalPoints;
 	private Integer rewardBeaconRaidSuccessDiamonds;
 	private Integer rewardBeaconRaidSuccessPoints;
+	private Integer rewardKillBountyMultiplicatorDiamonds;
+	private Integer rewardKillBountyMultiplicatorPoints;
 	
 	public DynamicConfiguration(
 			String scoreboardTitle,
 			Integer rewardBestBeaconDefenseDiamonds,
 			Integer rewardBestBeaconDefensePoints,
 			Integer rewardBeaconRaidSuccessDiamonds,
-			Integer rewardBeaconRaidSuccessPoints
+			Integer rewardBeaconRaidSuccessPoints,
+			Integer rewardKillBountyMultiplicatorDiamonds,
+			Integer rewardKillBountyMultiplicatorPoints
 	){
 		this.scoreboardTitle = scoreboardTitle;
 		this.rewardBeaconDefenseTotalDiamonds = rewardBestBeaconDefenseDiamonds;
 		this.rewardBeaconDefenseTotalPoints = rewardBestBeaconDefensePoints;
 		this.rewardBeaconRaidSuccessDiamonds = rewardBeaconRaidSuccessDiamonds;
 		this.rewardBeaconRaidSuccessPoints = rewardBeaconRaidSuccessPoints;
+		this.rewardKillBountyMultiplicatorDiamonds = rewardKillBountyMultiplicatorDiamonds;
+		this.rewardKillBountyMultiplicatorPoints = rewardKillBountyMultiplicatorPoints;
 	}
 
 	@Override
@@ -44,6 +50,16 @@ public class DynamicConfiguration implements IConfiguration {
 	@Override
 	public Integer getRewardBeaconRaidSuccessPoints() {
 		return rewardBeaconRaidSuccessPoints;
+	}
+
+	@Override
+	public Integer getRewardKillBountyMultiplicatorDiamonds() {
+		return rewardKillBountyMultiplicatorDiamonds;
+	}
+
+	@Override
+	public Integer getRewardKillBountyMultiplicatorPoints() {
+		return rewardKillBountyMultiplicatorPoints;
 	}
 	
 }

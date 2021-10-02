@@ -2,6 +2,8 @@ package com.github.calfur.beaconWars.helperClasses;
 
 import org.bukkit.ChatColor;
 
+import com.github.calfur.beaconWars.Reward;
+
 public class StringFormatter {
 	public static String firstLetterToUpper(String string) {
 		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
@@ -51,9 +53,13 @@ public class StringFormatter {
 			return plural;
 		}
 	}
-	
+
 	public static String diamondWord(int amount) {		
 		return ChatColor.AQUA + uncoloredDiamondWord(amount) + ChatColor.RESET;
+	}
+	
+	public static String pointWord(int amount) {		
+		return amount + singularOrPlural(amount, " Punkt", " Punkte");
 	}
 
 	public static String diaWord(int amount) {
@@ -66,6 +72,10 @@ public class StringFormatter {
 	
 	public static String uncoloredDiaWord(int amount) {
 		return amount + singularOrPlural(amount, " Dia", " Dias");
+	}
+	
+	public static String rewardText(Reward reward) {
+		return diamondWord(reward.getDiamonds()) + " und " + pointWord(reward.getPoints());
 	}
 	
 	public static String bold(String text) {

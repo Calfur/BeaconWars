@@ -24,20 +24,16 @@ import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerKicker;
 import com.github.calfur.beaconWars.PlayerModeManager;
 import com.github.calfur.beaconWars.Reward;
-import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
 import com.github.calfur.beaconWars.commands.CommandProjectStart;
-import com.github.calfur.beaconWars.database.KillDbConnection;
-import com.github.calfur.beaconWars.database.KillJson;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
+import com.github.calfur.beaconWars.helperClasses.KillHelper;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class KillEvents implements Listener {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection(); 
-	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
-	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	private PlayerModeManager playerModeManager = Main.getInstance().getPlayerModeManager();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
@@ -155,24 +151,23 @@ public class KillEvents implements Listener {
 				String killer = latestHitByPlayer.getAttacker();
 				String victim = latestHitByPlayer.getDefender();
 				
-				int bounty = killDbConnection.getBounty(victim);
+				Reward payedReward = KillHelper.addKill(
+						killer, 
+						victim, 
+						"Für das killen von " + victim,
+						Main.getInstance());
 				
-				rewardManager.addReward(killer, new Reward(bounty, bounty*100), "Für den Kill an " + victim);
-				
-				killDbConnection.addKill(new KillJson(killer, victim, LocalDateTime.now()));
-				
-				sendDeathMessage(killer, victim, bounty);
-				Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
+				sendDeathMessage(killer, victim, payedReward);
 			}
 		}
 	}
 	
-	private void sendDeathMessage(String killer, String victim, int bounty) {
+	private void sendDeathMessage(String killer, String victim, Reward payedReward) {
 		ChatColor teamColorKiller = teamDbConnection.getTeam(playerDbConnection.getPlayer(killer).getTeamId()).getColor();
 		ChatColor teamColorVictim = teamDbConnection.getTeam(playerDbConnection.getPlayer(victim).getTeamId()).getColor();
 		killer = StringFormatter.firstLetterToUpper(killer);
 		victim = StringFormatter.firstLetterToUpper(victim);
-		Bukkit.broadcastMessage(teamColorKiller + killer + ChatColor.GOLD + " bekommt " + StringFormatter.diamondWord(bounty) + ChatColor.GOLD + " für den Kill an " + teamColorVictim + victim);
+		Bukkit.broadcastMessage(teamColorKiller + killer + ChatColor.RESET +" bekommt " + StringFormatter.rewardText(payedReward) + " für den Kill an " + teamColorVictim + victim);
 	}
 	
 	private void removeUndroppableItems(List<ItemStack> loot) {

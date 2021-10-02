@@ -4,6 +4,8 @@ import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
+import com.github.calfur.beaconWars.Reward;
+
 class StringFormatterTest {
 
 	@Test
@@ -211,7 +213,7 @@ class StringFormatterTest {
 	}
 
 	@Test
-	void uncoleredShortDiamondWord_WhenAmountIsOne_WordIsSingular() {
+	void uncoleredDiaWord_WhenAmountIsOne_WordIsSingular() {
 		//Arrange
 		int input = 1;
 		String expectedResult = "1 Dia";
@@ -222,7 +224,7 @@ class StringFormatterTest {
 	}
 
 	@Test
-	void uncoleredShortDiamondWord_WhenAmountIsThree_WordIsPlural() {
+	void uncoleredDiaWord_WhenAmountIsThree_WordIsPlural() {
 		//Arrange
 		int input = 3;
 		String expectedResult = "3 Dias";
@@ -231,14 +233,58 @@ class StringFormatterTest {
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}
-	
+
 	@Test
-	void uncoleredShortDiamondWord_WhenAmountIsZero_WordIsPlural() {
+	void uncoleredDiaWord_WhenAmountIsZero_WordIsPlural() {
 		//Arrange
 		int input = 0;
 		String expectedResult = "0 Dias";
 		//Act
 		String actualResult = StringFormatter.uncoloredDiaWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	void pointWord_WhenAmountIsOne_WordIsSingular() {
+		//Arrange
+		int input = 1;
+		String expectedResult = "1 Punkt";
+		//Act
+		String actualResult = StringFormatter.pointWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	void pointWord_WhenAmountIsThree_WordIsPlural() {
+		//Arrange
+		int input = 3;
+		String expectedResult = "3 Punkte";
+		//Act
+		String actualResult = StringFormatter.pointWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	void pointWord_WhenAmountIsZero_WordIsPlural() {
+		//Arrange
+		int input = 0;
+		String expectedResult = "0 Punkte";
+		//Act
+		String actualResult = StringFormatter.pointWord(input);
+		//Assert
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+	
+	@Test
+	void rewardText_WhenPropperInput_TextIsLikeDiamondWordAndPointWord() {
+		//Arrange
+		Reward reward = new Reward(5, 77);
+		String expectedResult = ChatColor.AQUA + "5 Diamanten" + ChatColor.RESET + " und 77 Punkte";
+		//Act
+		String actualResult = StringFormatter.rewardText(reward);
 		//Assert
 		Assert.assertEquals(expectedResult, actualResult);
 	}

@@ -51,6 +51,22 @@ public class Configuration implements IConfiguration{
 				defaultConfiguration.getRewardBeaconRaidSuccessPoints()
 		);
 	}
+
+	@Override
+	public Integer getRewardKillBountyMultiplicatorDiamonds() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getRewardKillBountyMultiplicatorDiamonds(), 
+				defaultConfiguration.getRewardKillBountyMultiplicatorDiamonds()
+		);
+	}
+
+	@Override
+	public Integer getRewardKillBountyMultiplicatorPoints() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getRewardKillBountyMultiplicatorPoints(), 
+				defaultConfiguration.getRewardKillBountyMultiplicatorPoints()
+		);
+	}
 	
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {

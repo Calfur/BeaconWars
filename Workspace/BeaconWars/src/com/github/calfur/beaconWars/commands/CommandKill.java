@@ -1,6 +1,5 @@
 package com.github.calfur.beaconWars.commands;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,13 +12,13 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.Reward;
-import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.database.KillDbConnection;
 import com.github.calfur.beaconWars.database.KillJson;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.database.TeamJson;
+import com.github.calfur.beaconWars.helperClasses.KillHelper;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 import com.github.calfur.beaconWars.pvp.TopKiller;
 
@@ -28,7 +27,6 @@ public class CommandKill implements CommandExecutor {
 	private KillDbConnection killDbConnection = Main.getInstance().getKillDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
-	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -182,7 +180,6 @@ public class CommandKill implements CommandExecutor {
 		reasonWords.remove(0);
 		reasonWords.remove(0);
 		String reason = String.join(" ", reasonWords);
-		LocalDateTime dateTime = LocalDateTime.now();
 		
 		if(!playerDbConnection.existsPlayer(killer)) {
 			executor.sendMessage(StringFormatter.error("Der Killer " + killer + " ist nicht registriert"));
@@ -194,15 +191,15 @@ public class CommandKill implements CommandExecutor {
 			return false;
 		}
 		
-		int bounty = killDbConnection.getBounty(victim);
-		
-		rewardManager.addReward(killer, new Reward(bounty, bounty*100), "Für den manuell hinzugefügten Kill an " + victim + ", " + reason);
-		
-		String killId = killDbConnection.addKill(new KillJson(killer, victim, dateTime));
-		
-		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
+		Reward payedReward = KillHelper.addKill(
+			killer, 
+			victim, 
+			"Für den per command hinzugefügten Kill an " + victim + ", " + reason,
+			Main.getInstance()
+		);		
 
-		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " registriert. " + ChatColor.RESET + bounty + " Diamanten Kompfgeld an " + killer + " ausgezahlt");
+		executor.sendMessage(ChatColor.GREEN + "Kill registriert.");
+		executor.sendMessage(ChatColor.RESET + StringFormatter.rewardText(payedReward) + " Kopfgeld an " + killer + " ausgezahlt");
 		return true;
 	}
 }

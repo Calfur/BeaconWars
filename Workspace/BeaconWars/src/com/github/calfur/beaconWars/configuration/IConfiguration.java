@@ -6,4 +6,6 @@ public interface IConfiguration {
 	public Integer getRewardBeaconDefenseTotalPoints();
 	public Integer getRewardBeaconRaidSuccessDiamonds();
 	public Integer getRewardBeaconRaidSuccessPoints();
+	public Integer getRewardKillBountyMultiplicatorDiamonds();
+	public Integer getRewardKillBountyMultiplicatorPoints();
 }
