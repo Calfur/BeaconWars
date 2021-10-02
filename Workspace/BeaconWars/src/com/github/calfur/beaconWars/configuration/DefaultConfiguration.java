@@ -22,11 +22,11 @@ public class DefaultConfiguration implements IConfiguration{
 	private final int rewardBeaconRaidSuccessPoints = 1000;
 	/***
 	 * The multiplicator of the bounty reward.
-	 * Example 1: When a Player has a bounty of 2 and gets killed, the killer gets 2x the set reward.
-	 * If The reward is set to 5, the player will get 10
+	 * Example 1: When a player has a bounty of 2 and gets killed, the killer gets 2x the set reward.
+	 * If the reward is set to 5, the player will get 10
 	 * 
-	 * Example 2: When a Player has a bounty of 3 and gets killed, the killer gets 3x the set reward.
-	 * If The reward is set to 0, the player will get 0
+	 * Example 2: When a player has a bounty of 3 and gets killed, the killer gets 3x the set reward.
+	 * If the reward is set to 0, the player will get 0
 	 */
 	private final int rewardKillBountyMultiplicatorDiamonds = 1;
 	private final int rewardKillBountyMultiplicatorPoints = 50;
