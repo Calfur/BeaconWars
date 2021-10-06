@@ -8,4 +8,5 @@ public interface IConfiguration {
 	public Integer getRewardBeaconRaidSuccessPoints();
 	public Integer getRewardKillBountyMultiplicatorDiamonds();
 	public Integer getRewardKillBountyMultiplicatorPoints();
+	public Boolean areHungerGamesEnabled();
 }

@@ -30,6 +30,10 @@ public class DefaultConfiguration implements IConfiguration{
 	 */
 	private final int rewardKillBountyMultiplicatorDiamonds = 1;
 	private final int rewardKillBountyMultiplicatorPoints = 50;
+	/***
+	 * If this is set to true every full hour spawns a diamond
+	 */
+	private final boolean areHungerGamesEnabled = true;
 
 	@Override
 	public String getScoreboardTitle() {
@@ -66,4 +70,8 @@ public class DefaultConfiguration implements IConfiguration{
 		return rewardKillBountyMultiplicatorPoints;
 	}
 	
+	@Override
+	public Boolean areHungerGamesEnabled() {
+		return areHungerGamesEnabled;
+	}
 }

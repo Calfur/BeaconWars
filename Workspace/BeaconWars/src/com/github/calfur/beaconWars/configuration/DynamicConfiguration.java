@@ -8,7 +8,8 @@ public class DynamicConfiguration implements IConfiguration {
 	private Integer rewardBeaconRaidSuccessPoints;
 	private Integer rewardKillBountyMultiplicatorDiamonds;
 	private Integer rewardKillBountyMultiplicatorPoints;
-	
+	private Boolean areHungerGamesEnabled;
+
 	public DynamicConfiguration(
 			String scoreboardTitle,
 			Integer rewardBestBeaconDefenseDiamonds,
@@ -16,7 +17,8 @@ public class DynamicConfiguration implements IConfiguration {
 			Integer rewardBeaconRaidSuccessDiamonds,
 			Integer rewardBeaconRaidSuccessPoints,
 			Integer rewardKillBountyMultiplicatorDiamonds,
-			Integer rewardKillBountyMultiplicatorPoints
+			Integer rewardKillBountyMultiplicatorPoints,
+			Boolean areHungerGamesEnabled
 	){
 		this.scoreboardTitle = scoreboardTitle;
 		this.rewardBeaconDefenseTotalDiamonds = rewardBestBeaconDefenseDiamonds;
@@ -25,6 +27,7 @@ public class DynamicConfiguration implements IConfiguration {
 		this.rewardBeaconRaidSuccessPoints = rewardBeaconRaidSuccessPoints;
 		this.rewardKillBountyMultiplicatorDiamonds = rewardKillBountyMultiplicatorDiamonds;
 		this.rewardKillBountyMultiplicatorPoints = rewardKillBountyMultiplicatorPoints;
+		this.areHungerGamesEnabled = areHungerGamesEnabled;
 	}
 
 	@Override
@@ -62,4 +65,8 @@ public class DynamicConfiguration implements IConfiguration {
 		return rewardKillBountyMultiplicatorPoints;
 	}
 	
+	@Override
+	public Boolean areHungerGamesEnabled() {
+		return areHungerGamesEnabled;
+	}
 }

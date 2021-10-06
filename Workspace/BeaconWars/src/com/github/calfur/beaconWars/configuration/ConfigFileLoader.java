@@ -21,7 +21,8 @@ public class ConfigFileLoader {
 			getRewardBeaconRaidSuccessDiamonds(),
 			getRewardBeaconRaidSuccessPoints(),
 			getRewardKillBountyMultiplicatorDiamonds(),
-			getRewardKillBountyMultiplicatorPoints()
+			getRewardKillBountyMultiplicatorPoints(),
+			areHungerGamesEnabled()
 		);
 	}
 	
@@ -53,6 +54,10 @@ public class ConfigFileLoader {
 		return getIntegerConfiguration("RewardKillBountyMultiplicatorPoints");
 	}
 
+	public Boolean areHungerGamesEnabled() {
+		return getBooleanConfiguration("AreHungerGamesEnabled");
+	}
+
 	public boolean loadConfigFile() {
 		configFile = new File(ConstantConfiguration.pluginFolder, "config.yml");
 		
@@ -69,13 +74,24 @@ public class ConfigFileLoader {
 		return true;
 	}
 
-	private Integer getIntegerConfiguration(String path) {
+	private Integer getIntegerConfiguration(String configName) {
 		try {			
-			return (int)configFileConfiguration.get(path);
+			return (int)configFileConfiguration.get(configName);
 		}catch (NullPointerException e){
 			return null;
 		}catch(ClassCastException e) {
-			System.out.println("[" + ConstantConfiguration.pluginName + "] Config file loader: " + ANSI_RED + "The number set for " + path + " is not valid" + ANSI_RESET);
+			System.out.println("[" + ConstantConfiguration.pluginName + "] Config file loader: " + ANSI_RED + "The number set for " + configName + " is not valid" + ANSI_RESET);
+			return null;
+		}
+	}
+	
+	private Boolean getBooleanConfiguration(String configName) {
+		try {			
+			return (boolean)configFileConfiguration.get(configName);
+		}catch (NullPointerException e){
+			return null;
+		}catch(ClassCastException e) {
+			System.out.println("[" + ConstantConfiguration.pluginName + "] Config file loader: " + ANSI_RED + "The number set for " + configName + " is not valid" + ANSI_RESET);
 			return null;
 		}
 	}

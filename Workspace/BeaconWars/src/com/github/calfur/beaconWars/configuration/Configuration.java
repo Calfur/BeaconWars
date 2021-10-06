@@ -3,15 +3,15 @@ package com.github.calfur.beaconWars.configuration;
 public class Configuration implements IConfiguration{
 	private DefaultConfiguration defaultConfiguration = new DefaultConfiguration();
 	private DynamicConfiguration dynamicConfiguration;
-	
+
 	public void setDynamicConfiguration(DynamicConfiguration dynamicConfiguration) {
 		this.dynamicConfiguration = dynamicConfiguration;
 	}
-	
+
 	public Configuration(DynamicConfiguration dynamicConfiguration) {
 		this.dynamicConfiguration = dynamicConfiguration;
 	}
-	
+
 	@Override
 	public String getScoreboardTitle() {
 		return getPreferredConfiguration(
@@ -35,7 +35,7 @@ public class Configuration implements IConfiguration{
 				defaultConfiguration.getRewardBeaconDefenseTotalPoints()
 		);
 	}
-	
+
 	@Override
 	public Integer getRewardBeaconRaidSuccessDiamonds() {
 		return getPreferredConfiguration(
@@ -67,13 +67,19 @@ public class Configuration implements IConfiguration{
 				defaultConfiguration.getRewardKillBountyMultiplicatorPoints()
 		);
 	}
-	
+
+	@Override
+	public Boolean areHungerGamesEnabled() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.areHungerGamesEnabled(), 
+				defaultConfiguration.areHungerGamesEnabled()
+		);
+	}
+
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {
 			return preferred;
 		}
 		return alternative;
 	}
-
-
 }
