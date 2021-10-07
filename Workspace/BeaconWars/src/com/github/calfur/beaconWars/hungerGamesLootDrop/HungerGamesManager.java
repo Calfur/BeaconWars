@@ -3,17 +3,11 @@ package com.github.calfur.beaconWars.hungerGamesLootDrop;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
 
 public class HungerGamesManager {
-	
-	public static final Location spawnLocation = new Location(Bukkit.getWorlds().get(0), 0.5, 80, 0.5);
-
-	public void startItemSpawner() {		
+	public void startItemSpawner() {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime fullHour = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0);
 		
@@ -24,7 +18,7 @@ public class HungerGamesManager {
 		}
 		
 		TaskScheduler.getInstance().scheduleRepeatingTask(Main.getInstance(), 
-				new ItemSpawner(spawnLocation), 
+				new ItemSpawner(), 
 				fullHour, 
 				3600);
 		
@@ -32,6 +26,5 @@ public class HungerGamesManager {
 				new ItemSpawnAnnouncer(), 
 				fullHour.minusMinutes(5), 
 				3600);
-	
 	}
 }

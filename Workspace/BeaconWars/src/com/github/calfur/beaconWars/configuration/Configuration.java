@@ -1,5 +1,7 @@
 package com.github.calfur.beaconWars.configuration;
 
+import org.bukkit.Location;
+
 public class Configuration implements IConfiguration{
 	private DefaultConfiguration defaultConfiguration = new DefaultConfiguration();
 	private DynamicConfiguration dynamicConfiguration;
@@ -73,6 +75,14 @@ public class Configuration implements IConfiguration{
 		return getPreferredConfiguration(
 				dynamicConfiguration.areHungerGamesEnabled(), 
 				defaultConfiguration.areHungerGamesEnabled()
+		);
+	}
+
+	@Override
+	public Location getHungerGamesLocation() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getHungerGamesLocation(), 
+				defaultConfiguration.getHungerGamesLocation()
 		);
 	}
 

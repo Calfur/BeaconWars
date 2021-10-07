@@ -1,5 +1,7 @@
 package com.github.calfur.beaconWars.configuration;
 
+import org.bukkit.Location;
+
 public class DynamicConfiguration implements IConfiguration {
 	private String scoreboardTitle;
 	private Integer rewardBeaconDefenseTotalDiamonds;
@@ -9,6 +11,7 @@ public class DynamicConfiguration implements IConfiguration {
 	private Integer rewardKillBountyMultiplicatorDiamonds;
 	private Integer rewardKillBountyMultiplicatorPoints;
 	private Boolean areHungerGamesEnabled;
+	private Location hungerGamesLocation;
 
 	public DynamicConfiguration(
 			String scoreboardTitle,
@@ -18,7 +21,8 @@ public class DynamicConfiguration implements IConfiguration {
 			Integer rewardBeaconRaidSuccessPoints,
 			Integer rewardKillBountyMultiplicatorDiamonds,
 			Integer rewardKillBountyMultiplicatorPoints,
-			Boolean areHungerGamesEnabled
+			Boolean areHungerGamesEnabled,
+			Location hungerGamesLocation
 	){
 		this.scoreboardTitle = scoreboardTitle;
 		this.rewardBeaconDefenseTotalDiamonds = rewardBestBeaconDefenseDiamonds;
@@ -28,6 +32,7 @@ public class DynamicConfiguration implements IConfiguration {
 		this.rewardKillBountyMultiplicatorDiamonds = rewardKillBountyMultiplicatorDiamonds;
 		this.rewardKillBountyMultiplicatorPoints = rewardKillBountyMultiplicatorPoints;
 		this.areHungerGamesEnabled = areHungerGamesEnabled;
+		this.hungerGamesLocation = hungerGamesLocation;
 	}
 
 	@Override
@@ -68,5 +73,10 @@ public class DynamicConfiguration implements IConfiguration {
 	@Override
 	public Boolean areHungerGamesEnabled() {
 		return areHungerGamesEnabled;
+	}
+
+	@Override
+	public Location getHungerGamesLocation() {
+		return hungerGamesLocation;
 	}
 }

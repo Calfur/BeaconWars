@@ -12,21 +12,21 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.CompassMeta;
 
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.database.TeamJson;
 import com.github.calfur.beaconWars.helperClasses.InventoryManagement;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
-import com.github.calfur.beaconWars.hungerGamesLootDrop.HungerGamesManager;
 
 public class CompassManager {
-
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 	
 	public void addCompassToInventory(Player player, CompassType compassType) {
 		switch (compassType) {
 		case spawn:			
-			addCompassToInventory(player, HungerGamesManager.spawnLocation, ChatColor.RESET + "Spawn");
+			addCompassToInventory(player, configuration.getHungerGamesLocation(), ChatColor.RESET + "Spawn");
 			break;
 		default:
 			player.sendMessage(StringFormatter.error("Unerwarteter Fehler beim ausführen des Commands"));

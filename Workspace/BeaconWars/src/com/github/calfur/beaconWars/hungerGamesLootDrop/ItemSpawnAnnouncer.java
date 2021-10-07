@@ -12,8 +12,8 @@ public class ItemSpawnAnnouncer implements Runnable{
 	@Override
 	public void run() {
 		if(configuration.areHungerGamesEnabled()) {	
-			Bukkit.broadcastMessage(ChatColor.GOLD + "In 5 Minuten spawnt in der Mitte ein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + ", falls mindestens " + ItemSpawner.minimumOfRequiredTeams + " Teams online sind");
-	
+			Bukkit.broadcastMessage(ChatColor.GOLD + "In 5 Minuten spawnt in der Mitte ein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + ", falls mindestens " + ItemSpawner.minimumOfRequiredTeams + " Teams online sind.");
+			Bukkit.broadcastMessage(ChatColor.GOLD + "Benutze den Befehl " + ChatColor.WHITE + "/kompass spawn" + ChatColor.GOLD + " um einen Kompass dorthin zu bekommen");
 		}
 	}
 }

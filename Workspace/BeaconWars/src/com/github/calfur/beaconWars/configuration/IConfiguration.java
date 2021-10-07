@@ -1,5 +1,7 @@
 package com.github.calfur.beaconWars.configuration;
 
+import org.bukkit.Location;
+
 public interface IConfiguration {
 	public String getScoreboardTitle();
 	public Integer getRewardBeaconDefenseTotalDiamonds();
@@ -9,4 +11,5 @@ public interface IConfiguration {
 	public Integer getRewardKillBountyMultiplicatorDiamonds();
 	public Integer getRewardKillBountyMultiplicatorPoints();
 	public Boolean areHungerGamesEnabled();
+	public Location getHungerGamesLocation();
 }

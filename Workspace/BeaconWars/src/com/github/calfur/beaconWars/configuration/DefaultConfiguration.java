@@ -1,5 +1,8 @@
 package com.github.calfur.beaconWars.configuration;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
 public class DefaultConfiguration implements IConfiguration{
 	/***
 	 * The title of the scoreboard
@@ -34,6 +37,22 @@ public class DefaultConfiguration implements IConfiguration{
 	 * If this is set to true every full hour spawns a diamond
 	 */
 	private final boolean areHungerGamesEnabled = true;
+	/***
+	 * X coordinate where the hunger game diamond spawns
+	 */
+	private final double hungerGamesLocationX = 0.5;
+	/***
+	 * Y coordinate where the hunger game diamond spawns
+	 */
+	private final double hungerGamesLocationY = 80;
+	/***
+	 * Z coordinate where the hunger game diamond spawns
+	 */
+	private final double hungerGamesLocationZ = 0.5;
+	/***
+	 * World name where the hunger game diamond spawns
+	 */
+	private final String hungerGamesLocationWorld = "world";
 
 	@Override
 	public String getScoreboardTitle() {
@@ -73,5 +92,15 @@ public class DefaultConfiguration implements IConfiguration{
 	@Override
 	public Boolean areHungerGamesEnabled() {
 		return areHungerGamesEnabled;
+	}
+	
+	@Override
+	public Location getHungerGamesLocation() {
+		return new Location(
+			Bukkit.getWorld(hungerGamesLocationWorld),
+			hungerGamesLocationX,
+			hungerGamesLocationY,
+			hungerGamesLocationZ
+		);
 	}
 }

@@ -3,6 +3,8 @@ package com.github.calfur.beaconWars.configuration;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -22,12 +24,13 @@ public class ConfigFileLoader {
 			getRewardBeaconRaidSuccessPoints(),
 			getRewardKillBountyMultiplicatorDiamonds(),
 			getRewardKillBountyMultiplicatorPoints(),
-			areHungerGamesEnabled()
+			areHungerGamesEnabled(),
+			getHungerGamesLocation()
 		);
 	}
 	
 	private String getScoreboardTitle() {
-		return (String)configFileConfiguration.get("ScoreboardTitle");
+		return getStringConfiguration("ScoreboardTitle");
 	}
 
 	private Integer getRewardBestBeaconDefenseDiamonds() {
@@ -57,6 +60,27 @@ public class ConfigFileLoader {
 	public Boolean areHungerGamesEnabled() {
 		return getBooleanConfiguration("AreHungerGamesEnabled");
 	}
+	
+	public Location getHungerGamesLocation() {
+		Double hungerGamesLocationX = getDoubleConfiguration("HungerGamesLocationX");
+		Double hungerGamesLocationY = getDoubleConfiguration("HungerGamesLocationY");
+		Double hungerGamesLocationZ = getDoubleConfiguration("HungerGamesLocationZ");
+		String hungerGamesLocationWorld = getStringConfiguration("HungerGamesLocationWorld");
+
+		if(hungerGamesLocationX == null
+			|| hungerGamesLocationY == null
+			|| hungerGamesLocationZ == null
+			|| hungerGamesLocationWorld == null) {
+			return null;
+		}
+		
+		return new Location(
+			Bukkit.getWorld(hungerGamesLocationWorld),
+			hungerGamesLocationX,
+			hungerGamesLocationY,
+			hungerGamesLocationZ
+		);
+	}
 
 	public boolean loadConfigFile() {
 		configFile = new File(ConstantConfiguration.pluginFolder, "config.yml");
@@ -74,9 +98,31 @@ public class ConfigFileLoader {
 		return true;
 	}
 
+	private String getStringConfiguration(String configName) {
+		String value = (String) configFileConfiguration.get(configName);
+		if(value == null) {
+			return null;
+		}
+		if(value.isEmpty()) {
+			return null;
+		}
+		return value;
+	}
+	
 	private Integer getIntegerConfiguration(String configName) {
 		try {			
 			return (int)configFileConfiguration.get(configName);
+		}catch (NullPointerException e){
+			return null;
+		}catch(ClassCastException e) {
+			System.out.println("[" + ConstantConfiguration.pluginName + "] Config file loader: " + ANSI_RED + "The number set for " + configName + " is not valid" + ANSI_RESET);
+			return null;
+		}
+	}
+
+	private Double getDoubleConfiguration(String configName) {
+		try {			
+			return (double)configFileConfiguration.get(configName);
 		}catch (NullPointerException e){
 			return null;
 		}catch(ClassCastException e) {
