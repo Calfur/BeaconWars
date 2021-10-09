@@ -15,4 +15,8 @@ public interface IConfiguration {
 	public Integer getHungerGamesMinimumAmountOfRequiredOnlineTeams();
 	public Boolean areTeamPointsDisplayedInScoreboard();
 	public Integer getTotemCooldownLengthInMinutes();
+	public Integer getAttackDurationInSeconds();
+	public Integer getTimeUntilDeathCountsNotAsKillInSeconds();
+	public Integer getBuildModeCooldownInMinutes();
+	public Integer getBuildModeBaseRangeRadiusInBlocks();
 }

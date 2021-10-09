@@ -26,12 +26,14 @@ import com.github.calfur.beaconWars.PlayerModeManager;
 import com.github.calfur.beaconWars.Reward;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
 import com.github.calfur.beaconWars.commands.CommandProjectStart;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.helperClasses.KillHelper;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class KillEvents implements Listener {
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection(); 
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection(); 
 	
@@ -145,7 +147,7 @@ public class KillEvents implements Listener {
 		LatestHitByPlayer latestHitByPlayer = GetLatestHitByPlayer(player.getName());
 		if(latestHitByPlayer != null) {
 			long secondsBetween = ChronoUnit.SECONDS.between(latestHitByPlayer.getDateTime(), LocalDateTime.now());
-			if(secondsBetween < 60) {
+			if(secondsBetween < configuration.getTimeUntilDeathCountsNotAsKillInSeconds()) {
 				removeUndroppableItems(event.getDrops());
 				
 				String killer = latestHitByPlayer.getAttacker();

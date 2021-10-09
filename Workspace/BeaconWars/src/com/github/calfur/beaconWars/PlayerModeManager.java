@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
@@ -18,15 +19,14 @@ import com.github.calfur.beaconWars.pvp.TeamAttackManager;
 import com.github.calfur.beaconWars.pvp.TopKiller;
 
 public class PlayerModeManager {
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamAttackManager teamAttackManager = Main.getInstance().getTeamAttackManager();
 	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 	
 	private HashMap<String, PlayerMode> playerModes = new HashMap<String, PlayerMode>();
-	public static final int buildModeCooldownInMinutes = 30;
-	private static final int baseRange = 100;
-	private static final int buildModeRangeCheckDelayInSeconds = 1;
+	private final int buildModeRangeCheckDelayInSeconds = 1;
 	
 	private PlayerMode getPlayerMode(String playerName) {
 		return playerModes.get(playerName.toLowerCase());
@@ -121,7 +121,7 @@ public class PlayerModeManager {
 		}
 		
 		if(!isPlayerWithinRangeOfHisBase(player)) {	
-			player.sendMessage(StringFormatter.error("Du befindest dich mehr als " + baseRange + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden."));
+			player.sendMessage(StringFormatter.error("Du befindest dich mehr als " + configuration.getBuildModeBaseRangeRadiusInBlocks() + " Blöcke von deinem Beacon entfernt. Der Baumodus kann hier nicht aktiviert werden."));
 			return false;
 		}
 		
@@ -132,8 +132,8 @@ public class PlayerModeManager {
 		}
 		
 		long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
-		if(minutesSinceDeactivated < buildModeCooldownInMinutes) {
-			player.sendMessage(StringFormatter.error("Der Baumodus kann erst in " + (buildModeCooldownInMinutes - minutesSinceDeactivated) + " Minuten erneut aktiviert werden"));
+		if(minutesSinceDeactivated < configuration.getBuildModeCooldownInMinutes()) {
+			player.sendMessage(StringFormatter.error("Der Baumodus kann erst in " + (configuration.getBuildModeCooldownInMinutes() - minutesSinceDeactivated) + " Minuten erneut aktiviert werden"));
 			return false;
 		}
 		
@@ -148,7 +148,7 @@ public class PlayerModeManager {
 		int distanceX = Math.abs(playerLocation.getBlockX() - baseLocation.getBlockX());
 		int distanceZ = Math.abs(playerLocation.getBlockZ() - baseLocation.getBlockZ());
 		double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceZ, 2));
-		return (distance < baseRange) && (playerLocation.getWorld() == baseLocation.getWorld());
+		return (distance < configuration.getBuildModeBaseRangeRadiusInBlocks()) && (playerLocation.getWorld() == baseLocation.getWorld());
 	}
 	
 	public void reloadPlayerMode(Player player) {

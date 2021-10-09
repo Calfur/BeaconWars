@@ -8,14 +8,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class TeamAttackManager {
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
-	
-	private static final int attackDurationSeconds = 60*3;
 	
 	private HashMap<Integer, Attack> activeAttacks = new HashMap<Integer, Attack>();
 	
@@ -44,7 +44,7 @@ public class TeamAttackManager {
 		}		
 		int taskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(), 
 				new TeamAttackRemover(attack, this), 
-				LocalDateTime.now().plusSeconds(attackDurationSeconds));
+				LocalDateTime.now().plusSeconds(configuration.getAttackDurationInSeconds()));
 		activeAttacks.put(taskId, attack);
 	}
 	/**

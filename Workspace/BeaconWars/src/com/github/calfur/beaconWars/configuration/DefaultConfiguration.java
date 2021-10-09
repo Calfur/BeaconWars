@@ -7,7 +7,7 @@ public class DefaultConfiguration implements IConfiguration{
 	/***
 	 * The title of the scoreboard
 	 */
-	private final String scoreboardTitle = "Beacon Wars";
+	private static final String scoreboardTitle = "Beacon Wars";
 	/***
 	 * The total reward which the teams with the best beacon defense get.
 	 * Example 1: During a beaconfight team 1 has stolen the beacon of team 2.
@@ -16,13 +16,13 @@ public class DefaultConfiguration implements IConfiguration{
 	 * Example 2: During a beaconfight team 1 has stolen the beacon of team 2 and team 2 has stolen the beacon of team 1.
 	 * If the total reward is set to 12, team 3 will get 12, team 1 and team 2 will get 0.
 	 */
-	private final int rewardBeaconDefenseTotalDiamonds = 0;
-	private final int rewardBeaconDefenseTotalPoints = 1000;
+	private static final int rewardBeaconDefenseTotalDiamonds = 0;
+	private static final int rewardBeaconDefenseTotalPoints = 1000;
 	/***
 	 * The reward that the player who steals and retrieves a beacon gets
 	 */
-	private final int rewardBeaconRaidSuccessDiamonds = 7;
-	private final int rewardBeaconRaidSuccessPoints = 1000;
+	private static final int rewardBeaconRaidSuccessDiamonds = 7;
+	private static final int rewardBeaconRaidSuccessPoints = 1000;
 	/***
 	 * The multiplicator of the bounty reward.
 	 * Example 1: When a player has a bounty of 2 and gets killed, the killer gets 2x the set reward.
@@ -31,41 +31,62 @@ public class DefaultConfiguration implements IConfiguration{
 	 * Example 2: When a player has a bounty of 3 and gets killed, the killer gets 3x the set reward.
 	 * If the reward is set to 0, the player will get 0
 	 */
-	private final int rewardKillBountyMultiplicatorDiamonds = 1;
-	private final int rewardKillBountyMultiplicatorPoints = 50;
+	private static final int rewardKillBountyMultiplicatorDiamonds = 1;
+	private static final int rewardKillBountyMultiplicatorPoints = 50;
 	/***
 	 * If this is set to true every full hour spawns a diamond
 	 */
-	private final boolean areHungerGamesEnabled = true;
+	private static final boolean areHungerGamesEnabled = true;
 	/***
 	 * X coordinate where the hunger game diamond spawns
 	 */
-	private final double hungerGamesLocationX = 0.5;
+	private static final double hungerGamesLocationX = 0.5;
 	/***
 	 * Y coordinate where the hunger game diamond spawns
 	 */
-	private final double hungerGamesLocationY = 80;
+	private static final double hungerGamesLocationY = 80;
 	/***
 	 * Z coordinate where the hunger game diamond spawns
 	 */
-	private final double hungerGamesLocationZ = 0.5;
+	private static final double hungerGamesLocationZ = 0.5;
 	/***
 	 * World name where the hunger game diamond spawns
 	 */
-	private final String hungerGamesLocationWorld = "world";
+	private static final String hungerGamesLocationWorld = "world";
 	/***
 	 * Minimum amout of teams of which at least one player must be online, that the hunger games diamond spawns. 
 	 * If this is set to 0, the diamond will as well spawn if no one is online.
 	 */
-	private final int hungerGamesMinimumAmountOfRequiredOnlineTeams = 2;
+	private static final int hungerGamesMinimumAmountOfRequiredOnlineTeams = 2;
 	/***
 	 * If this is set to true the team points are displayed in the scoreboard
 	 */
-	private final boolean areTeamPointsDisplayedInScoreboard = true;
+	private static final boolean areTeamPointsDisplayedInScoreboard = true;
 	/***
 	 * The duration after using a totem until the player is able to use another one
 	 */
-	private final int totemCooldownLengthInMinutes = 15;
+	private static final int totemCooldownLengthInMinutes = 15;
+	/***
+	 * The time until the attack disapears from the scoreboard, after a player gets damage by player from another team.
+	 * In this time players from both teams can't switch to the buildmode
+	 */
+	private static final int attackDurationInSeconds = 180;
+	/***
+	 * The time until the death does not count as kill anymore.
+	 * Example: This configuration is set to 60. 
+	 * Player A hits Player B with his bow.
+	 * After 24s Blayer B dies in lava.
+	 * This death counts as kill for Player A
+	 */
+	private static final int timeUntilDeathCountsNotAsKillInSeconds = 60;
+	/***
+	 * The cooldown until a player can use the buildmode again after exiting it 
+	 */
+	private static final int buildModeCooldownInMinutes = 30;
+	/***
+	 * The radius around the team beacon in which team members are able to activate the buildmode
+	 */
+	private static final int buildModeBaseRangeRadiusInBlocks = 100;
 
 	@Override
 	public String getScoreboardTitle() {
@@ -130,5 +151,25 @@ public class DefaultConfiguration implements IConfiguration{
 	@Override
 	public Integer getTotemCooldownLengthInMinutes() {
 		return totemCooldownLengthInMinutes;
+	}
+
+	@Override
+	public Integer getAttackDurationInSeconds() {
+		return attackDurationInSeconds;
+	}
+
+	@Override
+	public Integer getTimeUntilDeathCountsNotAsKillInSeconds() {
+		return timeUntilDeathCountsNotAsKillInSeconds;
+	}
+
+	@Override
+	public Integer getBuildModeCooldownInMinutes() {
+		return buildModeCooldownInMinutes;
+	}
+
+	@Override
+	public Integer getBuildModeBaseRangeRadiusInBlocks() {
+		return buildModeBaseRangeRadiusInBlocks;
 	}
 }

@@ -28,7 +28,11 @@ public class ConfigFileLoader {
 			getHungerGamesLocation(),
 			getHungerGamesMinimumAmountOfRequiredOnlineTeams(),
 			areTeamPointsDisplayedInScoreboard(),
-			getTotemCooldownLengthInMinutes()
+			getTotemCooldownLengthInMinutes(),
+			getAttackDurationInSeconds(),
+			getTimeUntilDeathCountsNotAsKillInSeconds(),
+			getBuildModeCooldownInMinutes(),
+			getBuildModeBaseRangeRadiusInBlocks()
 		);
 	}
 	
@@ -60,11 +64,11 @@ public class ConfigFileLoader {
 		return getIntegerConfiguration("RewardKillBountyMultiplicatorPoints");
 	}
 
-	public Boolean areHungerGamesEnabled() {
+	private Boolean areHungerGamesEnabled() {
 		return getBooleanConfiguration("AreHungerGamesEnabled");
 	}
 	
-	public Location getHungerGamesLocation() {
+	private Location getHungerGamesLocation() {
 		Double hungerGamesLocationX = getDoubleConfiguration("HungerGamesLocationX");
 		Double hungerGamesLocationY = getDoubleConfiguration("HungerGamesLocationY");
 		Double hungerGamesLocationZ = getDoubleConfiguration("HungerGamesLocationZ");
@@ -85,16 +89,32 @@ public class ConfigFileLoader {
 		);
 	}
 
-	public Integer getHungerGamesMinimumAmountOfRequiredOnlineTeams() {
+	private Integer getHungerGamesMinimumAmountOfRequiredOnlineTeams() {
 		return getIntegerConfiguration("HungerGamesMinimumAmountOfRequiredOnlineTeams");
 	}
 	
-	public Boolean areTeamPointsDisplayedInScoreboard() {
+	private Boolean areTeamPointsDisplayedInScoreboard() {
 		return getBooleanConfiguration("AreTeamPointsDisplayedInScoreboard");
 	}
 	
-	public Integer getTotemCooldownLengthInMinutes() {
+	private Integer getTotemCooldownLengthInMinutes() {
 		return getIntegerConfiguration("TotemCooldownLengthInMinutes");
+	}
+
+	private Integer getAttackDurationInSeconds() {
+		return getIntegerConfiguration("AttackDurationInSeconds");
+	}
+
+	private Integer getTimeUntilDeathCountsNotAsKillInSeconds() {
+		return getIntegerConfiguration("TimeUntilDeathCountsNotAsKillInSeconds");
+	}
+
+	private Integer getBuildModeCooldownInMinutes() {
+		return getIntegerConfiguration("BuildModeCooldownInMinutes");
+	}
+
+	private Integer getBuildModeBaseRangeRadiusInBlocks() {
+		return getIntegerConfiguration("BuildModeBaseRangeRadiusInBlocks");
 	}
 
 	public boolean loadConfigFile() {

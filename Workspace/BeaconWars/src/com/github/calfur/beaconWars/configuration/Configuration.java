@@ -110,6 +110,38 @@ public class Configuration implements IConfiguration{
 		);
 	}
 
+	@Override
+	public Integer getAttackDurationInSeconds() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getAttackDurationInSeconds(), 
+				defaultConfiguration.getAttackDurationInSeconds()
+		);
+	}
+
+	@Override
+	public Integer getTimeUntilDeathCountsNotAsKillInSeconds() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getTimeUntilDeathCountsNotAsKillInSeconds(), 
+				defaultConfiguration.getTimeUntilDeathCountsNotAsKillInSeconds()
+		);
+	}
+
+	@Override
+	public Integer getBuildModeCooldownInMinutes() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getBuildModeCooldownInMinutes(), 
+				defaultConfiguration.getBuildModeCooldownInMinutes()
+		);
+	}
+
+	@Override
+	public Integer getBuildModeBaseRangeRadiusInBlocks() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getBuildModeBaseRangeRadiusInBlocks(), 
+				defaultConfiguration.getBuildModeBaseRangeRadiusInBlocks()
+		);
+	}
+
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {
 			return preferred;

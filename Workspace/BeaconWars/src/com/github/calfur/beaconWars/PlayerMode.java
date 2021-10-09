@@ -7,13 +7,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
+
 public class PlayerMode {
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
+	
 	private String player;
 	private boolean highlightedActive = false;
 	private boolean buildModeActive = false;
-	private LocalDateTime buildModeDeactivatedAt = LocalDateTime.now().minusMinutes(PlayerModeManager.buildModeCooldownInMinutes);
-	private final static int secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange = 15;
-	private int secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;
+	private LocalDateTime buildModeDeactivatedAt = LocalDateTime.now().minusMinutes(configuration.getBuildModeCooldownInMinutes());
+	private int secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = ConstantConfiguration.secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;
 	
 	public Player getPlayer() {
 		return Bukkit.getServer().getPlayerExact(player);
@@ -28,7 +32,7 @@ public class PlayerMode {
 	}
 	
 	public void resetSecondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange() {
-		secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;		
+		secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = ConstantConfiguration.secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;		
 	}
 	
 	public PlayerMode(String player) {

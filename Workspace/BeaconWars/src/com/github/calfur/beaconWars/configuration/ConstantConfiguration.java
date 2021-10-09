@@ -7,4 +7,5 @@ public class ConstantConfiguration {
 	public static final int defaultBeaconFightLength = 90;
 	public static final int defaultBeaconRaidLength = 12;
 	public static final int spectatorTeamNumber = -1;
+	public static final int secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange = 15;
 }

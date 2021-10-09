@@ -15,6 +15,10 @@ public class DynamicConfiguration implements IConfiguration {
 	private Integer hungerGamesMinimumAmountOfRequiredOnlineTeams;
 	private Boolean areTeamPointsDisplayedInScoreboard;
 	private Integer totemCooldownLengthInMinutes;
+	private Integer attackDurationInSeconds;
+	private Integer timeUntilDeathCountsNotAsKillInSeconds;
+	private Integer buildModeCooldownInMinutes;
+	private Integer buildModeBaseRangeRadiusInBlocks;
 
 	public DynamicConfiguration(
 			String scoreboardTitle,
@@ -28,7 +32,11 @@ public class DynamicConfiguration implements IConfiguration {
 			Location hungerGamesLocation,
 			Integer hungerGamesMinimumAmountOfRequiredOnlineTeams,
 			Boolean areTeamPointsDisplayedInScoreboard,
-			Integer totemCooldownLengthInMinutes
+			Integer totemCooldownLengthInMinutes,
+			Integer attackDurationInSeconds,
+			Integer timeUntilDeathCountsNotAsKillInSeconds,
+			Integer buildModeCooldownInMinutes,
+			Integer buildModeBaseRangeRadiusInBlocks
 	){
 		this.scoreboardTitle = scoreboardTitle;
 		this.rewardBeaconDefenseTotalDiamonds = rewardBestBeaconDefenseDiamonds;
@@ -42,6 +50,10 @@ public class DynamicConfiguration implements IConfiguration {
 		this.hungerGamesMinimumAmountOfRequiredOnlineTeams = hungerGamesMinimumAmountOfRequiredOnlineTeams;
 		this.areTeamPointsDisplayedInScoreboard = areTeamPointsDisplayedInScoreboard;
 		this.totemCooldownLengthInMinutes = totemCooldownLengthInMinutes;
+		this.attackDurationInSeconds = attackDurationInSeconds;
+		this.timeUntilDeathCountsNotAsKillInSeconds = timeUntilDeathCountsNotAsKillInSeconds;
+		this.buildModeCooldownInMinutes = buildModeCooldownInMinutes;
+		this.buildModeBaseRangeRadiusInBlocks = buildModeBaseRangeRadiusInBlocks;
 	}
 
 	@Override
@@ -101,5 +113,25 @@ public class DynamicConfiguration implements IConfiguration {
 	@Override
 	public Integer getTotemCooldownLengthInMinutes() {
 		return totemCooldownLengthInMinutes;
+	}
+
+	@Override
+	public Integer getAttackDurationInSeconds() {
+		return attackDurationInSeconds;
+	}
+
+	@Override
+	public Integer getTimeUntilDeathCountsNotAsKillInSeconds() {
+		return timeUntilDeathCountsNotAsKillInSeconds;
+	}
+
+	@Override
+	public Integer getBuildModeCooldownInMinutes() {
+		return buildModeCooldownInMinutes;
+	}
+
+	@Override
+	public Integer getBuildModeBaseRangeRadiusInBlocks() {
+		return buildModeBaseRangeRadiusInBlocks;
 	}
 }
