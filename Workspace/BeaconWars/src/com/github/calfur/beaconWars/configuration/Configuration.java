@@ -94,6 +94,14 @@ public class Configuration implements IConfiguration{
 		);
 	}
 
+	@Override
+	public Integer getTotemCooldownLengthInMinutes() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getTotemCooldownLengthInMinutes(), 
+				defaultConfiguration.getTotemCooldownLengthInMinutes()
+		);
+	}
+
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {
 			return preferred;

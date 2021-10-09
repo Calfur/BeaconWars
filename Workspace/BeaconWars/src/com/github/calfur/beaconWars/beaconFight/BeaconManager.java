@@ -20,7 +20,6 @@ import com.github.calfur.beaconWars.PlayerKicker;
 import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
-import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.database.TeamJson;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 import com.github.calfur.beaconWars.pvp.Team;

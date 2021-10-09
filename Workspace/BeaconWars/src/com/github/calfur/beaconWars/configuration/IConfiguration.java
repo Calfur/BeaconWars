@@ -13,4 +13,5 @@ public interface IConfiguration {
 	public Boolean areHungerGamesEnabled();
 	public Location getHungerGamesLocation();
 	public Boolean areTeamPointsDisplayedInScoreboard();
+	public Integer getTotemCooldownLengthInMinutes();
 }

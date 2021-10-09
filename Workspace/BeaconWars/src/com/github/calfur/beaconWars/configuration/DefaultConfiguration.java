@@ -57,6 +57,10 @@ public class DefaultConfiguration implements IConfiguration{
 	 * If this is set to true the team points are displayed in the scoreboard
 	 */
 	private final boolean areTeamPointsDisplayedInScoreboard = true;
+	/***
+	 * The duration after using a totem until the player is able to use another one
+	 */
+	private final int totemCooldownLengthInMinutes = 15;
 
 	@Override
 	public String getScoreboardTitle() {
@@ -111,5 +115,10 @@ public class DefaultConfiguration implements IConfiguration{
 	@Override
 	public Boolean areTeamPointsDisplayedInScoreboard() {
 		return areTeamPointsDisplayedInScoreboard;
+	}
+	
+	@Override
+	public Integer getTotemCooldownLengthInMinutes() {
+		return totemCooldownLengthInMinutes;
 	}
 }

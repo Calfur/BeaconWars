@@ -13,9 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityResurrectEvent;
 
+import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class TotemNerf implements Listener {
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	private static List<TotemCooldown> totemCooldowns = new ArrayList<TotemCooldown>();
 	
 	public static long getRemainingCooldownSeconds(UUID uuid) {
@@ -44,7 +47,7 @@ public class TotemNerf implements Listener {
 					totemCooldowns.remove(totemCooldown);
 				}
 				totemCooldowns.add(new TotemCooldown(uuid));
-				Bukkit.broadcastMessage(player.getDisplayName() + " hat ein Totem benutzt. " + StringFormatter.bold(TotemCooldown.cooldownLength + "min") + " Totem-Cooldown aktiviert.");
+				Bukkit.broadcastMessage(player.getDisplayName() + " hat ein Totem benutzt. " + StringFormatter.bold(configuration.getTotemCooldownLengthInMinutes() + "min") + " Totem-Cooldown aktiviert.");
 				player.sendMessage("Benutze " + StringFormatter.bold("/totemcooldown") + " um die verbleibende Zeit anzuzeigen");
 			}
 		}

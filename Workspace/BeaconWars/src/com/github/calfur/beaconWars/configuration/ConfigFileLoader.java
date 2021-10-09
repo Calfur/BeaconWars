@@ -26,7 +26,8 @@ public class ConfigFileLoader {
 			getRewardKillBountyMultiplicatorPoints(),
 			areHungerGamesEnabled(),
 			getHungerGamesLocation(),
-			areTeamPointsDisplayedInScoreboard()
+			areTeamPointsDisplayedInScoreboard(),
+			getTotemCooldownLengthInMinutes()
 		);
 	}
 	
@@ -85,6 +86,10 @@ public class ConfigFileLoader {
 
 	public Boolean areTeamPointsDisplayedInScoreboard() {
 		return getBooleanConfiguration("AreTeamPointsDisplayedInScoreboard");
+	}
+	
+	public Integer getTotemCooldownLengthInMinutes() {
+		return getIntegerConfiguration("TotemCooldownLengthInMinutes");
 	}
 
 	public boolean loadConfigFile() {

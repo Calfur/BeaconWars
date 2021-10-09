@@ -3,8 +3,11 @@ package com.github.calfur.beaconWars.disabling;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
+
 public class TotemCooldown {
-	public static final int cooldownLength = 10; // Length in Minutes
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	
 	private UUID playerId;
 	private LocalDateTime expirationTime;
@@ -19,7 +22,7 @@ public class TotemCooldown {
 	
 	public TotemCooldown(UUID playerId) {
 		this.playerId = playerId;
-		this.expirationTime = LocalDateTime.now().plusMinutes(cooldownLength);
+		this.expirationTime = LocalDateTime.now().plusMinutes(configuration.getTotemCooldownLengthInMinutes());
 	}
 	
 }
