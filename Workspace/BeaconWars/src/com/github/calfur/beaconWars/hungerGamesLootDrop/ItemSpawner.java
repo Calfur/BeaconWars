@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
-import com.github.calfur.beaconWars.database.TeamDbConnection;
 
 public class ItemSpawner implements Runnable {
 	IConfiguration configuration = Main.getInstance().getConfiguration();
@@ -43,7 +43,7 @@ public class ItemSpawner implements Runnable {
 			PlayerJson playerJson = playerDbConnection.getPlayer(player.getName());
 			if(playerJson != null) {
 				int teamId = playerJson.getTeamId();
-				if(teamId != TeamDbConnection.spectatorTeamNumber) {					
+				if(teamId != ConstantConfiguration.spectatorTeamNumber) {					
 					onlineTeams.add(teamId);
 				}
 			}

@@ -16,6 +16,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import com.github.calfur.beaconWars.beaconFight.BeaconFight;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.KillDbConnection;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
@@ -148,7 +149,7 @@ public class ScoreboardLoader {
 			ChatColor teamColor = teamDbConnection.getTeam(teamId).getColor();
 			int bounty = killDbConnection.getBounty(name);		
 			
-			if(teamId != TeamDbConnection.spectatorTeamNumber) {				
+			if(teamId != ConstantConfiguration.spectatorTeamNumber) {				
 				listName = teamColor + name + getActiveModes(player) + " " + ChatColor.AQUA + bounty + " Dias";
 				player.setPlayerListFooter(ChatColor.RESET + "Dein Guthaben: " + ChatColor.AQUA + "" + playerDbConnection.getPlayer(player.getName()).getCollectableDiamonds() + " Dias");
 			}else {

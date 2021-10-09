@@ -3,10 +3,10 @@ package com.github.calfur.beaconWars.database;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
+
 public class TeamDbConnection extends DbConnection<TeamJson> {
 
-	public static final int spectatorTeamNumber = -1;
-	
 	public TeamDbConnection() {
 		super("team.json");
 	}
@@ -18,7 +18,7 @@ public class TeamDbConnection extends DbConnection<TeamJson> {
 		
 	public boolean existsTeam(int teamNumber) {
 		String key = Integer.toString(teamNumber);
-		if(jsons != null && jsons.get(key) != null || teamNumber == spectatorTeamNumber) {
+		if(jsons != null && jsons.get(key) != null || teamNumber == ConstantConfiguration.spectatorTeamNumber) {
 			return true;
 		}
 		return false;
@@ -38,7 +38,7 @@ public class TeamDbConnection extends DbConnection<TeamJson> {
 
 	public TeamJson getTeam(int teamNumber) {
 		String key = Integer.toString(teamNumber);
-		if(teamNumber == spectatorTeamNumber) {
+		if(teamNumber == ConstantConfiguration.spectatorTeamNumber) {
 			return TeamJson.getSpectatorTeam();
 		}
 		return jsons.get(key.toLowerCase());

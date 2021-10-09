@@ -12,6 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.CompassMeta;
 
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
 import com.github.calfur.beaconWars.database.TeamJson;
@@ -36,7 +37,7 @@ public class CompassManager {
 	}
 
 	public void addCompassToInventory(Player player, CompassType compassType, int teamNumber) {
-		if(!teamDbConnection.existsTeam(teamNumber) || TeamDbConnection.spectatorTeamNumber == teamNumber) {				
+		if(!teamDbConnection.existsTeam(teamNumber) || ConstantConfiguration.spectatorTeamNumber == teamNumber) {				
 			player.sendMessage(StringFormatter.error("Ein Team mit der Nummer ") + teamNumber + StringFormatter.error(" existiert nicht"));
 			return;
 		}

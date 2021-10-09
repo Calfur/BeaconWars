@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
+
 public class PlayerDbConnection extends DbConnection<PlayerJson>{
 	
 	public PlayerDbConnection() {
@@ -48,7 +50,7 @@ public class PlayerDbConnection extends DbConnection<PlayerJson>{
 		HashMap<String, PlayerJson> result = new HashMap<String, PlayerJson>(jsons);
 		List<String> playersToRemove = new ArrayList<String>();
 		result.forEach((id, player) -> {
-			if(player.getTeamId() == TeamDbConnection.spectatorTeamNumber) {				
+			if(player.getTeamId() == ConstantConfiguration.spectatorTeamNumber) {				
 				playersToRemove.add(id);
 			}
 		});	
@@ -59,7 +61,7 @@ public class PlayerDbConnection extends DbConnection<PlayerJson>{
 	}
 
 	public boolean isPlayerSpectator(String key) {
-		if(getPlayer(key).getTeamId() == TeamDbConnection.spectatorTeamNumber) {
+		if(getPlayer(key).getTeamId() == ConstantConfiguration.spectatorTeamNumber) {
 			return true;
 		}
 		return false;

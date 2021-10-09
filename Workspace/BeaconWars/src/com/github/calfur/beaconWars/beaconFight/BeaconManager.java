@@ -17,6 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerKicker;
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
@@ -93,7 +94,7 @@ public class BeaconManager {
 			return false;
 		}
 		int teamIdOfPlayer = Main.getInstance().getPlayerDbConnection().getPlayer(player.getName()).getTeamId();
-		if(teamIdOfPlayer == TeamDbConnection.spectatorTeamNumber) {
+		if(teamIdOfPlayer == ConstantConfiguration.spectatorTeamNumber) {
 			player.sendMessage(StringFormatter.error("Du bist Spectator und kannst darum keinen Beacon abbauen"));
 			return false;
 		}
