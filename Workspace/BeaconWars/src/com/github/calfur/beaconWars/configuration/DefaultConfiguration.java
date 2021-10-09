@@ -54,6 +54,11 @@ public class DefaultConfiguration implements IConfiguration{
 	 */
 	private final String hungerGamesLocationWorld = "world";
 	/***
+	 * Minimum amout of teams of which at least one player must be online, that the hunger games diamond spawns. 
+	 * If this is set to 0, the diamond will as well spawn if no one is online.
+	 */
+	private final int hungerGamesMinimumAmountOfRequiredOnlineTeams = 2;
+	/***
 	 * If this is set to true the team points are displayed in the scoreboard
 	 */
 	private final boolean areTeamPointsDisplayedInScoreboard = true;
@@ -110,6 +115,11 @@ public class DefaultConfiguration implements IConfiguration{
 			hungerGamesLocationY,
 			hungerGamesLocationZ
 		);
+	}
+	
+	@Override
+	public Integer getHungerGamesMinimumAmountOfRequiredOnlineTeams() {
+		return hungerGamesMinimumAmountOfRequiredOnlineTeams;
 	}
 	
 	@Override

@@ -19,19 +19,18 @@ public class ItemSpawner implements Runnable {
 	IConfiguration configuration = Main.getInstance().getConfiguration();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private ItemStack itemsToSpawn = new ItemStack(Material.DIAMOND, 1);
-	public static final int minimumOfRequiredTeams = 2;
 
 	@Override
 	public void run() {
 		if(configuration.areHungerGamesEnabled()) {			
 			int amountOfOnlineTeams = getCurrentAmountOfOnlineTeams();
-			if(amountOfOnlineTeams >= minimumOfRequiredTeams) {
+			if(amountOfOnlineTeams >= configuration.getHungerGamesMinimumAmountOfRequiredOnlineTeams()) {
 				Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");
 				Bukkit.broadcastMessage(ChatColor.GOLD + "Ein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " ist in der Mitte gespawn! Kämpft um ihn!");
 				Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");
 				configuration.getHungerGamesLocation().getWorld().dropItem(configuration.getHungerGamesLocation(), itemsToSpawn);
 			}else {
-				Bukkit.broadcastMessage(ChatColor.GOLD + "Kein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " gespawnt, es sind nur " + ChatColor.RESET + amountOfOnlineTeams + ChatColor.GOLD + " von " + ChatColor.RESET + minimumOfRequiredTeams + ChatColor.GOLD + " benötigten Teams online");
+				Bukkit.broadcastMessage(ChatColor.GOLD + "Kein " + ChatColor.AQUA + "Diamant" + ChatColor.GOLD + " gespawnt, es sind nur " + ChatColor.RESET + amountOfOnlineTeams + ChatColor.GOLD + " von " + ChatColor.RESET + configuration.getHungerGamesMinimumAmountOfRequiredOnlineTeams() + ChatColor.GOLD + " benötigten Teams online");
 			}
 		}
 	}

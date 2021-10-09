@@ -87,6 +87,14 @@ public class Configuration implements IConfiguration{
 	}
 
 	@Override
+	public Integer getHungerGamesMinimumAmountOfRequiredOnlineTeams() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getHungerGamesMinimumAmountOfRequiredOnlineTeams(), 
+				defaultConfiguration.getHungerGamesMinimumAmountOfRequiredOnlineTeams()
+		);
+	}
+
+	@Override
 	public Boolean areTeamPointsDisplayedInScoreboard() {
 		return getPreferredConfiguration(
 				dynamicConfiguration.areTeamPointsDisplayedInScoreboard(), 

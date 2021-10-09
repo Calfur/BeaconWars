@@ -74,6 +74,10 @@ public class StringFormatter {
 		return amount + singularOrPlural(amount, " Dia", " Dias");
 	}
 	
+	public static String teamWord(int amount) {
+		return amount + singularOrPlural(amount, " Team", " Teams");
+	}
+	
 	public static String rewardText(Reward reward) {
 		return diamondWord(reward.getDiamonds()) + " und " + pointWord(reward.getPoints());
 	}

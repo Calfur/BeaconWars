@@ -26,6 +26,7 @@ public class ConfigFileLoader {
 			getRewardKillBountyMultiplicatorPoints(),
 			areHungerGamesEnabled(),
 			getHungerGamesLocation(),
+			getHungerGamesMinimumAmountOfRequiredOnlineTeams(),
 			areTeamPointsDisplayedInScoreboard(),
 			getTotemCooldownLengthInMinutes()
 		);
@@ -84,6 +85,10 @@ public class ConfigFileLoader {
 		);
 	}
 
+	public Integer getHungerGamesMinimumAmountOfRequiredOnlineTeams() {
+		return getIntegerConfiguration("HungerGamesMinimumAmountOfRequiredOnlineTeams");
+	}
+	
 	public Boolean areTeamPointsDisplayedInScoreboard() {
 		return getBooleanConfiguration("AreTeamPointsDisplayedInScoreboard");
 	}

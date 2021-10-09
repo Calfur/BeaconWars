@@ -18,7 +18,7 @@ public class CommandCompass implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) {
 			Player executor = (Player)sender;
-			if(args.length == 1 && args[0].equals("Spawn")) {
+			if(args.length == 1 && args[0].toLowerCase().equals("spawn")) {
 				compassManager.addCompassToInventory(executor, CompassType.spawn);
 				return true;
 			}
@@ -30,14 +30,14 @@ public class CommandCompass implements CommandExecutor {
 					executor.sendMessage(StringFormatter.error("Der Teamnummer Parameter muss dem Typ Int entsprechen"));
 					return false;
 				}				
-				switch (args[0]) {
-				case "Base":
+				switch (args[0].toLowerCase()) {
+				case "base":
 					compassManager.addCompassToInventory(executor, CompassType.base, teamNumber);
 					return true;
-				case "Beacon":
+				case "beacon":
 					compassManager.addCompassToInventory(executor, CompassType.beacon, teamNumber);
 					return true;
-				case "Spawn":
+				case "spawn":
 					executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 					return false;
 				default:

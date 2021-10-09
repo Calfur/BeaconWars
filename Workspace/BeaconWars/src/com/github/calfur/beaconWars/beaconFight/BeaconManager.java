@@ -49,7 +49,7 @@ public class BeaconManager {
 				replaceBlock(world, beaconX + x, beaconY - 1, beaconZ + z, Material.NETHERITE_BLOCK);
 			}
 		}
-	}	
+	}
 	
 	public static void removeLevelOneBeacon(Location location) {
 		World world = location.getWorld();

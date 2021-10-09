@@ -12,6 +12,7 @@ public class DynamicConfiguration implements IConfiguration {
 	private Integer rewardKillBountyMultiplicatorPoints;
 	private Boolean areHungerGamesEnabled;
 	private Location hungerGamesLocation;
+	private Integer hungerGamesMinimumAmountOfRequiredOnlineTeams;
 	private Boolean areTeamPointsDisplayedInScoreboard;
 	private Integer totemCooldownLengthInMinutes;
 
@@ -25,6 +26,7 @@ public class DynamicConfiguration implements IConfiguration {
 			Integer rewardKillBountyMultiplicatorPoints,
 			Boolean areHungerGamesEnabled,
 			Location hungerGamesLocation,
+			Integer hungerGamesMinimumAmountOfRequiredOnlineTeams,
 			Boolean areTeamPointsDisplayedInScoreboard,
 			Integer totemCooldownLengthInMinutes
 	){
@@ -37,6 +39,7 @@ public class DynamicConfiguration implements IConfiguration {
 		this.rewardKillBountyMultiplicatorPoints = rewardKillBountyMultiplicatorPoints;
 		this.areHungerGamesEnabled = areHungerGamesEnabled;
 		this.hungerGamesLocation = hungerGamesLocation;
+		this.hungerGamesMinimumAmountOfRequiredOnlineTeams = hungerGamesMinimumAmountOfRequiredOnlineTeams;
 		this.areTeamPointsDisplayedInScoreboard = areTeamPointsDisplayedInScoreboard;
 		this.totemCooldownLengthInMinutes = totemCooldownLengthInMinutes;
 	}
@@ -84,6 +87,10 @@ public class DynamicConfiguration implements IConfiguration {
 	@Override
 	public Location getHungerGamesLocation() {
 		return hungerGamesLocation;
+	}
+	
+	public Integer getHungerGamesMinimumAmountOfRequiredOnlineTeams() {
+		return hungerGamesMinimumAmountOfRequiredOnlineTeams;
 	}
 	
 	@Override
