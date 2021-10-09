@@ -35,8 +35,8 @@ public class TabCompleterBeaconfight extends TabCompleterBase{
 				break;
 			case 4: // Attackduration (Minutes)
 				if(previousParameters[0].equals("add")) {
-					completions.add("20");
 					completions.add("15");
+					completions.add("12");
 					completions.add("10");
 				}
 				break;

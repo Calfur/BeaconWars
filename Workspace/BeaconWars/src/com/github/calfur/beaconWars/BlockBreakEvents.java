@@ -39,7 +39,8 @@ public class BlockBreakEvents implements Listener {
 				}				
 			}
 		}
-	}	
+	}
+	
 	@EventHandler
 	public void onBlockExplodes(BlockExplodeEvent event) {
 		List<Block> blocks = event.blockList();
@@ -49,7 +50,8 @@ public class BlockBreakEvents implements Listener {
 				return;
 			}
 		}
-	}	
+	}
+	
 	@EventHandler
 	public void onBlockExplodes(EntityExplodeEvent event) {
 		List<Block> blocks = event.blockList();

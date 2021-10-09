@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class CommandBeaconFight implements CommandExecutor {
@@ -51,9 +52,9 @@ public class CommandBeaconFight implements CommandExecutor {
 	private boolean tryAddBeaconFight(Player executor, String[] args) {
 		switch(args.length) {
 			case 2:
-				args = ArrayUtils.add(args, "90"); // default length of 90min			
+				args = ArrayUtils.add(args, Integer.toString(ConstantConfiguration.defaultBeaconFightLength));			
 			case 3:
-				args = ArrayUtils.add(args, "15"); // default length per attack of 15min	
+				args = ArrayUtils.add(args, Integer.toString(ConstantConfiguration.defaultBeaconRaidLength));	
 				break;
 			case 4:
 				break;
