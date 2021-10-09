@@ -12,4 +12,5 @@ public interface IConfiguration {
 	public Integer getRewardKillBountyMultiplicatorPoints();
 	public Boolean areHungerGamesEnabled();
 	public Location getHungerGamesLocation();
+	public Boolean areTeamPointsDisplayedInScoreboard();
 }

@@ -25,7 +25,8 @@ public class ConfigFileLoader {
 			getRewardKillBountyMultiplicatorDiamonds(),
 			getRewardKillBountyMultiplicatorPoints(),
 			areHungerGamesEnabled(),
-			getHungerGamesLocation()
+			getHungerGamesLocation(),
+			areTeamPointsDisplayedInScoreboard()
 		);
 	}
 	
@@ -80,6 +81,10 @@ public class ConfigFileLoader {
 			hungerGamesLocationY,
 			hungerGamesLocationZ
 		);
+	}
+
+	public Boolean areTeamPointsDisplayedInScoreboard() {
+		return getBooleanConfiguration("AreTeamPointsDisplayedInScoreboard");
 	}
 
 	public boolean loadConfigFile() {

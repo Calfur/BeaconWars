@@ -41,7 +41,6 @@ public class ScoreboardLoader {
 	private TopKiller topKiller;
 	private ArrayList<Attack> attacks = new ArrayList<Attack>();
 	private BossBarManager bossBarManager = new BossBarManager();
-	private static final boolean displayTeamPoints = true;
 	
 	public void setTopKiller(TopKiller topKiller) {
 		this.topKiller = topKiller;
@@ -118,17 +117,11 @@ public class ScoreboardLoader {
 		}
 
 		// Team points
-		if(displayTeamPoints) {			
+		if(configuration.areTeamPointsDisplayedInScoreboard()) {		
 			scoreTexts.add("Punktestand");
 			scoreTexts.add(getTeamPointsText(0));
 			scoreTexts.add(getTeamPointsText(1));
 			scoreTexts.add(getTeamPointsText(2));
-			scoreTexts.add("");
-		}else {
-			scoreTexts.add("");
-			scoreTexts.add("");
-			scoreTexts.add("");
-			scoreTexts.add("");
 			scoreTexts.add("");
 		}
 		

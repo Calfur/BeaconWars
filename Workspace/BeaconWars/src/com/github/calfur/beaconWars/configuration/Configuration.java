@@ -86,6 +86,14 @@ public class Configuration implements IConfiguration{
 		);
 	}
 
+	@Override
+	public Boolean areTeamPointsDisplayedInScoreboard() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.areTeamPointsDisplayedInScoreboard(), 
+				defaultConfiguration.areTeamPointsDisplayedInScoreboard()
+		);
+	}
+
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {
 			return preferred;

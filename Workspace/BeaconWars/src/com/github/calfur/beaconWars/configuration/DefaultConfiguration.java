@@ -53,6 +53,10 @@ public class DefaultConfiguration implements IConfiguration{
 	 * World name where the hunger game diamond spawns
 	 */
 	private final String hungerGamesLocationWorld = "world";
+	/***
+	 * If this is set to true the team points are displayed in the scoreboard
+	 */
+	private final boolean areTeamPointsDisplayedInScoreboard = true;
 
 	@Override
 	public String getScoreboardTitle() {
@@ -102,5 +106,10 @@ public class DefaultConfiguration implements IConfiguration{
 			hungerGamesLocationY,
 			hungerGamesLocationZ
 		);
+	}
+	
+	@Override
+	public Boolean areTeamPointsDisplayedInScoreboard() {
+		return areTeamPointsDisplayedInScoreboard;
 	}
 }
