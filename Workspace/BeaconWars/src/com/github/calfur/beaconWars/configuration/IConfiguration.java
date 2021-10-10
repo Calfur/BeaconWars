@@ -18,4 +18,6 @@ public interface IConfiguration {
 	public Integer getTimeUntilDeathCountsNotAsKillInSeconds();
 	public Integer getBuildModeCooldownInMinutes();
 	public Integer getBuildModeBaseRangeRadiusInBlocks();
+	public Integer getDeathBanDurationInMinutes();
+	public Integer getDeathBanDurationDuringBeaconFightInMinutes();
 }

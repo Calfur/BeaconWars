@@ -81,6 +81,14 @@ public class DefaultConfiguration implements IConfiguration{
 	 * The radius around the team beacon in which team members are able to activate the buildmode
 	 */
 	private static final int buildModeBaseRangeRadiusInBlocks = 100;
+	/***
+	 * The duration of the ban after a player dies
+	 */
+	private static final int deathBanDurationInMinutes = 10;
+	/***
+	 * The duration of the ban after a player dies during a beacon event 
+	 */
+	private static final int deathBanDurationDuringBeaconFightInMinutes = 2;
 
 	@Override
 	public String getScoreboardTitle() {
@@ -160,5 +168,15 @@ public class DefaultConfiguration implements IConfiguration{
 	@Override
 	public Integer getBuildModeBaseRangeRadiusInBlocks() {
 		return buildModeBaseRangeRadiusInBlocks;
+	}
+
+	@Override
+	public Integer getDeathBanDurationInMinutes() {
+		return deathBanDurationInMinutes;
+	}
+
+	@Override
+	public Integer getDeathBanDurationDuringBeaconFightInMinutes() {
+		return deathBanDurationDuringBeaconFightInMinutes;
 	}
 }

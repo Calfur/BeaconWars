@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerModeManager;
+import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
@@ -26,6 +27,7 @@ import com.github.calfur.beaconWars.pvp.DeathBanPluginInteraction;
 import com.github.calfur.beaconWars.pvp.Team;
 
 public class BeaconFight {
+	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	
@@ -148,7 +150,7 @@ public class BeaconFight {
 		manager.activateBeaconFightEvent();
 		sendEventStartMessage();
 		deactivateBuildMode();
-		DeathBanPluginInteraction.tryChangeBanDuration(2);
+		DeathBanPluginInteraction.tryChangeBanDuration(configuration.getDeathBanDurationDuringBeaconFightInMinutes());
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle false");
@@ -222,7 +224,7 @@ public class BeaconFight {
 
 	private void end() {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule doDaylightCycle true");
-		DeathBanPluginInteraction.tryChangeBanDuration(10);
+		DeathBanPluginInteraction.tryChangeBanDuration(configuration.getDeathBanDurationInMinutes());
 		BeaconRaid[] localBeaconRaids = beaconRaids.toArray(new BeaconRaid[beaconRaids.size()]);
 		for (BeaconRaid beaconRaid : localBeaconRaids) {
 			beaconRaid.doTimeOverActions();

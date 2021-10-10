@@ -18,6 +18,8 @@ public class DynamicConfiguration implements IConfiguration {
 	private Integer timeUntilDeathCountsNotAsKillInSeconds;
 	private Integer buildModeCooldownInMinutes;
 	private Integer buildModeBaseRangeRadiusInBlocks;
+	public Integer deathBanDurationInMinutes;
+	public Integer deathBanDurationDuringBeaconFightInMinutes;
 
 	public DynamicConfiguration(
 			String scoreboardTitle,
@@ -34,7 +36,9 @@ public class DynamicConfiguration implements IConfiguration {
 			Integer attackDurationInSeconds,
 			Integer timeUntilDeathCountsNotAsKillInSeconds,
 			Integer buildModeCooldownInMinutes,
-			Integer buildModeBaseRangeRadiusInBlocks
+			Integer buildModeBaseRangeRadiusInBlocks,
+			Integer deathBanDurationInMinutes,
+			Integer deathBanDurationDuringBeaconFightInMinutes
 	){
 		this.scoreboardTitle = scoreboardTitle;
 		this.deductionBeaconRaidLostDefensePoints = rewardBestBeaconDefensePoints;
@@ -51,6 +55,8 @@ public class DynamicConfiguration implements IConfiguration {
 		this.timeUntilDeathCountsNotAsKillInSeconds = timeUntilDeathCountsNotAsKillInSeconds;
 		this.buildModeCooldownInMinutes = buildModeCooldownInMinutes;
 		this.buildModeBaseRangeRadiusInBlocks = buildModeBaseRangeRadiusInBlocks;
+		this.deathBanDurationInMinutes = deathBanDurationInMinutes;
+		this.deathBanDurationDuringBeaconFightInMinutes = deathBanDurationDuringBeaconFightInMinutes;
 	}
 
 	@Override
@@ -125,5 +131,15 @@ public class DynamicConfiguration implements IConfiguration {
 	@Override
 	public Integer getBuildModeBaseRangeRadiusInBlocks() {
 		return buildModeBaseRangeRadiusInBlocks;
+	}
+
+	@Override
+	public Integer getDeathBanDurationInMinutes() {
+		return deathBanDurationInMinutes;
+	}
+
+	@Override
+	public Integer getDeathBanDurationDuringBeaconFightInMinutes() {
+		return deathBanDurationDuringBeaconFightInMinutes;
 	}
 }

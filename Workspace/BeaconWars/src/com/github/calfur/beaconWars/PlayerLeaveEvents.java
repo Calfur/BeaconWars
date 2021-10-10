@@ -12,12 +12,23 @@ public class PlayerLeaveEvents implements Listener {
 	BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 	
 	@EventHandler
-	public void onPlayerJoins(PlayerQuitEvent event) {
+	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player leaver = event.getPlayer();
-		if(BeaconManager.removeBeaconsFromInventory(leaver)) {
+		checkIfPlayerHasBeaconInInventory(leaver);
+		removeDeathMessageIfBanned(leaver, event);
+	}
+
+	public void checkIfPlayerHasBeaconInInventory(Player player) {
+		if(BeaconManager.removeBeaconsFromInventory(player)) {
 			if(beaconFightManager.isBeaconEventActive()) {	
-				beaconFightManager.getOngoingBeaconFight().removeBeaconRaidsByDestructor(leaver);
+				beaconFightManager.getOngoingBeaconFight().removeBeaconRaidsByDestructor(player);
 			}
+		}
+	}
+	
+	private void removeDeathMessageIfBanned(Player leaver, PlayerQuitEvent event) {
+		if(leaver.getHealth() == 0) {
+			event.setQuitMessage("");
 		}
 	}
 }

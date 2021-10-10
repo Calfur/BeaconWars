@@ -56,7 +56,7 @@ public class Main extends JavaPlugin {
 		new CommandRegistrator();
 		new EventRegistrator();
 
-		DeathBanPluginInteraction.tryChangeBanDuration(10);
+		updateDeathBanDuration();
 		
 		hungergamesManager.startItemSpawner();
 		
@@ -125,5 +125,15 @@ public class Main extends JavaPlugin {
 
 	public boolean reloadConfiguration() {
 		return configurationManager.reloadConfiguration();
+	}
+	
+	public void updateDeathBanDuration() {
+		int timeInMinutes;
+		if(beaconFightManager.isBeaconEventActive()) {
+			timeInMinutes = configuration.getDeathBanDurationDuringBeaconFightInMinutes();
+		}else {
+			timeInMinutes = configuration.getDeathBanDurationInMinutes();
+		}
+		DeathBanPluginInteraction.tryChangeBanDuration(timeInMinutes);	
 	}
 }

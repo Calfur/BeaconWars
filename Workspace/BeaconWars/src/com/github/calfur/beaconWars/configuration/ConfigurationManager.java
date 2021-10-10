@@ -17,6 +17,7 @@ public class ConfigurationManager {
 	
 	public boolean reloadConfiguration() {
 		boolean success = reloadDynamicConfiguration();
+		Main.getInstance().updateDeathBanDuration();
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		return success;
 	}

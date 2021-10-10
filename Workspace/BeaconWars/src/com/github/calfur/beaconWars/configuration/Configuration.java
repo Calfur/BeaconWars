@@ -133,6 +133,22 @@ public class Configuration implements IConfiguration{
 				defaultConfiguration.getBuildModeBaseRangeRadiusInBlocks()
 		);
 	}
+	
+	@Override
+	public Integer getDeathBanDurationInMinutes() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getDeathBanDurationInMinutes(), 
+				defaultConfiguration.getDeathBanDurationInMinutes()
+		);
+	}
+	
+	@Override
+	public Integer getDeathBanDurationDuringBeaconFightInMinutes() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getDeathBanDurationDuringBeaconFightInMinutes(), 
+				defaultConfiguration.getDeathBanDurationDuringBeaconFightInMinutes()
+		);
+	}
 
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {

@@ -31,7 +31,9 @@ public class ConfigFileLoader {
 			getAttackDurationInSeconds(),
 			getTimeUntilDeathCountsNotAsKillInSeconds(),
 			getBuildModeCooldownInMinutes(),
-			getBuildModeBaseRangeRadiusInBlocks()
+			getBuildModeBaseRangeRadiusInBlocks(),
+			getDeathBanDurationInMinutes(),
+			getDeathBanDurationDuringBeaconFightInMinutes()
 		);
 	}
 	
@@ -110,6 +112,14 @@ public class ConfigFileLoader {
 
 	private Integer getBuildModeBaseRangeRadiusInBlocks() {
 		return getIntegerConfiguration("BuildModeBaseRangeRadiusInBlocks");
+	}
+
+	public Integer getDeathBanDurationInMinutes() {
+		return getIntegerConfiguration("DeathBanDurationInMinutes");
+	}
+
+	public Integer getDeathBanDurationDuringBeaconFightInMinutes() {
+		return getIntegerConfiguration("DeathBanDurationDuringBeaconFightInMinutes");
 	}
 
 	public boolean loadConfigFile() {
