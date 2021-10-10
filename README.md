@@ -19,11 +19,11 @@ Download the builded diamondKill.jar file from the release area on github
 - Developed with eclipse
 - Based on bukkit and spigot
 - As Database Json files are used
-- Its Robins first plugin -> don't hate me for bad code readability, feel free to suggest improvements
+- It's my first plugin -> don't hate me for bad code readability, feel free to suggest improvements
 
 ## Credits
-- Calfur/Robin main devloper and organisator
-- Damian organisator
-- Fabian organisator
-- Valerio organisator
+- Calfur/Robin main devloper and organizer
+- Damian organizer
+- Fabian organizer
+- Valerio organizer
 - Tobias devloper
