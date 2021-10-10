@@ -2,6 +2,7 @@ package com.github.calfur.beaconWars;
 
 import org.bukkit.Bukkit;
 
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
@@ -19,7 +20,7 @@ public class RewardManager {
 	public void addReward(String playerName, Reward reward, String reason) {
 		PlayerJson playerJson = playerDbConnection.getPlayer(playerName);
 		int teamId = playerJson.getTeamId();
-		if(teamId == 0) {
+		if(teamId == ConstantConfiguration.spectatorTeamNumber) {
 			Bukkit.broadcastMessage(StringFormatter.error("Error: Es wurde versucht, einem Spectator eine Belohnung gutzuschreiben"));
 			return;
 		}
@@ -38,6 +39,29 @@ public class RewardManager {
 			teamId, 
 			reward.getDiamonds(), 
 			reward.getPoints(), 
+			reason
+		);
+		transactionDbConnection.addTransaction(transactionJson);
+		
+		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
+	}
+	
+	public void addReward(int teamId, int points, String reason) {
+		if(teamId == ConstantConfiguration.spectatorTeamNumber) {
+			Bukkit.broadcastMessage(StringFormatter.error("Error: Es wurde versucht, einem Spectator eine Belohnung gutzuschreiben"));
+			return;
+		}
+		
+		TeamJson teamJson = teamDbConnection.getTeam(teamId);
+		if(points != 0) {
+			teamJson.addPoints(points);
+			teamDbConnection.addTeam(teamId, teamJson);
+		}
+		TransactionJson transactionJson = new TransactionJson(
+			teamJson.getTeamLeader(), 
+			teamId, 
+			0, 
+			points, 
 			reason
 		);
 		transactionDbConnection.addTransaction(transactionJson);

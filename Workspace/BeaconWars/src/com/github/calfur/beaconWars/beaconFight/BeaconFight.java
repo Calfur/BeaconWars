@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -19,23 +17,17 @@ import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerModeManager;
-import com.github.calfur.beaconWars.Reward;
-import com.github.calfur.beaconWars.RewardManager;
-import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
-import com.github.calfur.beaconWars.database.TeamJson;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 import com.github.calfur.beaconWars.pvp.DeathBanPluginInteraction;
 import com.github.calfur.beaconWars.pvp.Team;
 
 public class BeaconFight {
-	private IConfiguration configuration = Main.getInstance().getConfiguration();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
-	private RewardManager rewardManager = Main.getInstance().getRewardManager();
 	
 	private LocalDateTime startTime;
 	private BeaconFightManager manager;
@@ -224,9 +216,7 @@ public class BeaconFight {
 	}
 	
 	private void stopBeaconFightNaturally() {
-		HashMap<Integer, Reward> defenseRewardPerTeams = calculateDefenseRewardPerTeams();
-		sendEventDeactivatedMessage(defenseRewardPerTeams);
-		payDefenderBounty(defenseRewardPerTeams);
+		sendEventDeactivatedMessage();
 		end();
 	}
 
@@ -238,24 +228,6 @@ public class BeaconFight {
 			beaconRaid.doTimeOverActions();
 		}
 		manager.removeOngoingBeaconFight(this);
-	}
-	
-	private void payDefenderBounty(HashMap<Integer, Reward> defenseRewardPerTeams) {
-		for (Entry<Integer, Reward> defenseReward : defenseRewardPerTeams.entrySet()) {
-			int teamId = defenseReward.getKey();
-			Reward reward = defenseReward.getValue();
-			TeamJson teamJson = teamDbConnection.getTeam(teamId);
-			String teamLeaderName = teamJson.getTeamLeader();
-			if(playerDbConnection.existsPlayer(teamLeaderName)) {						
-				rewardManager.addReward(
-					teamLeaderName, 
-					reward,
-					"Verteidigerbonus nach dem Beaconevent"
-				);
-			}else {
-				Bukkit.broadcastMessage(StringFormatter.error("Der Teamleader " + teamLeaderName + " von ") + teamJson.getColor() + "Team " + teamId + StringFormatter.error(" wurde noch nicht registriert"));
-			}
-		}
 	}
 
 	private void sendEventStartMessage() {
@@ -278,67 +250,14 @@ public class BeaconFight {
 		Bukkit.broadcastMessage(" ");	
 	}
 
-	private void sendEventDeactivatedMessage(HashMap<Integer, Reward> rewardsPerTeam) {
+	private void sendEventDeactivatedMessage() {
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.BOLD + "Der Beaconevent wurde beendet");
 		Bukkit.broadcastMessage("Ab sofort können keine Beacons mehr geklaut werden");
-		Bukkit.broadcastMessage("Folgende Belohnungen werden an die Teamleader ausgezahlt:");
-		Bukkit.broadcastMessage(" ");
-		Bukkit.broadcastMessage("Team | Verlorene Verteidigungen | Belohnung");
-		for (Entry<String, TeamJson> team : teamDbConnection.getTeams().entrySet()) {
-			Integer teamId = Integer.parseInt(team.getKey());
-			Integer amountOfLostDefenses = getAmountOfLostDefenses(teamId);
-			Reward defenseReward = rewardsPerTeam.get(teamId);
-			Bukkit.broadcastMessage(team.getValue().getColor() + "" + teamId + ChatColor.RESET + "      | " + amountOfLostDefenses + "                               | " + StringFormatter.diaWord(defenseReward.getDiamonds()));
-		}
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");	
 		Bukkit.broadcastMessage(" ");
-	}
-	
-	private HashMap<Integer, Reward> calculateDefenseRewardPerTeams() {
-		HashMap<Integer, Reward> rewardsPerTeams = getZeroRewardsPerTeams();
-		
-		HashMap<Integer, Integer> teamsWithLowestAmountOfLostDefenses = getTeamsWithLowestAmountOfLostDefenses(rewardsPerTeams.keySet());
-		
-		int diamondReward = Math.round(configuration.getRewardBeaconDefenseTotalDiamonds() / teamsWithLowestAmountOfLostDefenses.size());
-		int pointReward = Math.round(configuration.getRewardBeaconDefenseTotalPoints() / teamsWithLowestAmountOfLostDefenses.size());
-		
-		for (Entry<Integer, Integer> teamWithLowestAmountOfLostDefenses : teamsWithLowestAmountOfLostDefenses.entrySet()) {
-			rewardsPerTeams.put(teamWithLowestAmountOfLostDefenses.getKey(), new Reward(diamondReward, pointReward));
-		}
-		
-		return rewardsPerTeams;
-	}
-
-	private HashMap<Integer, Reward> getZeroRewardsPerTeams() {
-		HashMap<Integer, Reward> result = new HashMap<Integer, Reward>();
-		for (Entry<String, TeamJson> team : teamDbConnection.getTeams().entrySet()) {
-			result.put(Integer.parseInt(team.getKey()), new Reward(0, 0));
-		}
-		return result;
-	}
-
-	private HashMap<Integer, Integer> getTeamsWithLowestAmountOfLostDefenses(Set<Integer> teamIds) {
-		HashMap<Integer, Integer> teamsWithLowestAmountOfLostDefenses = new HashMap<>();
-		
-		for(int teamId : teamIds) {
-			int amountOfLostDefenses = getAmountOfLostDefenses(teamId);
-			
-			if(teamsWithLowestAmountOfLostDefenses.size() == 0) { // first time in the loop			
-				teamsWithLowestAmountOfLostDefenses.put(teamId, amountOfLostDefenses);
-			}else {
-				int amountOfLostDefensesOfFirstEntry = teamsWithLowestAmountOfLostDefenses.values().toArray(new Integer[teamsWithLowestAmountOfLostDefenses.size()])[0];
-				if(amountOfLostDefenses < amountOfLostDefensesOfFirstEntry) { // lower amount of defenses
-					teamsWithLowestAmountOfLostDefenses = new HashMap<Integer, Integer>();
-					teamsWithLowestAmountOfLostDefenses.put(teamId, amountOfLostDefenses);
-				}else if(amountOfLostDefensesOfFirstEntry == amountOfLostDefenses) { // same amount of defenses
-					teamsWithLowestAmountOfLostDefenses.put(teamId, amountOfLostDefenses);
-				}
-			}
-		}
-		return teamsWithLowestAmountOfLostDefenses;
 	}
 	
 	private void deactivateBuildMode() {

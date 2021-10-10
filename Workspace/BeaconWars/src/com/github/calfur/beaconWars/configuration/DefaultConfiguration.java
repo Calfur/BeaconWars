@@ -9,19 +9,13 @@ public class DefaultConfiguration implements IConfiguration{
 	 */
 	private static final String scoreboardTitle = "Beacon Wars";
 	/***
-	 * The total reward which the teams with the best beacon defense get.
-	 * Example 1: During a beaconfight team 1 has stolen the beacon of team 2.
-	 * If the total reward is set to 12, team 1 and team 3 will get 6, team 2 will get 0.
-	 * 
-	 * Example 2: During a beaconfight team 1 has stolen the beacon of team 2 and team 2 has stolen the beacon of team 1.
-	 * If the total reward is set to 12, team 3 will get 12, team 1 and team 2 will get 0.
+	 * The here set amount of points gets removed from the team whose beacon gets stolen and returned
 	 */
-	private static final int rewardBeaconDefenseTotalDiamonds = 0;
-	private static final int rewardBeaconDefenseTotalPoints = 1000;
+	private static final int deductionBeaconRaidLostDefensePoints = -500;
 	/***
-	 * The reward that the player who steals and retrieves a beacon gets
+	 * The reward given to the player who steals a beacon and brings it back
 	 */
-	private static final int rewardBeaconRaidSuccessDiamonds = 7;
+	private static final int rewardBeaconRaidSuccessDiamonds = 5;
 	private static final int rewardBeaconRaidSuccessPoints = 1000;
 	/***
 	 * The multiplicator of the bounty reward.
@@ -92,15 +86,10 @@ public class DefaultConfiguration implements IConfiguration{
 	public String getScoreboardTitle() {
 		return scoreboardTitle;
 	}
-	
-	@Override
-	public Integer getRewardBeaconDefenseTotalDiamonds() {
-		return rewardBeaconDefenseTotalDiamonds;
-	}
 
 	@Override
-	public Integer getRewardBeaconDefenseTotalPoints() {
-		return rewardBeaconDefenseTotalPoints;
+	public Integer getDeductionBeaconRaidLostDefensePoints() {
+		return deductionBeaconRaidLostDefensePoints;
 	}
 
 	@Override

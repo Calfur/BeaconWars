@@ -20,6 +20,7 @@ import com.github.calfur.beaconWars.RewardManager;
 import com.github.calfur.beaconWars.ScoreboardLoader;
 import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
+import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 import com.github.calfur.beaconWars.pvp.Team;
 
 public class BeaconRaid {
@@ -74,8 +75,8 @@ public class BeaconRaid {
 		
 		destructor.addPotionEffects(attackerEffects);
 		
-		Bukkit.broadcastMessage(destructorName + " von " + attackerTeam.getColor() + "Team " + attackerTeam.getId() + ChatColor.RESET + " hat den Beacon von " + defenderTeam.getColor() + "Team " + defenderTeam.getId() + ChatColor.RESET + " abgebaut");
-		Bukkit.broadcastMessage("Der Beacon muss innerhalb von " + maxMinutesToBringBack + "min zur Base gebracht werden");
+		Bukkit.broadcastMessage(attackerTeam.getColor() + destructorName + ChatColor.RESET + " hat den Beacon von " + defenderTeam.getColor() + "Team " + defenderTeam.getId() + ChatColor.RESET + " abgebaut!");
+		Bukkit.broadcastMessage("Der Beacon muss innerhalb von " + maxMinutesToBringBack + "min zur Base von" + attackerTeam.getColor() + " Team " + attackerTeam.getId() + ChatColor.RESET + " gebracht werden");
 	
 		bossBarName = attackerTeam.getColor() + "Team " + attackerTeam.getId() + ChatColor.RESET + " klaut den Beacon von " + defenderTeam.getColor() + "Team " + defenderTeam.getId();
 		
@@ -94,17 +95,7 @@ public class BeaconRaid {
 	}
 	
 	public void addBeaconPlacement(Player player) {
-		Bukkit.broadcastMessage(player.getName() + " von " + attackerTeam.getColor() + "Team " + attackerTeam.getId() + ChatColor.RESET + " hat den Beacon von " + defenderTeam.getColor() + "Team " + defenderTeam.getId() + ChatColor.RESET + " erfolgreich zurückgebracht");
-		Bukkit.broadcastMessage(player.getName() + " erhält dafür " + ChatColor.AQUA + configuration.getRewardBeaconRaidSuccessDiamonds() + " Dias");
-		
-		rewardManager.addReward(
-			player.getName(), 
-			new Reward(
-				configuration.getRewardBeaconRaidSuccessDiamonds(), 
-				configuration.getRewardBeaconRaidSuccessPoints()
-			), 
-			"Belohnung für das erfolgreiche stehlen und zurückbringen des Beacons von Team " + defenderTeam.getId()
-		);
+		payBeaconPlacementRewards(player.getName());
 		
 		BeaconManager.removeOneBeaconFromInventory(player);
 		scoreboardLoader.reloadScoreboardFor(player);
@@ -114,6 +105,28 @@ public class BeaconRaid {
 		playBeaconPlacementSound();
 		
 		destroy();
+	}
+
+	public void payBeaconPlacementRewards(String playerName) {
+		Reward reward = new Reward(
+			configuration.getRewardBeaconRaidSuccessDiamonds(), 
+			configuration.getRewardBeaconRaidSuccessPoints()
+		);
+		
+		Bukkit.broadcastMessage(attackerTeam.getColor() + playerName + ChatColor.RESET + " hat den Beacon von " + defenderTeam.getColor() + "Team " + defenderTeam.getId() + ChatColor.RESET + " erfolgreich zurückgebracht!");
+		Bukkit.broadcastMessage(attackerTeam.getColor() + playerName + ChatColor.RESET + " erhält dafür " + StringFormatter.rewardText(reward));
+		Bukkit.broadcastMessage(defenderTeam.getColor() + "Team " + defenderTeam.getId() + ChatColor.RESET + " werden dafür " + -configuration.getDeductionBeaconRaidLostDefensePoints() + " Punkte abgezogen.");
+		
+		rewardManager.addReward(
+			playerName, 
+			reward, 
+			"Belohnung für das erfolgreiche stehlen und zurückbringen des Beacons von Team " + defenderTeam.getId()
+		);
+		rewardManager.addReward(
+			defenderTeam.getId(), 
+			configuration.getDeductionBeaconRaidLostDefensePoints(), 
+			"Strafe für die misslungene Verteidigung des Beacons gegen Team " + attackerTeam.getId()
+		);
 	}
 	
 	private void playBeaconPlacementSound() {

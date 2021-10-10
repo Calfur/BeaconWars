@@ -4,8 +4,7 @@ import org.bukkit.Location;
 
 public interface IConfiguration {
 	public String getScoreboardTitle();
-	public Integer getRewardBeaconDefenseTotalDiamonds();
-	public Integer getRewardBeaconDefenseTotalPoints();
+	public Integer getDeductionBeaconRaidLostDefensePoints();
 	public Integer getRewardBeaconRaidSuccessDiamonds();
 	public Integer getRewardBeaconRaidSuccessPoints();
 	public Integer getRewardKillBountyMultiplicatorDiamonds();

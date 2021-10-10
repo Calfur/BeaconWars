@@ -4,8 +4,7 @@ import org.bukkit.Location;
 
 public class DynamicConfiguration implements IConfiguration {
 	private String scoreboardTitle;
-	private Integer rewardBeaconDefenseTotalDiamonds;
-	private Integer rewardBeaconDefenseTotalPoints;
+	private Integer deductionBeaconRaidLostDefensePoints;
 	private Integer rewardBeaconRaidSuccessDiamonds;
 	private Integer rewardBeaconRaidSuccessPoints;
 	private Integer rewardKillBountyMultiplicatorDiamonds;
@@ -22,7 +21,6 @@ public class DynamicConfiguration implements IConfiguration {
 
 	public DynamicConfiguration(
 			String scoreboardTitle,
-			Integer rewardBestBeaconDefenseDiamonds,
 			Integer rewardBestBeaconDefensePoints,
 			Integer rewardBeaconRaidSuccessDiamonds,
 			Integer rewardBeaconRaidSuccessPoints,
@@ -39,8 +37,7 @@ public class DynamicConfiguration implements IConfiguration {
 			Integer buildModeBaseRangeRadiusInBlocks
 	){
 		this.scoreboardTitle = scoreboardTitle;
-		this.rewardBeaconDefenseTotalDiamonds = rewardBestBeaconDefenseDiamonds;
-		this.rewardBeaconDefenseTotalPoints = rewardBestBeaconDefensePoints;
+		this.deductionBeaconRaidLostDefensePoints = rewardBestBeaconDefensePoints;
 		this.rewardBeaconRaidSuccessDiamonds = rewardBeaconRaidSuccessDiamonds;
 		this.rewardBeaconRaidSuccessPoints = rewardBeaconRaidSuccessPoints;
 		this.rewardKillBountyMultiplicatorDiamonds = rewardKillBountyMultiplicatorDiamonds;
@@ -62,13 +59,8 @@ public class DynamicConfiguration implements IConfiguration {
 	}
 
 	@Override
-	public Integer getRewardBeaconDefenseTotalDiamonds() {
-		return rewardBeaconDefenseTotalDiamonds;
-	}
-
-	@Override
-	public Integer getRewardBeaconDefenseTotalPoints() {
-		return rewardBeaconDefenseTotalPoints;
+	public Integer getDeductionBeaconRaidLostDefensePoints() {
+		return deductionBeaconRaidLostDefensePoints;
 	}
 
 	@Override
