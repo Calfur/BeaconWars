@@ -24,7 +24,6 @@ public class KillDbConnection extends DbConnection<KillJson> {
 	}
 	
 	/**
-	 * 
 	 * @param killJson
 	 * @return kill id
 	 */

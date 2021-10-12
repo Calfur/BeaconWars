@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +18,7 @@ import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.PlayerModeManager;
 import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.customTasks.TaskScheduler;
+import com.github.calfur.beaconWars.database.BeaconFightJson;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
 import com.github.calfur.beaconWars.database.PlayerJson;
 import com.github.calfur.beaconWars.database.TeamDbConnection;
@@ -31,31 +31,31 @@ public class BeaconFight {
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	
-	private LocalDateTime startTime;
 	private BeaconFightManager manager;
-	private long eventDurationInMinutes;
-	private int attackDurationInMinutes;
 	private List<BeaconRaid> beaconRaids = new ArrayList<BeaconRaid>();
-	private HashMap<Integer, Integer> amountOfLostDefensesPerTeams = new HashMap<Integer, Integer>();
-	private int naturallyEventEndTaskId;
-	private int eventStartTaskId;
 	private List<UUID> teleportedPlayers = new ArrayList<UUID>();
+	private int eventStartTaskId;
+	private int naturallyEventEndTaskId;
+
+	private BeaconFightJson beaconFightJson;
 
 	public LocalDateTime getStartTime() {
-		return startTime;
+		return beaconFightJson.getStartTime();
 	}
 	
 	public LocalDateTime getEndTime() {
-		return startTime.plusMinutes(eventDurationInMinutes);
+		return getStartTime().plusMinutes(getEventDurationInMinutes());
 	}
 	
-	public BeaconFight(LocalDateTime startTime, long eventDurationInMinutes, int attackDurationInMinutes, BeaconFightManager manager) {
-		this.startTime = startTime;
+	private int getEventDurationInMinutes() {
+		return beaconFightJson.getEventDurationInMinutes();
+	}
+	
+	public BeaconFight(BeaconFightManager manager, BeaconFightJson beaconFightJson) {
 		this.manager = manager;
-		this.eventDurationInMinutes = eventDurationInMinutes;
-		this.attackDurationInMinutes = attackDurationInMinutes;
+		this.beaconFightJson = beaconFightJson;
 		
-		long secondsTillStart = ChronoUnit.SECONDS.between(LocalDateTime.now(), startTime);
+		long secondsTillStart = ChronoUnit.SECONDS.between(LocalDateTime.now(), getStartTime());
 		if(secondsTillStart > 0) {
 			eventStartTaskId = TaskScheduler.getInstance().scheduleDelayedTask(Main.getInstance(),
 					new Runnable() {
@@ -66,7 +66,7 @@ public class BeaconFight {
 						}
 				
 					}, 
-					startTime);
+					getStartTime());
 		}else {
 			startBeaconFightEvent();
 		}
@@ -90,7 +90,7 @@ public class BeaconFight {
 		Team attackerTeam = new Team(attackerTeamId, teamDbConnection.getTeam(attackerTeamId).getColor());
 		Team defenderTeam = BeaconManager.getTeamByBeaconLocation(beaconLocation);
 		
-		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, attackDurationInMinutes, this));
+		beaconRaids.add(new BeaconRaid(attackerTeam, defenderTeam, player, beaconLocation, beaconFightJson.getRaidDurationInMinutes(), this));
 	}
 	
 	@Nullable
@@ -121,7 +121,6 @@ public class BeaconFight {
 			BeaconManager.removeOneBeaconFromInventory(placer);
 			return;
 		}
-		addLostDefense(beaconRaid.getDefenderTeam().getId());
 		beaconRaid.addBeaconPlacement(placer);
 	}
 
@@ -171,7 +170,7 @@ public class BeaconFight {
 					}
 					
 				}, 
-				startTime.plusMinutes(eventDurationInMinutes));
+				getStartTime().plusMinutes(getEventDurationInMinutes()));
 	}
 
 	/**
@@ -203,20 +202,6 @@ public class BeaconFight {
 		return beaconRaidsFromTeam;
 	}
 	
-	private Integer getAmountOfLostDefenses(Integer teamId) {
-		Integer amountOfLostDefenses = amountOfLostDefensesPerTeams.get(teamId);
-		if(amountOfLostDefenses == null) {
-			amountOfLostDefensesPerTeams.put(teamId, 0);
-			return 0;
-		}
-		return amountOfLostDefenses;
-	}
-	
-	private void addLostDefense(Integer teamId) {
-		Integer amountOfLostDefenses = getAmountOfLostDefenses(teamId);
-		amountOfLostDefensesPerTeams.put(teamId, amountOfLostDefenses + 1);
-	}
-	
 	private void stopBeaconFightNaturally() {
 		sendEventDeactivatedMessage();
 		end();
@@ -236,7 +221,7 @@ public class BeaconFight {
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.BOLD + "Der Beaconevent startet jetzt!");
-		Bukkit.broadcastMessage("In den nächsten " + eventDurationInMinutes + "min können eure Beacons geklaut werden");
+		Bukkit.broadcastMessage("In den nächsten " + getEventDurationInMinutes() + "min können eure Beacons geklaut werden");
 		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(ChatColor.MAGIC + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");		
 		Bukkit.broadcastMessage(" ");

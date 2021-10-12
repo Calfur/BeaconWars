@@ -2,6 +2,7 @@ package com.github.calfur.beaconWars.beaconFight;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,20 +13,40 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.database.BeaconFightDb;
+import com.github.calfur.beaconWars.database.BeaconFightJson;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class BeaconFightManager {
+	private BeaconFightDb beaconFightDb = new BeaconFightDb();
 	private List<BeaconFight> beaconFights = new ArrayList<BeaconFight>();
 	private boolean isBeaconEventActive = false;
 	
-	public boolean tryAddBeaconFight(LocalDateTime startTime, long eventDurationInMinutes, int attackDurationInMinutes) {
-		if(startTime.isBefore(LocalDateTime.now())){
+	public BeaconFightManager() {
+		beaconFightDb.loadDatabase();
+		Collection<BeaconFightJson> beaconFightJsons = beaconFightDb.getBeaconFights().values();
+		for (BeaconFightJson beaconFightJson : beaconFightJsons) {
+			if(beaconFightJson.getStartTime().isBefore(LocalDateTime.now())){
+				beaconFightDb.removeBeaconFight(beaconFightJson.getStartTime());
+			}else {
+				beaconFights.add(new BeaconFight(this, beaconFightJson));
+			}
+		}
+	}
+	
+	public boolean tryAddBeaconFight(BeaconFightJson beaconFightJson) {
+		if(beaconFightJson.getStartTime().isBefore(LocalDateTime.now())){
 			return false;
 		}
-		if(isTimeOverlappingWithAnotherEvent(startTime, startTime.plusMinutes(eventDurationInMinutes))) {
+		
+		if(isTimeOverlappingWithAnotherEvent(
+				beaconFightJson.getStartTime(), 
+				beaconFightJson.getStartTime().plusMinutes(beaconFightJson.getEventDurationInMinutes())
+		)) {
 			return false;
 		}
-		beaconFights.add(new BeaconFight(startTime, eventDurationInMinutes, attackDurationInMinutes, this));
+		beaconFightDb.addBeaconFight(beaconFightJson);
+		beaconFights.add(new BeaconFight(this, beaconFightJson));
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 		return true;
 	}
@@ -75,6 +96,7 @@ public class BeaconFightManager {
 	
 	private void removeBeaconFight(BeaconFight beaconFight) {
 		beaconFights.remove(beaconFight);
+		beaconFightDb.removeBeaconFight(beaconFight.getStartTime());
 		Main.getInstance().getScoreboardLoader().reloadScoreboardForAllOnlinePlayers();
 	}
 
