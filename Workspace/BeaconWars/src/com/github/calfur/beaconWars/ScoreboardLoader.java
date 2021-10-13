@@ -197,7 +197,8 @@ public class ScoreboardLoader {
 	}
 	
 	private String getActiveModes(Player player) {
-		if(playerModeManager.isPlayerInBuildMode(player)) {				
+		PlayerJson playerJson = playerDbConnection.getPlayer(player.getName());
+		if(playerJson.isBuildModeActive()) {				
 			return ChatColor.GOLD + " [Baut]";
 		}else {
 			return "";

@@ -16,7 +16,7 @@ public class PlayerMode {
 	private String player;
 	private boolean highlightedActive = false;
 	private boolean buildModeActive = false;
-	private LocalDateTime buildModeDeactivatedAt = LocalDateTime.now().minusMinutes(configuration.getBuildModeCooldownInMinutes());
+	private LocalDateTime buildModeCooldownEnd = LocalDateTime.now().minusMinutes(configuration.getBuildModeCooldownInMinutes());
 	private int secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = ConstantConfiguration.secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;
 	
 	public Player getPlayer() {
@@ -47,7 +47,7 @@ public class PlayerMode {
 	public void deactivateBuildMode() {
 		getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 		resetSecondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange();
-		buildModeDeactivatedAt = LocalDateTime.now();
+		buildModeCooldownEnd = LocalDateTime.now().plusMinutes(configuration.getBuildModeCooldownInMinutes());
 		buildModeActive = false;
 	}
 
@@ -65,8 +65,8 @@ public class PlayerMode {
 		return buildModeActive;
 	}
 	
-	public LocalDateTime getBuildModeDeactivatedAt() {
-		return buildModeDeactivatedAt;
+	public LocalDateTime getBuildModeCooldownEnd() {
+		return buildModeCooldownEnd;
 	}
 	
 	public void reloadEffects() {

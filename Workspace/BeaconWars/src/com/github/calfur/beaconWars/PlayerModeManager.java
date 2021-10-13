@@ -131,9 +131,9 @@ public class PlayerModeManager {
 			return true;
 		}
 		
-		long minutesSinceDeactivated = ChronoUnit.SECONDS.between(playerMode.getBuildModeDeactivatedAt(), LocalDateTime.now())/60;
-		if(minutesSinceDeactivated < configuration.getBuildModeCooldownInMinutes()) {
-			player.sendMessage(StringFormatter.error("Der Baumodus kann erst in " + (configuration.getBuildModeCooldownInMinutes() - minutesSinceDeactivated) + " Minuten erneut aktiviert werden"));
+		if(playerMode.getBuildModeCooldownEnd().isAfter(LocalDateTime.now())) {
+			long remainingCooldownInSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), playerMode.getBuildModeCooldownEnd());
+			player.sendMessage(StringFormatter.error("Der Baumodus kann erst in " + StringFormatter.displaySecondsAsTime(remainingCooldownInSeconds, StringFormatter.errorColor) + " erneut aktiviert werden"));
 			return false;
 		}
 		
