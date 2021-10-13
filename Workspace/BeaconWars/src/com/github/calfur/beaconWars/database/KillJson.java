@@ -7,9 +7,9 @@ import java.util.Map;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public class KillJson implements ConfigurationSerializable {
-	String killer;
-	String victim;
-	LocalDateTime dateTime;
+	private String killer;
+	private String victim;
+	private LocalDateTime dateTime;
 	
 	public String getKiller() {
 		return killer;

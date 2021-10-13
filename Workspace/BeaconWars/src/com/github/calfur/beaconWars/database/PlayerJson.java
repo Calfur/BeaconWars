@@ -1,5 +1,6 @@
 package com.github.calfur.beaconWars.database;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ public class PlayerJson implements ConfigurationSerializable {
 	private int team;	
 	private String realName;
 	private int collectableDiamonds;
+	private boolean isBuildModeActive = false;
+	private LocalDateTime buildModeCooldownEnd = LocalDateTime.now();
 	
 	public String getRealName() {
 		return realName;
@@ -31,6 +34,30 @@ public class PlayerJson implements ConfigurationSerializable {
 		collectableDiamonds -= amount;		
 	}
 	
+	public boolean isBuildModeActive() {
+		return isBuildModeActive;
+	}
+
+	public void setBuildModeActive(boolean isBuildModeActive) {
+		this.isBuildModeActive = isBuildModeActive;
+	}
+
+	public LocalDateTime getBuildModeCooldownEnd() {
+		return buildModeCooldownEnd;
+	}
+
+	public void setBuildModeCooldownEnd(LocalDateTime buildModeCooldownEnd) {
+		this.buildModeCooldownEnd = buildModeCooldownEnd;
+	}
+	
+	public PlayerJson(int team, String realName, int collectableDiamonds, boolean isBuildModeActive, LocalDateTime buildModeCooldownEnd) {
+		this.team = team;
+		this.realName = realName;
+		this.collectableDiamonds = collectableDiamonds;
+		this.isBuildModeActive = isBuildModeActive;
+		this.buildModeCooldownEnd = buildModeCooldownEnd;
+	}
+
 	public PlayerJson(int team, String realName, int collectableDiamonds) {
 		this.team = team;
 		this.realName = realName;
@@ -49,14 +76,18 @@ public class PlayerJson implements ConfigurationSerializable {
 		data.put("team", this.team);
 		data.put("realName", this.realName);
 		data.put("collectableDiamonds", this.collectableDiamonds);
+		data.put("isBuildModeActive", this.isBuildModeActive);
+		data.put("buildModeCooldownEnd", this.buildModeCooldownEnd.toString());
 		return data;
 	}
-	
+
 	public static PlayerJson deserialize(Map<String, Object> args) {
 		return new PlayerJson(
 				NumberConversions.toInt(args.get("team")), 
 				(String) args.get("realName"), 
-				NumberConversions.toInt(args.get("collectableDiamonds"))
+				NumberConversions.toInt(args.get("collectableDiamonds")), 
+				(boolean) args.get("isBuildModeActive"), 
+				LocalDateTime.parse((CharSequence) args.get("buildModeCooldownEnd"))
 			);
 	}
 }
