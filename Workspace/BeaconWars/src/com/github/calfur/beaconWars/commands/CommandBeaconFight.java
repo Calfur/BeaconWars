@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.beaconFight.BeaconFightManager;
 import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
+import com.github.calfur.beaconWars.database.BeaconFightJson;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class CommandBeaconFight implements CommandExecutor {
@@ -63,7 +64,7 @@ public class CommandBeaconFight implements CommandExecutor {
 				return false;
 		}
 		LocalDateTime startTime;
-		Long eventDurationInMinutes;
+		int eventDurationInMinutes;
 		int attackDurationInMinutes;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm");
@@ -73,7 +74,7 @@ public class CommandBeaconFight implements CommandExecutor {
 			return false;
 		}
 		try {
-			eventDurationInMinutes = Long.parseLong(args[2]);
+			eventDurationInMinutes = Integer.parseInt(args[2]);
 		}catch(NumberFormatException e) {
 			executor.sendMessage(StringFormatter.error("Der Eventdauer Parameter muss dem Typ Long entsprechen"));
 			return false;
@@ -92,7 +93,8 @@ public class CommandBeaconFight implements CommandExecutor {
 			executor.sendMessage(StringFormatter.error("Die Angriffsdauer muss mindestens 1min sein"));
 			return false;
 		}
-		if(beaconFightManager.tryAddBeaconFight(startTime, eventDurationInMinutes, attackDurationInMinutes)) {
+		BeaconFightJson beaconFightJson = new BeaconFightJson(startTime, eventDurationInMinutes, attackDurationInMinutes);
+		if(beaconFightManager.tryAddBeaconFight(beaconFightJson)) {
 			executor.sendMessage(ChatColor.GREEN + "Beaconevent erfolgreich hinzugefügt. Startet in " + ChatColor.RESET + ChronoUnit.MINUTES.between(LocalDateTime.now(), startTime) + " Minuten");
 			return true;
 		}else {
