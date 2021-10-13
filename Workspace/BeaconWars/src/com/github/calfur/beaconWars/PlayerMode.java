@@ -9,18 +9,32 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.configuration.IConfiguration;
+import com.github.calfur.beaconWars.database.PlayerDbConnection;
+import com.github.calfur.beaconWars.database.PlayerJson;
 
 public class PlayerMode {
 	private IConfiguration configuration = Main.getInstance().getConfiguration();
+	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	
-	private String player;
+	private final static PotionEffect buildModePotionEffect = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 9999999, 2);
+	private final static PotionEffect highlightPotionEffect = new PotionEffect(PotionEffectType.GLOWING, 9999999, 0);
+	
+	private String playerName;
 	private boolean highlightedActive = false;
-	private boolean buildModeActive = false;
-	private LocalDateTime buildModeDeactivatedAt = LocalDateTime.now().minusMinutes(configuration.getBuildModeCooldownInMinutes());
+	private boolean isBuildModeActive = false;
+	private LocalDateTime buildModeCooldownEnd = LocalDateTime.now().minusMinutes(configuration.getBuildModeCooldownInMinutes());
 	private int secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = ConstantConfiguration.secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;
+
+	public boolean isBuildModeActive() {
+		return isBuildModeActive;
+	}
 	
+	public LocalDateTime getBuildModeCooldownEnd() {
+		return buildModeCooldownEnd;
+	}
+
 	public Player getPlayer() {
-		return Bukkit.getServer().getPlayerExact(player);
+		return Bukkit.getServer().getPlayerExact(playerName);
 	}
 	
 	public int getSecondsUntilBuildModeGetsDeactivated() {
@@ -35,55 +49,76 @@ public class PlayerMode {
 		secondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange = ConstantConfiguration.secondsUntilBuildModeGetsDeactivatedWhenNotInBaseRange;		
 	}
 	
-	public PlayerMode(String player) {
-		this.player = player;
+	public PlayerMode(String playerName) {
+		this.playerName = playerName;
+		
+		PlayerJson playerJson = playerDbConnection.getPlayer(playerName);
+		this.isBuildModeActive = playerJson.isBuildModeActive();
+		this.buildModeCooldownEnd = playerJson.getBuildModeCooldownEnd();
+		
+		reloadEffects();
 	}	
 	
 	public void activateBuildMode() {
-		getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 9999999, 2));
-		buildModeActive = true;
+		addPotionEffect(buildModePotionEffect);
+		isBuildModeActive = true;
+
+		PlayerJson playerJson = playerDbConnection.getPlayer(playerName);
+		playerJson.setBuildModeActive(true);
+		playerDbConnection.addPlayer(playerName, playerJson);
 	}
 	
 	public void deactivateBuildMode() {
-		getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+		buildModeCooldownEnd = LocalDateTime.now().plusMinutes(configuration.getBuildModeCooldownInMinutes());
 		resetSecondsLeftUntilBuildModeGetsDeactivatedBecauseNotInBaseRange();
-		buildModeDeactivatedAt = LocalDateTime.now();
-		buildModeActive = false;
+		isBuildModeActive = false;
+		removePotionEffect(buildModePotionEffect.getType());		
+		
+		PlayerJson playerJson = playerDbConnection.getPlayer(playerName);
+		playerJson.setBuildModeActive(false);
+		playerJson.setBuildModeCooldownEnd(buildModeCooldownEnd);
+		playerDbConnection.addPlayer(playerName, playerJson);
 	}
 
 	public void activateHighlighted() {
-		getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 9999999, 0));
+		addPotionEffect(highlightPotionEffect);
 		highlightedActive = true;
 	}
 	
 	public void deactivateHighlighted() {
-		getPlayer().removePotionEffect(PotionEffectType.GLOWING);
+		removePotionEffect(highlightPotionEffect.getType());
 		highlightedActive = false;
 	}
 	
-	public boolean isBuildModeActive() {
-		return buildModeActive;
-	}
-	
-	public LocalDateTime getBuildModeDeactivatedAt() {
-		return buildModeDeactivatedAt;
-	}
-	
 	public void reloadEffects() {
-		if(buildModeActive) {
-			getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 9999999, 2));
+		if(isBuildModeActive) {
+			addPotionEffect(buildModePotionEffect);
 		}else {
-			getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+			removePotionEffect(buildModePotionEffect.getType());
 		}
 		if(highlightedActive) {
-			getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 9999999, 0));
+			addPotionEffect(highlightPotionEffect);
 		}else {
-			getPlayer().removePotionEffect(PotionEffectType.GLOWING);
+			removePotionEffect(highlightPotionEffect.getType());
 		}
 	}
 	
 	public static void removeModeEffects(Player player) {
-		player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-		player.removePotionEffect(PotionEffectType.GLOWING);
+		player.removePotionEffect(buildModePotionEffect.getType());
+		player.removePotionEffect(highlightPotionEffect.getType());
+	}
+	
+	private void addPotionEffect(PotionEffect potionEffect) {
+		Player player = getPlayer();
+		if(player != null) {
+			player.addPotionEffect(potionEffect);			
+		}
+	}
+	
+	private void removePotionEffect(PotionEffectType type) {
+		Player player = getPlayer();
+		if(player != null) {
+			player.removePotionEffect(type);			
+		}
 	}
 }

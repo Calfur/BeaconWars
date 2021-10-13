@@ -31,9 +31,10 @@ public abstract class DbConnection<Json extends ConfigurationSerializable> {
 		if(folder.exists()) {
 			if(file.exists()) {
 				data = read();
-				if(data != null) {
-					jsons = mapDataToHashMap();
+				if(data == null) {
+					data = new Data();
 				}
+				jsons = mapDataToHashMap();
 			}else {
 				createFile().loadDatabase();
 			}

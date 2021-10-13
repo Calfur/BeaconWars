@@ -5,9 +5,12 @@ import org.bukkit.ChatColor;
 import com.github.calfur.beaconWars.Reward;
 
 public class StringFormatter {
+	public final static ChatColor errorColor = ChatColor.DARK_RED;
+	
 	public static String firstLetterToUpper(String string) {
 		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
 	}
+	
 	public static String repeatString(String string, int repetitions) {
 		String result = "";
 		for (int i = 0; i < repetitions; i++) {
@@ -15,7 +18,12 @@ public class StringFormatter {
 		}
 		return result;
 	}
+	
 	public static String displaySecondsAsTime(long allSeconds) {
+		return displaySecondsAsTime(allSeconds, ChatColor.RESET);
+	}
+	
+	public static String displaySecondsAsTime(long allSeconds, ChatColor color) {
 		long seconds = allSeconds % 60;
 		long minutes = Math.floorDiv(allSeconds, 60);
 		long hours = Math.floorDiv(minutes, 60);
@@ -24,24 +32,24 @@ public class StringFormatter {
 		if(hours > 0) {
 			result += bold("" + hours);
 			if(hours == 1) {
-				 result += "Stunde ";
+				 result += color + " Stunde ";
 			}else {
-				 result += "Stunden ";
+				 result += color + " Stunden ";
 			}
 		}
 		if(minutes > 0) {
 			result += bold("" + minutes);
 			if(minutes == 1) {
-				 result += "Minute und ";
+				 result += color + " Minute und ";
 			}else {
-				 result += "Minuten und ";
+				 result += color + " Minuten und ";
 			}
 		}
 		result += bold("" + seconds);
 		if(seconds == 1) {
-			 result += "Sekunde";
+			 result += color + " Sekunde";
 		}else {
-			 result += "Sekunden";
+			 result += color + " Sekunden";
 		}
 		return result;
 	}
@@ -87,6 +95,6 @@ public class StringFormatter {
 	}
 	
 	public static String error(String text) {
-		return ChatColor.DARK_RED + text + ChatColor.RESET;
+		return errorColor + text + ChatColor.RESET;
 	}
 }

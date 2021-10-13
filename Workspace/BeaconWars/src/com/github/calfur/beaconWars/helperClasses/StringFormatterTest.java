@@ -58,7 +58,7 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsZero_ResultIsAsExpected() {
 		//Arrange
 		long input = 0;
-		String expectedResult = StringFormatter.bold("0") + "Sekunden";
+		String expectedResult = StringFormatter.bold("0") + ChatColor.RESET + " Sekunden";
 		//Act
 		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
@@ -69,7 +69,7 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsBelowOneMinute_ResultIsAsExpected() {
 		//Arrange
 		long input = 37;
-		String expectedResult = StringFormatter.bold("37") + "Sekunden";
+		String expectedResult = StringFormatter.bold("37") + ChatColor.RESET + " Sekunden";
 		//Act
 		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
@@ -80,7 +80,7 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsBelowOneHour_ResultIsAsExpected() {
 		//Arrange
 		long input = 3001;
-		String expectedResult = StringFormatter.bold("50") + "Minuten und " + StringFormatter.bold("1") + "Sekunde";
+		String expectedResult = StringFormatter.bold("50") + ChatColor.RESET + " Minuten und " + StringFormatter.bold("1") + ChatColor.RESET + " Sekunde";
 		//Act
 		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
@@ -91,7 +91,7 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsOverOneHour_ResultIsAsExpected() {
 		//Arrange
 		long input = 3680;
-		String expectedResult = StringFormatter.bold("1") + "Stunde " + StringFormatter.bold("1") + "Minute und " + StringFormatter.bold("20") + "Sekunden";
+		String expectedResult = StringFormatter.bold("1") + ChatColor.RESET + " Stunde " + StringFormatter.bold("1") + ChatColor.RESET + " Minute und " + StringFormatter.bold("20") + ChatColor.RESET + " Sekunden";
 		//Act
 		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
@@ -102,7 +102,7 @@ class StringFormatterTest {
 	void DisplaySecondsAsTime_WhenInputIsExactlyOneMinute_ResultIsAsExpected() {
 		//Arrange
 		long input = 60;
-		String expectedResult = StringFormatter.bold("1") + "Minute und " + StringFormatter.bold("0") + "Sekunden";
+		String expectedResult = StringFormatter.bold("1") + ChatColor.RESET + " Minute und " + StringFormatter.bold("0") + ChatColor.RESET + " Sekunden";
 		//Act
 		String actualResult = StringFormatter.displaySecondsAsTime(input);
 		//Assert
