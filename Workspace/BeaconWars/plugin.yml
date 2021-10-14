@@ -53,5 +53,5 @@ commands:
     usage: /<command>
 permissions:
   admin:
-    description: Erlaubt das benutzen von allen DiamondKill commands
+    description: Erlaubt das benutzen von allen BeaconWars commands
     default: op
