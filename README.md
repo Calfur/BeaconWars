@@ -1,10 +1,12 @@
 # Beacon Wars
 ## The plugins developed for Minecraft Team Events
-The Main goal of these Plugins are, improving a Minecraft Team PvP Server. With several changes in how to get weapons, the combat system becomes more exciting. The main Change is how you get diamonds. You can't mine them or find them in chests. Istead you get them as bounty from kills. <br />
+The Main goal of Beacon Wars is, to improve a Minecraft Team PvP Server with some rules. Other than in similar projects the goal is not last man standing wins. Instead it includes a team based point-system. Points are payed for kills, rubbed beacons you are able to pay points for custom events like a build event.<br>
+Except from that, the main change is how you get diamonds. You can't get them naturally with mining or finding them in chests. Istead you get them as bounty from kills.<br>
 Furthermore there is a base system included, with a buildmode and the possibility to rub beacons from other teams during the beacon events.
 
 ## Documentation
 User documentation: https://1drv.ms/p/s!AqmNtkCHF4Gs33VF97y5w70egxEv
+Admin documentation: 
 
 ## Supported Minecraft versions
 ### Current release
