@@ -15,7 +15,7 @@ Admin documentation:
 1.16.5
 
 ## Download
-Download the builded diamondKill.jar file from the release area on github
+Download the builded BeaconWars-X.X.X.jar file from the [release area](https://github.com/Calfur/BeaconWars/releases/latest) on github
 
 ## Development informations
 - Developed with eclipse
