@@ -51,6 +51,7 @@ commands:
   reloadConfig:
     description: Reload the Configurations based on the config.yml file
     usage: /<command>
+    permission: admin
 permissions:
   admin:
     description: Erlaubt das benutzen von allen BeaconWars commands
