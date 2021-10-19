@@ -123,6 +123,24 @@ public class ConfigFileLoader {
 	}
 
 	public boolean loadConfigFile() {
+		createConfigFileFolderIfNotExists();
+	    createConfigFileIfNotExists();
+		
+		configFileConfiguration = YamlConfiguration.loadConfiguration(configFile);
+		if(configFileConfiguration.saveToString() == "") {
+			return false;
+		}
+		return true;
+	}
+
+	private void createConfigFileFolderIfNotExists() {
+		File directory = new File(ConstantConfiguration.pluginFolder);
+	    if (! directory.exists()){
+	        directory.mkdirs();
+	    }
+	}
+
+	private void createConfigFileIfNotExists() {
 		configFile = new File(ConstantConfiguration.pluginFolder, "config.yml");
 		
 		try {
