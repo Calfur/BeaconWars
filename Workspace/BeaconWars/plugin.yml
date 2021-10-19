@@ -5,7 +5,7 @@ api-version: 1.17
 depend: [DeathBan]
 softdepend: [VillagerSaver, sleep-most]
 description: You can find a plugin documentation inside of the readme file on https://github.com/Calfur/BeaconWars
-author: Robin Nater
+author: Robin Nater alias Calfur
 website: www.github.com/Calfur/BeaconWars
 commands:
   collect:
