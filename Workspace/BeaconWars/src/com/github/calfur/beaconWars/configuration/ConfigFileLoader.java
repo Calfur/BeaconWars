@@ -148,12 +148,6 @@ public class ConfigFileLoader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		configFileConfiguration = YamlConfiguration.loadConfiguration(configFile);
-		if(configFileConfiguration.saveToString() == "") {
-			return false;
-		}
-		return true;
 	}
 
 	private String getStringConfiguration(String configName) {
