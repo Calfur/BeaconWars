@@ -5,10 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
-import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
 public class CommandProjectStart implements CommandExecutor {
 	private boolean isProjectActive = true;
@@ -21,27 +19,18 @@ public class CommandProjectStart implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(sender instanceof Player) {
-			Player executor = (Player)sender;						
-			if(executor.hasPermission("admin")) {			
-				return toggleProject(executor);
-			}else {
-				executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen command"));
-				return false;
-			}
-		}
-		return false;
+		return toggleProject(sender);
 	}
 
-	private boolean toggleProject(Player executor) {
+	private boolean toggleProject(CommandSender sender) {
 		if(isProjectActive) {
-			return deactivateProject(executor);
+			return deactivateProject(sender);
 		}else {
-			return activateProject(executor);
+			return activateProject();
 		}
 	}
 
-	private boolean activateProject(Player executor) {
+	private boolean activateProject() {
 		if(countdownTaskId == null) {
 			countdownTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
 				private int secondsSinceCountdownStarted = 0;
@@ -89,8 +78,8 @@ public class CommandProjectStart implements CommandExecutor {
 		CommandStartProjectForPlayers.startProjectForAllOnlinePlayers();
 	}
 
-	private boolean deactivateProject(Player executor) {
-		executor.sendMessage(ChatColor.GOLD + "Das Projekt ist nun im Startmodus. Führe den Command erneut aus, um den Countdown zu starten");
+	private boolean deactivateProject(CommandSender sender) {
+		sender.sendMessage(ChatColor.GOLD + "Das Projekt ist nun im Startmodus. Führe den Command erneut aus, um den Countdown zu starten");
 		isProjectActive = false;
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "difficulty peaceful");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "time set 0");

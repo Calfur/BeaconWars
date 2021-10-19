@@ -24,24 +24,18 @@ public class CommandStartProjectForPlayers  implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) { // Spieler führt den Command aus
-			Player executor = (Player)sender;						
-			if(executor.hasPermission("admin")) {			
-				if(args.length == 1) {
-					Player player = Bukkit.getPlayerExact(args[0]);
-					if(player != null) {
-						startProjectForPlayer(player);
-						sender.sendMessage(ChatColor.GREEN + "Spieler " + player.getName() + " teleportiert");
-						return true;
-					}else {
-						executor.sendMessage(StringFormatter.error("Spieler " + args[0] + " konnte nicht gefunden werden (muss online sein)"));
-						return false;
-					}
+			if(args.length == 1) {
+				Player player = Bukkit.getPlayerExact(args[0]);
+				if(player != null) {
+					startProjectForPlayer(player);
+					sender.sendMessage(ChatColor.GREEN + "Spieler " + player.getName() + " teleportiert");
+					return true;
 				}else {
-					executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+					sender.sendMessage(StringFormatter.error("Spieler " + args[0] + " konnte nicht gefunden werden (muss online sein)"));
 					return false;
 				}
 			}else {
-				executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
+				sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 				return false;
 			}
 		}else if(sender instanceof BlockCommandSender) { // Commandblock führt den Command aus
