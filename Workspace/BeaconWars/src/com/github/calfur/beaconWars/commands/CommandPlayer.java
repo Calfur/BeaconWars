@@ -29,67 +29,64 @@ public class CommandPlayer implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(sender instanceof Player) {
-			Player executor = (Player)sender;						
-			if(args.length >= 1) {
-				String subCommand = args[0].toLowerCase();
-				switch(subCommand) {
-					case "info":
-						return sendPlayerInfo(executor, args);
-					case "list":
-						return sendPlayerList(executor, args);
-					case "delete":
-					case "remove":
-						if(executor.hasPermission("admin")) {	
-							return deletePlayer(executor, args);
-						}else {
-							executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
-							return true;
-						}
-					case "add":
-						if(executor.hasPermission("admin")) {	
-							return addPlayer(executor, args);
-						}else {
-							executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
-							return true;
-						}
-					case "edit":
-						if(executor.hasPermission("admin")) {	
-							return editPlayer(executor, args);
-						}else {
-							executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
-							return true;
-						}
-					default:
-						executor.sendMessage(StringFormatter.error(subCommand + " ist kein vorhandener Subcommand"));
-						return false;
-				}
-			}			
-		}
+		if(args.length >= 1) {
+			String subCommand = args[0].toLowerCase();
+			switch(subCommand) {
+				case "info":
+					return sendPlayerInfo(sender, args);
+				case "list":
+					return sendPlayerList(sender, args);
+				case "delete":
+				case "remove":
+					if(sender.hasPermission("admin")) {	
+						return deletePlayer(sender, args);
+					}else {
+						sender.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
+						return true;
+					}
+				case "add":
+					if(sender.hasPermission("admin")) {	
+						return addPlayer(sender, args);
+					}else {
+						sender.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
+						return true;
+					}
+				case "edit":
+					if(sender.hasPermission("admin")) {	
+						return editPlayer(sender, args);
+					}else {
+						sender.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
+						return true;
+					}
+				default:
+					sender.sendMessage(StringFormatter.error(subCommand + " ist kein vorhandener Subcommand"));
+					return false;
+			}
+		}	
 		return false;
 	}
 
-	private boolean sendPlayerList(Player executor, String[] args) {
+	private boolean sendPlayerList(CommandSender sender, String[] args) {
 		if(args.length != 1) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		Map<String, PlayerJson> players = playerDbConnection.getPlayers();
-		executor.sendMessage(ChatColor.BOLD + "" + players.size() + " Spieler gefunden:");
+		sender.sendMessage(ChatColor.BOLD + "" + players.size() + " Spieler gefunden:");
 		for (Entry<String, PlayerJson> player : players.entrySet()) {
-			executor.sendMessage((teamDbConnection.getTeam(player.getValue().getTeamId()).getColor() + StringFormatter.firstLetterToUpper(player.getKey())) + (ChatColor.RESET + " " + killDbConnection.getAmountOfKills(player.getKey()) + " Kills / " + killDbConnection.getAmountOfDeaths(player.getKey()) + " Tode (durch Gegner)") + (ChatColor.AQUA + " " + killDbConnection.getBounty(player.getKey()) + " Dias") + (ChatColor.RESET + " Kopfgeld"));
+			sender.sendMessage((teamDbConnection.getTeam(player.getValue().getTeamId()).getColor() + StringFormatter.firstLetterToUpper(player.getKey())) + (ChatColor.RESET + " " + killDbConnection.getAmountOfKills(player.getKey()) + " Kills / " + killDbConnection.getAmountOfDeaths(player.getKey()) + " Tode (durch Gegner)") + (ChatColor.AQUA + " " + killDbConnection.getBounty(player.getKey()) + " Dias") + (ChatColor.RESET + " Kopfgeld"));
 		}
 		return true;
 	}
 
-	private boolean sendPlayerInfo(Player executor, String[] args) {
+	private boolean sendPlayerInfo(CommandSender sender, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String name = args[1];
 		if(!playerDbConnection.existsPlayer(name)) {
-			executor.sendMessage(StringFormatter.error("Dieser Spieler ist nicht registriert"));
+			sender.sendMessage(StringFormatter.error("Dieser Spieler ist nicht registriert"));
 			return false;
 		}
 		PlayerJson playerJson = playerDbConnection.getPlayer(name);
@@ -102,36 +99,36 @@ public class CommandPlayer implements CommandExecutor {
 			playtime = "" + player.getStatistic(Statistic.PLAY_ONE_MINUTE)/20/60/60 + "h";
 		}
 		
-		executor.sendMessage((ChatColor.RESET + "Name: ") + (ChatColor.BOLD +  StringFormatter.firstLetterToUpper(name))); 
-		executor.sendMessage((ChatColor.RESET + "Team: ") + (teamDbConnection.getTeam(playerJson.getTeamId()).getColor() + "" + playerJson.getTeamId()));
-		executor.sendMessage((ChatColor.RESET + "Real Name: ") + (ChatColor.BOLD + playerJson.getRealName()));
-		executor.sendMessage((ChatColor.RESET + "Guthaben: ") + ChatColor.AQUA + playerJson.getCollectableDiamonds() + " Dias");
-		executor.sendMessage((ChatColor.RESET + "K/D (durch Gegner): " + (ChatColor.BOLD + "" + killDbConnection.getAmountOfKills(name) + "/" + killDbConnection.getAmountOfDeaths(name))));
-		executor.sendMessage((ChatColor.RESET + "Tode gesammt: ") + (ChatColor.BOLD + "" + deaths));
-		executor.sendMessage((ChatColor.RESET + "Spielzeit: ") + (ChatColor.BOLD + "" + playtime));
-		executor.sendMessage((ChatColor.RESET + "Kopfgeld:") + (ChatColor.AQUA + " " + killDbConnection.getBounty(name) + " Dias"));
+		sender.sendMessage((ChatColor.RESET + "Name: ") + (ChatColor.BOLD +  StringFormatter.firstLetterToUpper(name))); 
+		sender.sendMessage((ChatColor.RESET + "Team: ") + (teamDbConnection.getTeam(playerJson.getTeamId()).getColor() + "" + playerJson.getTeamId()));
+		sender.sendMessage((ChatColor.RESET + "Real Name: ") + (ChatColor.BOLD + playerJson.getRealName()));
+		sender.sendMessage((ChatColor.RESET + "Guthaben: ") + ChatColor.AQUA + playerJson.getCollectableDiamonds() + " Dias");
+		sender.sendMessage((ChatColor.RESET + "K/D (durch Gegner): " + (ChatColor.BOLD + "" + killDbConnection.getAmountOfKills(name) + "/" + killDbConnection.getAmountOfDeaths(name))));
+		sender.sendMessage((ChatColor.RESET + "Tode gesammt: ") + (ChatColor.BOLD + "" + deaths));
+		sender.sendMessage((ChatColor.RESET + "Spielzeit: ") + (ChatColor.BOLD + "" + playtime));
+		sender.sendMessage((ChatColor.RESET + "Kopfgeld:") + (ChatColor.AQUA + " " + killDbConnection.getBounty(name) + " Dias"));
 		return true;
 	}
 	
-	private boolean deletePlayer(Player executor, String[] args) {
+	private boolean deletePlayer(CommandSender sender, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String name = args[1];
 		if(!playerDbConnection.existsPlayer(name)) {
-			executor.sendMessage(StringFormatter.error("Dieser Spieler ist nicht registriert"));
+			sender.sendMessage(StringFormatter.error("Dieser Spieler ist nicht registriert"));
 			return false;
 		}
 		playerDbConnection.removePlayer(name);
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
-		executor.sendMessage(ChatColor.GREEN + name + " gelöscht.");
+		sender.sendMessage(ChatColor.GREEN + name + " gelöscht.");
 		return true;
 	}
 	
-	private boolean editPlayer(Player executor, String[] args) {
+	private boolean editPlayer(CommandSender sender, String[] args) {
 		if(args.length != 4) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String name;
@@ -142,23 +139,23 @@ public class CommandPlayer implements CommandExecutor {
 			team = Integer.parseInt(args[2]);
 			realName = args[3];
 		}catch(NumberFormatException e) {
-			executor.sendMessage(StringFormatter.error("Der Team Parameter muss dem Typ Int entsprechen"));
+			sender.sendMessage(StringFormatter.error("Der Team Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		if(!playerDbConnection.existsPlayer(name)) {
-			executor.sendMessage(StringFormatter.error("Dieser Spieler ist nicht vorhanden"));
+			sender.sendMessage(StringFormatter.error("Dieser Spieler ist nicht vorhanden"));
 			return false;
 		}
 		int collectableDiamonds = playerDbConnection.getPlayer(name).getCollectableDiamonds();
 		playerDbConnection.addPlayer(name, new PlayerJson(team, realName, collectableDiamonds));
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
-		executor.sendMessage(ChatColor.GREEN + name + " editiert.");
+		sender.sendMessage(ChatColor.GREEN + name + " editiert.");
 		return true;
 	}
 	
-	private boolean addPlayer(Player executor, String[] args) {
+	private boolean addPlayer(CommandSender sender, String[] args) {
 		if(args.length != 4) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String name;
@@ -169,20 +166,20 @@ public class CommandPlayer implements CommandExecutor {
 			team = Integer.parseInt(args[2]);
 			realName = args[3];
 		}catch(NumberFormatException e) {
-			executor.sendMessage(StringFormatter.error("Der Team Parameter muss dem Typ Int entsprechen"));
+			sender.sendMessage(StringFormatter.error("Der Team Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		if(playerDbConnection.existsPlayer(name)) {
-			executor.sendMessage(StringFormatter.error("Dieser Spieler wurde bereits registriert"));	
+			sender.sendMessage(StringFormatter.error("Dieser Spieler wurde bereits registriert"));	
 			return false;
 		}
 		if(!teamDbConnection.existsTeam(team)) {
-			executor.sendMessage(StringFormatter.error("Ein Team mit der Id " + team + " existiert nicht."));	
+			sender.sendMessage(StringFormatter.error("Ein Team mit der Id " + team + " existiert nicht."));	
 			return false;
 		}
 		playerDbConnection.addPlayer(name, new PlayerJson(team, realName));
 		scoreboardLoader.reloadScoreboardForAllOnlinePlayers();
-		executor.sendMessage(ChatColor.GREEN + name + " registriert.");
+		sender.sendMessage(ChatColor.GREEN + name + " registriert.");
 		return true;
 	}
 }
