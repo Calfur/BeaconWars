@@ -33,10 +33,11 @@ public class ConfigFileLoader {
 			getBuildModeCooldownInMinutes(),
 			getBuildModeBaseRangeRadiusInBlocks(),
 			getDeathBanDurationInMinutes(),
-			getDeathBanDurationDuringBeaconFightInMinutes()
+			getDeathBanDurationDuringBeaconFightInMinutes(),
+			getBeaconEventWorldName()
 		);
 	}
-	
+
 	private String getScoreboardTitle() {
 		return getStringConfiguration("ScoreboardTitle");
 	}
@@ -120,6 +121,10 @@ public class ConfigFileLoader {
 
 	public Integer getDeathBanDurationDuringBeaconFightInMinutes() {
 		return getIntegerConfiguration("DeathBanDurationDuringBeaconFightInMinutes");
+	}
+	
+	private String getBeaconEventWorldName() {
+		return getStringConfiguration("BeaconEventWorldName");
 	}
 
 	public boolean loadConfigFile() {

@@ -89,6 +89,10 @@ public class DefaultConfiguration implements IConfiguration{
 	 * The duration of the ban after a player dies during a beacon event 
 	 */
 	private static final int deathBanDurationDuringBeaconFightInMinutes = 2;
+	/***
+	 * World name where the base beacons for the teams get created
+	 */
+	private static final String beaconEventWorldName = "world";
 
 	@Override
 	public String getScoreboardTitle() {
@@ -178,5 +182,10 @@ public class DefaultConfiguration implements IConfiguration{
 	@Override
 	public Integer getDeathBanDurationDuringBeaconFightInMinutes() {
 		return deathBanDurationDuringBeaconFightInMinutes;
+	}
+
+	@Override
+	public String getBeaconEventWorldName() {
+		return beaconEventWorldName;
 	}
 }
