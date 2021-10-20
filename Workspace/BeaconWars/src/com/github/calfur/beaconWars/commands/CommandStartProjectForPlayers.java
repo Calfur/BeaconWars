@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,11 +20,11 @@ import com.github.calfur.beaconWars.PlayerKicker;
 import com.github.calfur.beaconWars.beaconFight.BeaconManager;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
-public class CommandStartProjectForPlayers  implements CommandExecutor {
+public class CommandStartProjectForPlayers implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(sender instanceof Player) { // Spieler führt den Command aus
+		if(sender instanceof Player || sender instanceof ConsoleCommandSender) { // Spieler oder Konsole führt den Command aus
 			if(args.length == 1) {
 				Player player = Bukkit.getPlayerExact(args[0]);
 				if(player != null) {
