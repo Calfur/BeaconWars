@@ -14,6 +14,7 @@ public class DeathBanPluginInteraction {
 	public static void tryChangeBanDuration(int minutes) {
 		String time = minutes + "m";
 		configFileConfiguration.set("default.time", time);
+		configFileConfiguration.set("default.lives", 0);
 		
 		try {
 			configFileConfiguration.save(configFile);
