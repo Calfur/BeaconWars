@@ -20,7 +20,7 @@ commands:
   playerkill:
     description: Interagiert mit der Killdatenbank
     usage: /<command> [add | info | delete | list] [id | page] [Killer] [Opfer] [Grund]
-  beaconevent:
+  beaconEvent:
     description: Zum hinzufuegen oder loeschen von Becon Events
     usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]
     permission: admin
@@ -35,10 +35,10 @@ commands:
     description: Teleportiert Spieler zu ihrem Teambeacon und setzt sie in den Startzustand (Effekte, Hunger, Spawnpoint)
     usage: /<command> [Spieler]
     permission: admin
-  totemcooldown:
+  totemCooldown:
     description: Gibt die verbleibende cooldown Zeit zurueck
     usage: /<command> [Spieler]
-  namenametag:
+  nameNametag:
     description: Benennt nametags welche in der Main-Hand gehalten werden
     usage: /<command> Name
   compass:
