@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
-public class TabCompleterBeaconfight extends TabCompleterBase{
+public class TabCompleterBeaconEvent extends TabCompleterBase{
 
 	@Override
 	List<String> getSuggestions(String[] previousParameters, Player sender) {
@@ -23,21 +23,16 @@ public class TabCompleterBeaconfight extends TabCompleterBase{
 					completions.add(LocalDateTime.now().plusHours(2).withMinute(0).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm")));
 					completions.add(LocalDateTime.now().plusHours(1).withMinute(30).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm")));
 					completions.add(LocalDateTime.now().plusHours(1).withMinute(0).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm")));
-					completions.add(LocalDateTime.now().plusMinutes(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm")));
 				}
 				break;
 			case 3: // Eventduration (Minutes)
 				if(previousParameters[0].equals("add")) {
-					completions.add("120");
 					completions.add("90");
-					completions.add("60");
 				}
 				break;
 			case 4: // Attackduration (Minutes)
 				if(previousParameters[0].equals("add")) {
-					completions.add("15");
 					completions.add("12");
-					completions.add("10");
 				}
 				break;
 			}

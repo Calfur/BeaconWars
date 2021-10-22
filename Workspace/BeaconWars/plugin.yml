@@ -20,7 +20,7 @@ commands:
   playerkill:
     description: Interagiert mit der Killdatenbank
     usage: /<command> [add | info | delete | list] [id | page] [Killer] [Opfer] [Grund]
-  beaconfight:
+  beaconevent:
     description: Zum hinzufuegen oder loeschen von Becon Events
     usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]
     permission: admin

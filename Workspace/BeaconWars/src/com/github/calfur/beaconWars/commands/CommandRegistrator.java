@@ -22,9 +22,9 @@ public class CommandRegistrator {
 		plugin.getCommand("playerkill").setExecutor(new CommandKill());
 		plugin.getCommand("playerkill").setTabCompleter(new TabCompleterPlayerKill());
 
-		// /beaconfight
-		plugin.getCommand("beaconfight").setExecutor(new CommandBeaconFight());
-		plugin.getCommand("beaconfight").setTabCompleter(new TabCompleterBeaconfight());
+		// /beaconevent
+		plugin.getCommand("beaconevent").setExecutor(new CommandBeaconEvent());
+		plugin.getCommand("beaconevent").setTabCompleter(new TabCompleterBeaconEvent());
 		
 		// /buildmode
 		plugin.getCommand("buildmode").setExecutor(new CommandBuildMode());

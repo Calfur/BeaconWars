@@ -17,7 +17,7 @@ import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.database.BeaconFightJson;
 import com.github.calfur.beaconWars.helperClasses.StringFormatter;
 
-public class CommandBeaconFight implements CommandExecutor {
+public class CommandBeaconEvent implements CommandExecutor {
 	private BeaconFightManager beaconFightManager = Main.getInstance().getBeaconFightManager();
 
 	@Override
