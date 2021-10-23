@@ -9,7 +9,7 @@ author: Robin Nater alias Calfur
 website: www.github.com/Calfur/BeaconWars
 commands:
   collect:
-    description: Gibt dem Spieler die Gewuenschte Anzahl Items aus seinem Belohnungsguthaben
+    description: Gibt dem Spieler die gewuenschte Anzahl Diamanten aus seinem Belohnungsguthaben
     usage: /<command> Itemname Anzahl
   player:
     description: Interagiert mit der Spielerdatenbank
@@ -42,13 +42,13 @@ commands:
     description: Benennt nametags welche in der Main-Hand gehalten werden
     usage: /<command> Name
   compass:
-    description: Erhalte einen Kompass mit dem ausgewaehlten Ziel
+    description: Erhalte einen Kompass welcher auf das ausgewaehlten Ziel zeigt
     usage: /<command> [Base | Spawn | Beacon] [TeamId]
   transaction: 
     description: Interagiert mit der Transaktionsdatenbank
     usage: /<command> [info | list | add | reverse] [Id | page | diamonds | points] [amount] [player] [reason]
   reloadConfig:
-    description: Reload the Configurations based on the config.yml file
+    description: Ladet die Konfigurationen neu basierend auf dem config.yml file
     usage: /<command>
     permission: admin
 permissions:
