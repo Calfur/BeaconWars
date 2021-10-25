@@ -1,6 +1,6 @@
 # Beacon Wars
 ## The Minecraft PvP Project
-The basic idea of BeaconWars is to make a Minecraft PvP event more exciting. For this we looked at past projects and searched for improvements. BeaconWars is the result of a year of collecting ideas, programming and optimizing. In April 2021, we organizers played the project with our friends using version 1.0 of BeaconWars. The project was a complete success, never before have we played a project for such a long time. Since then the plugin was regularly improved. With the Version 2.0 the Plugin is on a higher level than ever before. The user friendliness and usability is at a high level now.
+The basic idea of BeaconWars is to make a Minecraft PvP event more exciting. For this we looked at past projects and searched for improvements. BeaconWars is the result of a year of collecting ideas, programming and optimizing. In April 2021, we organizers played the project with our friends using version 1.0 of BeaconWars. The project was a great success, never before have we played a project for such a long time. Since then the plugin was regularly improved. With the Version 2.0 the Plugin is on a higher level than ever before. The user friendliness and usability is at a high level now.
 
 ## Documentation
 [User documentation](https://1drv.ms/p/s!AqmNtkCHF4Gs33VF97y5w70egxEv) (German)  
