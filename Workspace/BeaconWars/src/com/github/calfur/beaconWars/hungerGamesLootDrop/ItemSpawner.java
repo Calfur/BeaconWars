@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.calfur.beaconWars.Main;
+import com.github.calfur.beaconWars.commands.CommandProjectStart;
 import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.configuration.IConfiguration;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
@@ -17,12 +18,13 @@ import com.github.calfur.beaconWars.database.PlayerJson;
 
 public class ItemSpawner implements Runnable {
 	IConfiguration configuration = Main.getInstance().getConfiguration();
+	private CommandProjectStart commandProjectStart = Main.getInstance().getCommandProjectStart();
 	private PlayerDbConnection playerDbConnection = Main.getInstance().getPlayerDbConnection();
 	private ItemStack itemsToSpawn = new ItemStack(Material.DIAMOND, 1);
 
 	@Override
 	public void run() {
-		if(configuration.areHungerGamesEnabled()) {			
+		if(configuration.areHungerGamesEnabled() && commandProjectStart.isProjectActive()) {			
 			int amountOfOnlineTeams = getCurrentAmountOfOnlineTeams();
 			if(amountOfOnlineTeams >= configuration.getHungerGamesMinimumAmountOfRequiredOnlineTeams()) {
 				Bukkit.broadcastMessage(ChatColor.GOLD + "----------------------------------------------------");

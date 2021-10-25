@@ -5,11 +5,11 @@ api-version: 1.17
 depend: [DeathBan]
 softdepend: [VillagerSaver, sleep-most]
 description: You can find a plugin documentation inside of the readme file on https://github.com/Calfur/BeaconWars
-author: Robin Nater
+author: Robin Nater alias Calfur
 website: www.github.com/Calfur/BeaconWars
 commands:
   collect:
-    description: Gibt dem Spieler die Gewuenschte Anzahl Items aus seinem Belohnungsguthaben
+    description: Gibt dem Spieler die gewuenschte Anzahl Diamanten aus seinem Belohnungsguthaben
     usage: /<command> Itemname Anzahl
   player:
     description: Interagiert mit der Spielerdatenbank
@@ -20,38 +20,38 @@ commands:
   playerkill:
     description: Interagiert mit der Killdatenbank
     usage: /<command> [add | info | delete | list] [id | page] [Killer] [Opfer] [Grund]
-  beaconfight:
+  beaconEvent:
     description: Zum hinzufuegen oder loeschen von Becon Events
     usage: /<command> [add | delete] [DateTime (yyyy-MM-dd_HH:mm)] [Eventduration (Minutes)] [Attackduration (Minutes)]
+    permission: admin
   buildmode:
-    aliases:
-    - baumodus
     description: Aktiviert oder Deaktiviert den Baumodus
     usage: /<command>
   projectStart:
     description: Aktiviert oder Deaktiviert den Projektstart Zustand
     usage: /<command>
+    permission: admin
   startProjectForPlayers:
     description: Teleportiert Spieler zu ihrem Teambeacon und setzt sie in den Startzustand (Effekte, Hunger, Spawnpoint)
     usage: /<command> [Spieler]
-  totemcooldown:
+    permission: admin
+  totemCooldown:
     description: Gibt die verbleibende cooldown Zeit zurueck
     usage: /<command> [Spieler]
-  namenametag:
+  nameNametag:
     description: Benennt nametags welche in der Main-Hand gehalten werden
     usage: /<command> Name
   compass:
-    aliases:
-    - kompass
-    description: Erhalte einen Kompass mit dem ausgewaehlten Ziel
+    description: Erhalte einen Kompass welcher auf das ausgewaehlten Ziel zeigt
     usage: /<command> [Base | Spawn | Beacon] [TeamId]
   transaction: 
     description: Interagiert mit der Transaktionsdatenbank
     usage: /<command> [info | list | add | reverse] [Id | page | diamonds | points] [amount] [player] [reason]
   reloadConfig:
-    description: Reload the Configurations based on the config.yml file
+    description: Ladet die Konfigurationen neu basierend auf dem config.yml file
     usage: /<command>
+    permission: admin
 permissions:
   admin:
-    description: Erlaubt das benutzen von allen DiamondKill commands
+    description: Erlaubt das benutzen von allen BeaconWars commands
     default: op

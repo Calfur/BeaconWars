@@ -33,10 +33,11 @@ public class ConfigFileLoader {
 			getBuildModeCooldownInMinutes(),
 			getBuildModeBaseRangeRadiusInBlocks(),
 			getDeathBanDurationInMinutes(),
-			getDeathBanDurationDuringBeaconFightInMinutes()
+			getDeathBanDurationDuringBeaconFightInMinutes(),
+			getBeaconEventWorldName()
 		);
 	}
-	
+
 	private String getScoreboardTitle() {
 		return getStringConfiguration("ScoreboardTitle");
 	}
@@ -121,8 +122,30 @@ public class ConfigFileLoader {
 	public Integer getDeathBanDurationDuringBeaconFightInMinutes() {
 		return getIntegerConfiguration("DeathBanDurationDuringBeaconFightInMinutes");
 	}
+	
+	private String getBeaconEventWorldName() {
+		return getStringConfiguration("BeaconEventWorldName");
+	}
 
 	public boolean loadConfigFile() {
+		createConfigFileFolderIfNotExists();
+	    createConfigFileIfNotExists();
+		
+		configFileConfiguration = YamlConfiguration.loadConfiguration(configFile);
+		if(configFileConfiguration.saveToString() == "") {
+			return false;
+		}
+		return true;
+	}
+
+	private void createConfigFileFolderIfNotExists() {
+		File directory = new File(ConstantConfiguration.pluginFolder);
+	    if (! directory.exists()){
+	        directory.mkdirs();
+	    }
+	}
+
+	private void createConfigFileIfNotExists() {
 		configFile = new File(ConstantConfiguration.pluginFolder, "config.yml");
 		
 		try {
@@ -130,12 +153,6 @@ public class ConfigFileLoader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		configFileConfiguration = YamlConfiguration.loadConfiguration(configFile);
-		if(configFileConfiguration.saveToString() == "") {
-			return false;
-		}
-		return true;
 	}
 
 	private String getStringConfiguration(String configName) {

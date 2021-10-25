@@ -20,4 +20,5 @@ public interface IConfiguration {
 	public Integer getBuildModeBaseRangeRadiusInBlocks();
 	public Integer getDeathBanDurationInMinutes();
 	public Integer getDeathBanDurationDuringBeaconFightInMinutes();
+	public String getBeaconEventWorldName();
 }

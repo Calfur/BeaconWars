@@ -8,10 +8,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.github.calfur.beaconWars.Main;
 import com.github.calfur.beaconWars.Reward;
+import com.github.calfur.beaconWars.configuration.ConstantConfiguration;
 import com.github.calfur.beaconWars.database.KillDbConnection;
 import com.github.calfur.beaconWars.database.KillJson;
 import com.github.calfur.beaconWars.database.PlayerDbConnection;
@@ -29,41 +29,38 @@ public class CommandKill implements CommandExecutor {
 	private TeamDbConnection teamDbConnection = Main.getInstance().getTeamDbConnection();
 	
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(sender instanceof Player) {
-			Player executor = (Player)sender;						
-			if(args.length >= 1) {
-				String subCommand = args[0].toLowerCase();
-				switch(subCommand) {
-					case "info":
-						return sendKillInfo(executor, args);
-					case "list":
-						return killList(executor, args);
-					case "delete":
-					case "remove":
-						if(executor.hasPermission("admin")) {	
-							return deleteKill(executor, args);
-						}else {
-							executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
-							return true;
-						}
-					case "add":
-						if(executor.hasPermission("admin")) {	
-							return addKill(executor, args);
-						}else {
-							executor.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
-							return true;
-						}
-					default:
-						executor.sendMessage(StringFormatter.error(subCommand + " ist kein vorhandener Subcommand"));
-						return false;
-				}
-			}			
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {					
+		if(args.length >= 1) {
+			String subCommand = args[0].toLowerCase();
+			switch(subCommand) {
+				case "info":
+					return sendKillInfo(sender, args);
+				case "list":
+					return killList(sender, args);
+				case "delete":
+				case "remove":
+					if(sender.hasPermission("admin")) {	
+						return deleteKill(sender, args);
+					}else {
+						sender.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
+						return true;
+					}
+				case "add":
+					if(sender.hasPermission("admin")) {	
+						return addKill(sender, args);
+					}else {
+						sender.sendMessage(StringFormatter.error("Fehlende Berechtigung für diesen Command"));
+						return true;
+					}
+				default:
+					sender.sendMessage(StringFormatter.error(subCommand + " ist kein vorhandener Subcommand"));
+					return false;
+			}
 		}
 		return false;
 	}
 
-	private boolean killList(Player executor, String[] args) {
+	private boolean killList(CommandSender sender, String[] args) {
 		int page;
 		int lastAvailablePage = killDbConnection.getAmountOfAvailablePages();
 		if(args.length == 1) {
@@ -72,23 +69,23 @@ public class CommandKill implements CommandExecutor {
 			try {
 				page = Integer.parseInt(args[1]);
 			}catch (Exception e) {
-				executor.sendMessage(StringFormatter.error("Der Parameter Page muss dem typ int entsprechen"));
+				sender.sendMessage(StringFormatter.error("Der Parameter Page muss dem typ int entsprechen"));
 				return false;
 			}
 			if(page < 1 || page > lastAvailablePage) {
-				executor.sendMessage(StringFormatter.error("Seite " + page + " wurde nicht gefunden. Es sind " + lastAvailablePage + " Seiten verfügbar"));
+				sender.sendMessage(StringFormatter.error("Seite " + page + " wurde nicht gefunden. Es sind " + lastAvailablePage + " Seiten verfügbar"));
 				return false;
 			}
 		}else {		
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
-		sendKillList(executor, page);
+		sendKillList(sender, page);
 		return true;
 	}
 
-	private void sendKillList(Player executor, int page) {
-		executor.sendMessage(ChatColor.BOLD + "Seite " + page + " von " + killDbConnection.getAmountOfAvailablePages() + ":");
+	private void sendKillList(CommandSender sender, int page) {
+		sender.sendMessage(ChatColor.BOLD + "Seite " + page + " von " + killDbConnection.getAmountOfAvailablePages() + ":");
 		
 		int firstKillToShow = page * 10 - 9;
 		int lastKillToShow = page * 10;
@@ -99,7 +96,7 @@ public class CommandKill implements CommandExecutor {
 				ChatColor killerColor = getPlayerColor(kill.getKiller());
 				ChatColor victimColor = getPlayerColor(kill.getVictim());
 				
-				executor.sendMessage(
+				sender.sendMessage(
 						ChatColor.GOLD + "Id: " + ChatColor.RESET + i + 
 						ChatColor.GOLD + ", Killer: " + killerColor + StringFormatter.firstLetterToUpper(kill.getKiller()) + 
 						ChatColor.GOLD + ", Opfer: " + victimColor + StringFormatter.firstLetterToUpper(kill.getVictim()));
@@ -122,55 +119,55 @@ public class CommandKill implements CommandExecutor {
 	}
 
 
-	private boolean sendKillInfo(Player executor, String[] args) {
+	private boolean sendKillInfo(CommandSender sender, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int killId;
 		try {
 			killId = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(StringFormatter.error("Der Id Parameter muss dem Typ Int entsprechen"));
+			sender.sendMessage(StringFormatter.error("Der Id Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		if(!killDbConnection.existsKill(killId)) {
-			executor.sendMessage(StringFormatter.error("Dieser Kill ist nicht registriert"));
+			sender.sendMessage(StringFormatter.error("Dieser Kill ist nicht registriert"));
 			return false;
 		}
 		KillJson killJson = killDbConnection.getKill(killId);
-		executor.sendMessage(StringFormatter.bold("Id: " + killId)); 
-		executor.sendMessage(ChatColor.RESET + "Killer: " + StringFormatter.firstLetterToUpper(killJson.getKiller())); 
-		executor.sendMessage(ChatColor.RESET + "Opfer: " + StringFormatter.firstLetterToUpper(killJson.getVictim()));
-		executor.sendMessage(ChatColor.RESET + "Zeit: " + killJson.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")));
+		sender.sendMessage(StringFormatter.bold("Id: " + killId)); 
+		sender.sendMessage(ChatColor.RESET + "Killer: " + StringFormatter.firstLetterToUpper(killJson.getKiller())); 
+		sender.sendMessage(ChatColor.RESET + "Opfer: " + StringFormatter.firstLetterToUpper(killJson.getVictim()));
+		sender.sendMessage(ChatColor.RESET + "Zeit: " + killJson.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm")));
 		return true;
 	}
 	
-	private boolean deleteKill(Player executor, String[] args) {
+	private boolean deleteKill(CommandSender sender, String[] args) {
 		if(args.length != 2) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		int killId;
 		try {
 			killId = Integer.parseInt(args[1]);
 		}catch(NumberFormatException e) {
-			executor.sendMessage(StringFormatter.error("Der Kill Id Parameter muss dem Typ Int entsprechen"));
+			sender.sendMessage(StringFormatter.error("Der Kill Id Parameter muss dem Typ Int entsprechen"));
 			return false;
 		}
 		if(!killDbConnection.existsKill(killId)) {
-			executor.sendMessage(StringFormatter.error("Dieser Kill ist nicht registriert"));
+			sender.sendMessage(StringFormatter.error("Dieser Kill ist nicht registriert"));
 			return false;
 		}
 		killDbConnection.removeKill(killId);
 		Main.getInstance().getScoreboardLoader().setTopKiller(TopKiller.getCurrentTopKiller());
-		executor.sendMessage(ChatColor.GREEN + "Kill " + killId + " gelöscht.");
+		sender.sendMessage(ChatColor.GREEN + "Kill " + killId + " gelöscht.");
 		return true;
 	}
 	
-	private boolean addKill(Player executor, String[] args) {
+	private boolean addKill(CommandSender sender, String[] args) {
 		if(args.length < 4) {
-			executor.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
+			sender.sendMessage(StringFormatter.error("Der Command enthält nicht die richtige Anzahl Parameter"));
 			return false;
 		}
 		String killer = args[1];
@@ -182,12 +179,24 @@ public class CommandKill implements CommandExecutor {
 		String reason = String.join(" ", reasonWords);
 		
 		if(!playerDbConnection.existsPlayer(killer)) {
-			executor.sendMessage(StringFormatter.error("Der Killer " + killer + " ist nicht registriert"));
+			sender.sendMessage(StringFormatter.error("Der Killer " + killer + " ist nicht registriert"));
 			return false;
 		}
 		
 		if(!playerDbConnection.existsPlayer(victim)) {
-			executor.sendMessage(StringFormatter.error("Das Opfer " + victim + " ist nicht registriert"));
+			sender.sendMessage(StringFormatter.error("Das Opfer " + victim + " ist nicht registriert"));
+			return false;
+		}
+
+		PlayerJson victimJson = playerDbConnection.getPlayer(victim);
+		if(victimJson.getTeamId() == ConstantConfiguration.spectatorTeamNumber) {
+			sender.sendMessage(StringFormatter.error("Der Spectator " + victim + " kann nicht als Opfer benutzt werden"));
+			return false;
+		}
+		
+		PlayerJson killerJson = playerDbConnection.getPlayer(killer);
+		if(killerJson.getTeamId() == ConstantConfiguration.spectatorTeamNumber) {
+			sender.sendMessage(StringFormatter.error("Dem Spectator " + killer + " kann kein Kill gutgeschrieben werden"));
 			return false;
 		}
 		
@@ -198,8 +207,8 @@ public class CommandKill implements CommandExecutor {
 			Main.getInstance()
 		);		
 
-		executor.sendMessage(ChatColor.GREEN + "Kill registriert.");
-		executor.sendMessage(ChatColor.RESET + StringFormatter.rewardText(payedReward) + " Kopfgeld an " + killer + " ausgezahlt");
+		sender.sendMessage(ChatColor.GREEN + "Kill registriert.");
+		sender.sendMessage(ChatColor.RESET + StringFormatter.rewardText(payedReward) + " Kopfgeld an " + killer + " ausgezahlt");
 		return true;
 	}
 }

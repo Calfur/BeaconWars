@@ -149,6 +149,14 @@ public class Configuration implements IConfiguration{
 				defaultConfiguration.getDeathBanDurationDuringBeaconFightInMinutes()
 		);
 	}
+	
+	@Override
+	public String getBeaconEventWorldName() {
+		return getPreferredConfiguration(
+				dynamicConfiguration.getBeaconEventWorldName(), 
+				defaultConfiguration.getBeaconEventWorldName()
+		);
+	}
 
 	private <T> T getPreferredConfiguration(T preferred, T alternative) {
 		if(preferred != null) {
